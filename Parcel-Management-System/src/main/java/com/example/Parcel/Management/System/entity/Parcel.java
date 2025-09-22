@@ -22,11 +22,11 @@ public class Parcel {
     private Status status;
 
     @ManyToOne
-    @JoinColumn(name = "users_id")
+    @JoinColumn(name = "recipient_id")
     private User recipient;
 
     @ManyToOne
-    @JoinColumn(name = "users_id")
+    @JoinColumn(name = "receptionist_id")
     private User receptionist;
 
     @OneToOne
