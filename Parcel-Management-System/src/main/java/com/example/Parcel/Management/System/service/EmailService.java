@@ -44,4 +44,14 @@ public class EmailService {
 
         return sendMail(details);
     }
+    public String getNotificationDetails(String mail){
+        EmailDetails details= new EmailDetails();
+        details.setSubject("Parcel Received at Reception");
+        details.setReciepient(mail);
+        details.setMessageBody("We have received a parcel for you at the reception,\n" +
+                " If you would like to receive the parcel, please reply yes to this mail \n" +
+                "\n Team\nParcel Management");
+
+        return sendMail(details);
+    }
 }
