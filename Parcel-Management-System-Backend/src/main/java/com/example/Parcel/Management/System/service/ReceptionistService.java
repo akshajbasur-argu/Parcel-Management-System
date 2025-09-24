@@ -1,5 +1,6 @@
 package com.example.Parcel.Management.System.service;
 
+import com.example.Parcel.Management.System.config.BCryptConfig;
 import com.example.Parcel.Management.System.dto.*;
 import com.example.Parcel.Management.System.entity.Otp;
 import com.example.Parcel.Management.System.entity.Parcel;
@@ -11,8 +12,10 @@ import com.example.Parcel.Management.System.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.apache.bcel.classfile.annotation.RuntimeInvisAnnos;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -21,11 +24,14 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class ReceptionistService {
 
+    private int intOtp;
+
     private final ModelMapper modelMapper;
     private final UserRepo userRepo;
     private final ParcelRepo parcelRepo;
     private final OtpRepo otpRepo;
     private final EmailService emailService;
+    private final BCryptPasswordEncoder encoder;
 
     public  ParcelResponseDto createParcel(RequestParcelDto parcelDto)
     {
@@ -43,17 +49,18 @@ public class ReceptionistService {
 
     }
 
-    private void sendMail(Parcel parcel){
+    private void sendMail(Parcel parcel,int otp){
         EmailDto emailDto= new EmailDto();
-        emailDto.setOtp(parcel.getOtp().getHashedOtp());
+        emailDto.setOtp(otp);
         emailDto.setRecipientEmail(parcel.getRecipient().getEmail());
         emailDto.setShortcode(parcel.getShortcode());
         System.out.println(emailService.getEmailDetails(emailDto));
     }
     public Otp generateOtp(){
-        Random random= new Random();
+        SecureRandom random= new SecureRandom();
         Otp otp= new Otp();
-        otp.setHashedOtp(Integer.toString(100000 + random.nextInt(900000)));
+        intOtp=100000 + random.nextInt(900000);
+        otp.setHashedOtp(encoder.encode((Integer.toString(intOtp))));
         otp.setTimestamp(LocalDateTime.now());
         return otpRepo.save(otp);
 
@@ -61,9 +68,13 @@ public class ReceptionistService {
 
     public String validateOtp(ValidateOtpRequestDto otp){
         Parcel parcel= parcelRepo.findById(otp.getParcelId()).orElseThrow(RuntimeException::new);
-        if(parcel.getOtp().getHashedOtp()==otp.getOtp())
+//        if(parcel.getOtp().getHashedOtp()==encoder.encode(otp.getOtp()))
+        if(encoder.matches(otp.getOtp(),parcel.getOtp().getHashedOtp()))
         {
             parcel.setStatus(Status.PICKED_UP);
+            long otpId= parcel.getOtp().getId();
+            parcel.setOtp(null);
+            otpRepo.deleteById(otpId);
             parcelRepo.save(parcel);
             return "Successfully saved";
         }
@@ -85,7 +96,7 @@ public class ReceptionistService {
         Otp otp = parcel.getOtp();
         otp.setParcel(parcel);
         otpRepo.save(otp);
-        sendMail(parcel);
+        sendMail(parcel,intOtp);
     }
 
 
