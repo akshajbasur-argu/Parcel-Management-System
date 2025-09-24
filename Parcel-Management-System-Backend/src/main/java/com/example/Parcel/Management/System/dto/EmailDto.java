@@ -6,5 +6,5 @@ import lombok.Data;
 public class EmailDto {
     private String shortcode;
     private String recipientEmail;
-    private String otp;
+    private int otp;
 }

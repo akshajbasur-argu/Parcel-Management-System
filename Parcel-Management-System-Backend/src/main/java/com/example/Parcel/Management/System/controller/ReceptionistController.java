@@ -29,7 +29,7 @@ public class ReceptionistController {
         return new ResponseEntity<>(receptionistService.createParcel(parcel), HttpStatus.OK);
     }
 
-    @PostMapping("validate/{otp}")
+    @PostMapping("validate")
     public ResponseEntity<String> validateOtp(@RequestBody ValidateOtpRequestDto otp){
         return new ResponseEntity(receptionistService.validateOtp(otp),HttpStatus.FOUND);
     }

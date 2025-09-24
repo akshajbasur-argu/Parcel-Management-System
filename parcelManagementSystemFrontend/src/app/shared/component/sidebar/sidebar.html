@@ -1,0 +1,47 @@
+<div class="flex my-5 mx-3 flex-col h-11/12  rounded-3xl bg-gray-900 transition-all duration-1000"
+    [class]="sidebar?'w-[230px]':'w-[130px]' ">
+    <header class="p-4 flex mb-9" [class]="sidebar?'justify-end': 'justify-center'">
+        <button (click)="toggleSidebar()" class="justify-end" [class]="sidebar?'visible':'hidden'"><span
+                class="material-symbols-rounded text-white">chevron_left</span> <span>{{sidebar}}</span></button>
+        <button (click)="toggleSidebar()" class=" flex" [class]="sidebar?'hidden':'visible'"><img class="h-9 w-9"
+                src="favicon.ico" alt=""></button>
+    </header>
+
+    <ul class="">
+        <li class="p-4 md:p-2 transition-all duration-1000 group ">
+            <a href="" class="sidebarLinks text-white no-underline">
+                <span class="nav-icons material-symbols-rounded">dashboard</span>
+                <span class="p-2 transition-all duration-700 no-underline"
+                    [class]="sidebar?'visible':'hidden'">Dashboard</span>
+            </a>
+        </li>
+        <li class="p-4 dropdown group">
+            <a href="" class="sidebarLinks text-white">
+                <span class="nav-icons material-symbols-rounded">app_registration</span>
+                <span class="p-2 transition-all duration-700"
+                    [class]="sidebar?'visible':'hidden'">Skills</span>
+            </a>
+        </li>
+        <li class="p-4">
+            <a href="" class="sidebarLinks text-white">
+                <span class="nav-icons material-symbols-rounded">book_2</span>
+                <span class="p-2 transition-all duration-700"
+                    [class]="sidebar?'visible':'hidden'">Learn</span>
+            </a>
+        </li>
+        <li class="p-4">
+            <a href="" class="sidebarLinks text-white">
+                <span class="nav-icons material-symbols-rounded">rate_review</span>
+                <span class="p-2 transition-all duration-700"
+                    [class]="sidebar?'visible':'hidden'">Rate Now</span>
+            </a>
+        </li>
+        <li class="p-4">
+            <a href="" class="sidebarLinks text-white">
+                <span class="nav-icons material-symbols-rounded">book_ribbon</span>
+                <span class="p-2 transition-all duration-700"
+                    [class]="sidebar?'visible':'hidden'">My Courses</span>
+            </a>
+        </li>
+    </ul>
+</div>
