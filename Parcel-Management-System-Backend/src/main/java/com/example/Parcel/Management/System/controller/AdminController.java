@@ -1,9 +1,9 @@
 package com.example.Parcel.Management.System.controller;
 
-import com.example.Parcel.Management.System.dto.UserDetailResponseDto;
+import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
 import com.example.Parcel.Management.System.entity.Role;
 import com.example.Parcel.Management.System.entity.User;
-import com.example.Parcel.Management.System.service.AdminService;
+import com.example.Parcel.Management.System.service.impl.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,12 +21,12 @@ public class AdminController {
     private AdminService adminService;
 
     @GetMapping("users")
-    public ResponseEntity<List<UserDetailResponseDto>> getUsers(){
+    public ResponseEntity<List<UserDetailResponseDto>> getUsers() {
         return new ResponseEntity<>(adminService.getAllUsers(), HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/updateUser/{id}")
-    public ResponseEntity<User> updateUserRole(@PathVariable long id, @RequestBody Role role){
+    public ResponseEntity<User> updateUserRole(@PathVariable long id, @RequestBody Role role) {
         return new ResponseEntity<User>(adminService.updateUserRole(id, role), HttpStatus.OK);
     }
 

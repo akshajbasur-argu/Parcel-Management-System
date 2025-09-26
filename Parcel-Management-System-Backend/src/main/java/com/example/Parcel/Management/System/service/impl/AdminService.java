@@ -1,6 +1,6 @@
-package com.example.Parcel.Management.System.service;
+package com.example.Parcel.Management.System.service.impl;
 
-import com.example.Parcel.Management.System.dto.UserDetailResponseDto;
+import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
 import com.example.Parcel.Management.System.entity.Role;
 import com.example.Parcel.Management.System.entity.User;
 import com.example.Parcel.Management.System.repository.UserRepo;
@@ -15,17 +15,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminService {
 
+    private final ModelMapper modelMapper;
     @Autowired
     private UserRepo userRepo;
-    private final ModelMapper modelMapper;
 
     public List<UserDetailResponseDto> getAllUsers() {
-        return userRepo.findAll().stream().map(user->modelMapper.map(user, UserDetailResponseDto.class)).toList();
+        return userRepo.findAll().stream().map(user -> modelMapper.map(user, UserDetailResponseDto.class)).toList();
     }
 
     public User updateUserRole(long id, Role role) {
-         User user = userRepo.findById(id).orElseThrow(()-> new RuntimeException("USER NOT Found"));
-         user.setRole(role);
-         return userRepo.save(user);
+        User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("USER NOT Found"));
+        user.setRole(role);
+        return userRepo.save(user);
     }
 }

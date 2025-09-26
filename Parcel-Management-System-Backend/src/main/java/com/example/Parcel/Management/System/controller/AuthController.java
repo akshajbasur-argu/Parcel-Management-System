@@ -1,6 +1,6 @@
 package com.example.Parcel.Management.System.controller;
 
-import com.example.Parcel.Management.System.dto.UserDetailResponseDto;
+import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
 import com.example.Parcel.Management.System.entity.User;
 import com.example.Parcel.Management.System.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,8 @@ public class AuthController {
             return ResponseEntity.status((HttpStatus.UNAUTHORIZED)).build();
         }
 
-        String googleId = principal.getAttribute("sub");
-        User user = userRepo.findByGoogleId(googleId)
+        String email = principal.getAttribute("email");
+        User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
 
         UserDetailResponseDto dto = new UserDetailResponseDto(user.getId(), user.getName(), user.getEmail(), user.getRole());

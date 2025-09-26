@@ -1,6 +1,5 @@
-package com.example.Parcel.Management.System.dto;
+package com.example.Parcel.Management.System.dto.receptionist;
 
-import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

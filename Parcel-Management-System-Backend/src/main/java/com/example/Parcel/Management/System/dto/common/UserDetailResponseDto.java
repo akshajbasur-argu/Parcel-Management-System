@@ -1,10 +1,9 @@
-package com.example.Parcel.Management.System.dto;
+package com.example.Parcel.Management.System.dto.common;
 
 import com.example.Parcel.Management.System.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @AllArgsConstructor
