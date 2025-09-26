@@ -1,7 +1,5 @@
-package com.example.Parcel.Management.System.dto;
+package com.example.Parcel.Management.System.dto.receptionist;
 
-import com.example.Parcel.Management.System.entity.Status;
-import com.example.Parcel.Management.System.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
