@@ -1,16 +1,15 @@
 package com.example.Parcel.Management.System.service;
 
-import com.example.Parcel.Management.System.config.BCryptConfig;
-import com.example.Parcel.Management.System.dto.*;
-import com.example.Parcel.Management.System.entity.Otp;
-import com.example.Parcel.Management.System.entity.Parcel;
-import com.example.Parcel.Management.System.entity.Status;
-import com.example.Parcel.Management.System.entity.User;
+import com.example.Parcel.Management.System.dto.common.UsersListResponseDto;
+import com.example.Parcel.Management.System.dto.receptionist.EmailDto;
+import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
+import com.example.Parcel.Management.System.dto.receptionist.RequestParcelDto;
+import com.example.Parcel.Management.System.dto.receptionist.ValidateOtpRequestDto;
+import com.example.Parcel.Management.System.entity.*;
 import com.example.Parcel.Management.System.repository.OtpRepo;
 import com.example.Parcel.Management.System.repository.ParcelRepo;
 import com.example.Parcel.Management.System.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.apache.bcel.classfile.annotation.RuntimeInvisAnnos;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -33,16 +31,13 @@ public class ReceptionistService {
     private final EmailService emailService;
     private final BCryptPasswordEncoder encoder;
 
-    public  ParcelResponseDto createParcel(RequestParcelDto parcelDto)
-    {
-        Parcel parcel = new Parcel();
+    public ParcelResponseDto createParcel(RequestParcelDto parcelDto) {
+        parcelDto.setReceptionistId(1);
+        System.out.println(parcelDto.getRecipientId());
+        Parcel parcel = Parcel.builder().recipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(RuntimeException::new))
+        .receptionist(userRepo.findById(parcelDto.getReceptionistId()).orElseThrow(RuntimeException::new))
+                .shortcode("random ").status(Status.RECEIVED).description(parcelDto.getDescription()).trackingId("random tracking Id").build();
 
-        parcel.setRecipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(RuntimeException::new));
-        parcel.setReceptionist(userRepo.findById(parcelDto.getReceptionistId()).orElseThrow(RuntimeException::new));
-        parcel.setShortcode("random ");
-        parcel.setStatus(Status.RECEIVED);
-        parcel.setDescription(parcelDto.getDescription());
-        parcel.setTrackingId("random tracking Id");
         setOtp(parcel);
 
         return modelMapper.map(parcel, ParcelResponseDto.class);
@@ -109,7 +104,10 @@ public class ReceptionistService {
         emailService.getNotificationDetails(userRepo.findById(id).
                 orElseThrow(RuntimeException::new).getEmail());
 
+    }
 
-
+    public List<UsersListResponseDto> getAllUsers() {
+        return userRepo.findAllByRole(Role.EMPLOYEE).stream()
+                .map(user -> modelMapper.map(user, UsersListResponseDto.class)).toList();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.Parcel.Management.System.dto;
+package com.example.Parcel.Management.System.dto.receptionist;
 
 import lombok.Data;
 

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+
 
 @Component({
   selector: 'app-sidebar',
@@ -7,13 +8,6 @@ import { Component } from '@angular/core';
   styleUrl: './sidebar.css'
 })
 export class Sidebar {
-   sidebar = true;
-  constructor(){
-    console.log("hello from sidebar")
-  }
-  toggleSidebar() {
-    this.sidebar = !this.sidebar;
-
-  }
-
+   @Input() menuItems:Array<Menu> | undefined
 }
+type Menu={label:string,route:string,icon:any}

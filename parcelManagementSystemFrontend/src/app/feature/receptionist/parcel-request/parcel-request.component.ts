@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ReceptionistApiService } from '../../../core/service/receptionist-api.service';
+
 
 @Component({
   selector: 'app-parcel-request',
@@ -7,5 +9,43 @@ import { Component } from '@angular/core';
   styleUrl: './parcel-request.component.css'
 })
 export class ParcelRequestComponent {
+  constructor(private service: ReceptionistApiService) { }
+  ngOnInit(): any {
+    this.service.fetchUsers().subscribe((res) => {
+      this.users = res;
+      console.log(this.users)
+    })
+  }
+  formData = {
+    description: '',
+    shortcode: '',
+    recipientId: 0,
+    
+  }
+  users: Array<Users> = [
+    // {id:1,name:'akshaj'},
+    // {id:1,name:'arun'},
+    // {id:1,name:'tanishka'}
+  ]
+  onSubmit(form: any) {
+    if (form.valid) {
+      this.formData.recipientId = Number(form.value.username)
+       console.log(this.formData)
+      this.service.submitForm(this.formData).subscribe((res) => {
+       
+        if (res) {
+          console.log('Form Submitted', this.formData);
+          alert(JSON.stringify(this.formData));
+        }
+        else{
+          alert("Some error occured")
+        }
+      })
+
+    }
+
+  }
+
 
 }
+type Users = { id: number, name: String }

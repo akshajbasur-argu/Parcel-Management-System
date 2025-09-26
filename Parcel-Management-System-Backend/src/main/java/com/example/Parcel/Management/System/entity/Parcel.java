@@ -10,6 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
+@Builder
 public class Parcel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,14 +1,10 @@
 package com.example.Parcel.Management.System.service;
 
-import com.example.Parcel.Management.System.dto.EmailDto;
-import com.example.Parcel.Management.System.dto.ParcelResponseDto;
+import com.example.Parcel.Management.System.dto.receptionist.EmailDto;
 import com.example.Parcel.Management.System.entity.EmailDetails;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 @Service

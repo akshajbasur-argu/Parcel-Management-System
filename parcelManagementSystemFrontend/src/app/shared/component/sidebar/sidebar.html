@@ -1,47 +1,23 @@
-<div class="flex my-5 mx-3 flex-col h-11/12  rounded-3xl bg-gray-900 transition-all duration-1000"
-    [class]="sidebar?'w-[230px]':'w-[130px]' ">
-    <header class="p-4 flex mb-9" [class]="sidebar?'justify-end': 'justify-center'">
-        <button (click)="toggleSidebar()" class="justify-end" [class]="sidebar?'visible':'hidden'"><span
-                class="material-symbols-rounded text-white">chevron_left</span> <span>{{sidebar}}</span></button>
-        <button (click)="toggleSidebar()" class=" flex" [class]="sidebar?'hidden':'visible'"><img class="h-9 w-9"
-                src="favicon.ico" alt=""></button>
-    </header>
+<div class="h-screen w-64 bg-gray-800 text-white flex flex-col shadow-lg">
+  <!-- Header -->
+  <div class="p-6 text-center border-b border-gray-700">
+    <h2 class="text-xl font-bold">Dashboard</h2>
+  </div>
 
-    <ul class="">
-        <li class="p-4 md:p-2 transition-all duration-1000 group ">
-            <a href="" class="sidebarLinks text-white no-underline">
-                <span class="nav-icons material-symbols-rounded">dashboard</span>
-                <span class="p-2 transition-all duration-700 no-underline"
-                    [class]="sidebar?'visible':'hidden'">Dashboard</span>
-            </a>
-        </li>
-        <li class="p-4 dropdown group">
-            <a href="" class="sidebarLinks text-white">
-                <span class="nav-icons material-symbols-rounded">app_registration</span>
-                <span class="p-2 transition-all duration-700"
-                    [class]="sidebar?'visible':'hidden'">Skills</span>
-            </a>
-        </li>
-        <li class="p-4">
-            <a href="" class="sidebarLinks text-white">
-                <span class="nav-icons material-symbols-rounded">book_2</span>
-                <span class="p-2 transition-all duration-700"
-                    [class]="sidebar?'visible':'hidden'">Learn</span>
-            </a>
-        </li>
-        <li class="p-4">
-            <a href="" class="sidebarLinks text-white">
-                <span class="nav-icons material-symbols-rounded">rate_review</span>
-                <span class="p-2 transition-all duration-700"
-                    [class]="sidebar?'visible':'hidden'">Rate Now</span>
-            </a>
-        </li>
-        <li class="p-4">
-            <a href="" class="sidebarLinks text-white">
-                <span class="nav-icons material-symbols-rounded">book_ribbon</span>
-                <span class="p-2 transition-all duration-700"
-                    [class]="sidebar?'visible':'hidden'">My Courses</span>
-            </a>
-        </li>
-    </ul>
+  <!-- Navigation -->
+  <nav class="flex-1 p-4 space-y-2">
+    @for (item of menuItems; track $index) {
+    <a [routerLink]="item.route" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="bg-gray-700"
+      class="flex items-center space-x-3 px-4 py-8 rounded-lg hover:bg-gray-700 transition">
+
+      <span class="material-symbols-outlined">{{item.icon}}</span>
+      <span>{{ item.label }}</span>
+    </a>
+    }
+  </nav>
+
+  <!-- Footer -->
+  <div class="p-4 border-t border-gray-700 text-sm text-gray-400 text-center">
+    © 2025 ParcelApp
+  </div>
 </div>
