@@ -12,7 +12,6 @@ export class OauthcallbackComponent implements OnInit {
 
   constructor(private http: HttpClient, private router: Router) { }
 
-
   ngOnInit(): void {
     this.http.get('http://localhost:8081/api/auth/me', { withCredentials: true }).subscribe({
       next: (response: any) => {

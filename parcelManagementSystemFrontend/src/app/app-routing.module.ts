@@ -8,45 +8,33 @@ import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.compone
 import { OauthcallbackComponent } from './feature/oauthcallback/oauthcallback.component';
 
 const routes: Routes = [
-  {
-    path: "admin",
-    loadChildren: () => import('./layout/admin-layout/admin-layout.module').then(m => m.AdminLayoutModule)
-  },
-  {
-    path: "receptionist",
-    loadChildren: () => import('./layout/receptionist-layout/receptionist-layout.module').then(m => m.ReceptionistLayoutModule)
-  },
-  {
-    path:'',component:AppComponent
-  }
-];
-const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponentComponent },
   {
-    path: 'admin',
-    component: AdminLayoutComponent,
-    children: [
-    ]
-  },
-  {
-    path: 'receptionist',
-    component: ReceptionistLayoutComponent,
-    children: [
-    ]
+    path: 'oauth2/callback',
+    component: OauthcallbackComponent,
   },
   {
     path: 'employee',
-    component: EmployeeLayoutComponent,
-    children: [
-    ]
-  }, {
-    path: 'oauth2/callback', component: OauthcallbackComponent
-  }
+    loadChildren: () =>
+      import('./layout/employee-layout/employee-layout.module').then((m) => m.EmployeeLayoutModule),
+  },
+  {
+    path: 'admin',
+    loadChildren: () =>
+      import('./layout/admin-layout/admin-layout.module').then((m) => m.AdminLayoutModule),
+  },
+  {
+    path: 'receptionist',
+    loadChildren: () =>
+      import('./layout/receptionist-layout/receptionist-layout.module').then(
+        (m) => m.ReceptionistLayoutModule
+      ),
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

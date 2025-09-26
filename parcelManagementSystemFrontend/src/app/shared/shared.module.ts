@@ -4,22 +4,19 @@ import { CommonModule } from '@angular/common';
 import { SharedRoutingModule } from './shared-routing.module';
 import { LoginComponentComponent } from './component/login-component/login-component.component';
 import { Sidebar } from './component/sidebar/sidebar';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
-  declarations: [
-    Sidebar
-  ],
-  imports: [
+  declarations: [Sidebar, LoginComponentComponent],
+  imports: [CommonModule, SharedRoutingModule, FormsModule, RouterModule],
+  exports: [
     CommonModule,
-    SharedRoutingModule
-  ],
-  exports:[
-    SharedRoutingModule
     SharedRoutingModule,
-    LoginComponentComponent
-  ],exports: [
+    RouterModule,
+    FormsModule,
     LoginComponentComponent,
-    Sidebar
-  ]
+    Sidebar,
+  ],
 })
-export class SharedModule { }
+export class SharedModule {}

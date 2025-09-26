@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class ReceptionistApiService {
   constructor(private httpClient:HttpClient){}
 
-  url:string="http://localhost:8084/api/v1/receptionist"
+  url:string="http://localhost:8081/api/v1/receptionist"
   fetchUsers():Observable<any>{
     console.log("inside")
     return this.httpClient.get(this.url+'/users')
@@ -25,7 +25,7 @@ export class ReceptionistApiService {
   resend(id:number):Observable<any>{
     return this.httpClient.get(this.url+`/resend/${id}`)
   }
-  
+
   sendNotification(id:number):Observable<any>{
     return this.httpClient.get(this.url+`/notify/${id}`)
   }

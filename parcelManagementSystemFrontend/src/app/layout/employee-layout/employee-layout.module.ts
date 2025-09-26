@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { EmployeeLayoutRoutingModule } from './employee-layout-routing.module';
 import { EmployeeLayoutComponent } from './employee-layout.component';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { EmployeeLayoutComponent } from './employee-layout.component';
   ],
   imports: [
     CommonModule,
-    EmployeeLayoutRoutingModule
+    EmployeeLayoutRoutingModule,
+    SharedModule
   ]
 })
 export class EmployeeLayoutModule { }
