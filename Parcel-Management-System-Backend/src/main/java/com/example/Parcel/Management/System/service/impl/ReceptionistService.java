@@ -12,6 +12,10 @@ import com.example.Parcel.Management.System.repository.UserRepo;
 import com.example.Parcel.Management.System.service.impl.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -96,9 +100,16 @@ public class ReceptionistService {
     }
 
 
-    public List<ParcelResponseDto> getAllParcels() {
-        return parcelRepo.findAll().stream().map(parcel ->
-                modelMapper.map(parcel, ParcelResponseDto.class)).toList();
+    public Page<ParcelResponseDto> getActiveParcels(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber,3, Sort.by("id").descending());
+        return parcelRepo.findByStatus(pageable,Status.RECEIVED).map(parcel ->
+                modelMapper.map(parcel, ParcelResponseDto.class));
+    }
+
+    public Page<ParcelResponseDto> getParcelHistory(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber,3, Sort.by("id").descending());
+        return parcelRepo.findByStatus(pageable,Status.PICKED_UP).map(parcel ->
+                modelMapper.map(parcel, ParcelResponseDto.class));
     }
 
     public void sendNotification(long id) {

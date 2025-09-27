@@ -26,9 +26,11 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ToString.Exclude
     private List<Parcel> parcelListForRecipient;
 
     @OneToMany(mappedBy = "receptionist", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ToString.Exclude
     private List<Parcel> parcelListForReceptionist;
 
 }

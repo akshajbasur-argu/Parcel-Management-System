@@ -24,10 +24,12 @@ public class Parcel {
 
     @ManyToOne
     @JoinColumn(name = "recipient_id")
+    @ToString.Exclude
     private User recipient;
 
     @ManyToOne
     @JoinColumn(name = "receptionist_id")
+    @ToString.Exclude
     private User receptionist;
 
     @OneToOne

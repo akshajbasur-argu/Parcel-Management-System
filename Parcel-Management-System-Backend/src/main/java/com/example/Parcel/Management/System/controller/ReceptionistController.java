@@ -7,6 +7,7 @@ import com.example.Parcel.Management.System.dto.receptionist.ValidateOtpRequestD
 import com.example.Parcel.Management.System.service.ReceptionistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,9 @@ public class ReceptionistController {
     }
 
     @PostMapping("validate")
-    public ResponseEntity<String> validateOtp(@RequestBody ValidateOtpRequestDto otp){
-        return new ResponseEntity<>(receptionistService.validateOtp(otp),HttpStatus.OK);
+    public ResponseEntity<Void> validateOtp(@RequestBody ValidateOtpRequestDto otp){
+        receptionistService.validateOtp(otp);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("resend/{parcelId}")
@@ -38,9 +40,14 @@ public class ReceptionistController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("parcels")
-    public ResponseEntity<List<ParcelResponseDto>> getAllParcels(){
-        return new ResponseEntity<>(receptionistService.getAllParcels(),HttpStatus.OK);
+    @GetMapping("parcels/{num}")
+    public ResponseEntity<Page<ParcelResponseDto>> getActiveParcels(@PathVariable int num){
+        return new ResponseEntity<>(receptionistService.getActiveParcels(num),HttpStatus.OK);
+    }
+
+    @GetMapping("parcels/history/{num}")
+    public ResponseEntity<Page<ParcelResponseDto>> getParcelHistory(@PathVariable int num){
+        return new ResponseEntity<>(receptionistService.getParcelHistory(num),HttpStatus.OK);
     }
 
     @GetMapping("notify/{id}")

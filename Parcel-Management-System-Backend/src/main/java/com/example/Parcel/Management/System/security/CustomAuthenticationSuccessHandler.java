@@ -67,12 +67,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             String refreshToken = jwtUtil.generateRefreshToken(user);
 
             ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
-                    .httpOnly(true)
+                    .httpOnly(false)
                     .path("/")
                     .maxAge(Duration.ofSeconds(accessTokenTtlSeconds))
                     .build();
             ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
-                    .httpOnly(true)
+                    .httpOnly(false)
                     .path("/")
                     .maxAge(Duration.ofSeconds(refreshTokenTtlSeconds))
                     .build();
