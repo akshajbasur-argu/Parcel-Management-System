@@ -14,6 +14,12 @@
       <span>{{ item.label }}</span>
     </a>
     }
+    <a (click)="logout()" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="bg-gray-700"
+      class="flex items-center space-x-3 px-4 py-8 rounded-lg hover:bg-gray-700 transition">
+
+      <span class="material-symbols-outlined">logout</span>
+      <span>Logout</span>
+    </a>
   </nav>
 
   <!-- Footer -->

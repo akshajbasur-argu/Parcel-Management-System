@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { ParcelRequestComponent } from './feature/receptionist/parcel-request/parcel-request.component';
 import { FormsModule } from '@angular/forms';
 import { LoginComponentComponent } from './shared/component/login-component/login-component.component';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { OauthcallbackComponent } from './feature/oauthcallback/oauthcallback.component';
 
 import { UserListComponent } from './feature/receptionist/user-list/user-list.component';
@@ -13,6 +13,10 @@ import { ParcelListComponent } from './feature/receptionist/parcel-list/parcel-l
 import { HttpClientModule } from '@angular/common/http';
 import { ParcelHistoryComponent } from './feature/receptionist/parcel-history/parcel-history.component';
 import { RouterModule } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { Loader } from './shared/component/loader/loader';
+import { LoaderInterceptor } from './core/interceptor/loader-interceptor';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,12 +26,20 @@ import { RouterModule } from '@angular/router';
     UserListComponent,
     ParcelListComponent,
     ParcelHistoryComponent,
+
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule, RouterModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule, RouterModule,MatPaginatorModule],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(),
+    CookieService,
+    provideHttpClient(withInterceptorsFromDi()),
+    {
+          provide: HTTP_INTERCEPTORS,
+          useClass: LoaderInterceptor,
+          multi: true
+        }
   ],
   bootstrap: [AppComponent],
 })

@@ -13,9 +13,13 @@ export class ReceptionistApiService {
     console.log("inside")
     return this.httpClient.get(this.url+'/users')
   }
-  fetchParcel():Observable<any>{
+  fetchActiveParcel(num:number):Observable<any>{
     console.log("inside")
-    return this.httpClient.get(this.url+'/parcels')
+    return this.httpClient.get(this.url+`/parcels/${num}`)
+  }
+
+  fetchParcelHistory(num:number):Observable<any>{
+    return this.httpClient.get(this.url+`/parcels/history/${num}`)
   }
 
   submitForm(form:any):Observable<any>{

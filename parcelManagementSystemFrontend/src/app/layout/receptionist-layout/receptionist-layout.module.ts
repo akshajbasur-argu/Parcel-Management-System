@@ -5,6 +5,7 @@ import { ReceptionistLayoutRoutingModule } from './receptionist-layout-routing.m
 import { ReceptionistLayoutComponent } from './receptionist-layout.component';
 import { ReceptionistDashboardComponent } from '../../feature/receptionist/dashboard/dashboard.component';
 import { SharedModule } from '../../shared/shared.module';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 
@@ -16,7 +17,8 @@ import { SharedModule } from '../../shared/shared.module';
   imports: [
     CommonModule,
     ReceptionistLayoutRoutingModule,
-    SharedModule
+    SharedModule,
+    MatPaginatorModule
   ]
 })
 export class ReceptionistLayoutModule { }

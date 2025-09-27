@@ -6,16 +6,18 @@ import { ParcelListComponent } from '../../feature/receptionist/parcel-list/parc
 import { UserListComponent } from '../../feature/receptionist/user-list/user-list.component';
 import { ParcelRequestComponent } from '../../feature/receptionist/parcel-request/parcel-request.component';
 import { ParcelHistoryComponent } from '../../feature/receptionist/parcel-history/parcel-history.component';
+import { AuthGuard } from '../../core/auth/auth-guard';
 
 const routes: Routes = [{
   path: '',
   component: ReceptionistDashboardComponent,
   children: [
-    { path: "", component: ParcelListComponent },
-    { path: "users", component: UserListComponent },
-    { path: "parcels", component: ParcelListComponent },
-    { path: "parcels/create", component: ParcelRequestComponent },
-    { path: "parcels/history", component: ParcelHistoryComponent },
+    { path: "", component: ParcelListComponent, canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'}},
+    { path: "users", component: UserListComponent, canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'} },
+    { path: "parcels", component: ParcelListComponent, canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'} },
+    { path: "parcels/create", component: ParcelRequestComponent, canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'} },
+    { path: "parcels/history", component: ParcelHistoryComponent, canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'} },
+    
 
   ]
 }];
