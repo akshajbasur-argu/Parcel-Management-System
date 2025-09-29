@@ -1,9 +1,13 @@
 package com.example.Parcel.Management.System.service.impl;
 
+import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
+import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.entity.Role;
 import com.example.Parcel.Management.System.entity.User;
+import com.example.Parcel.Management.System.repository.ParcelRepo;
 import com.example.Parcel.Management.System.repository.UserRepo;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +22,26 @@ public class AdminService {
     private final ModelMapper modelMapper;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private ParcelRepo parcelRepo;
 
-    public List<UserDetailResponseDto> getAllUsers() {
-        return userRepo.findAll().stream().map(user -> modelMapper.map(user, UserDetailResponseDto.class)).toList();
+    private final JwtUtil jwtUtil;
+    public List<UserDetailResponseDto> getAllUsers(String token) {
+
+        UserDetailResponseDto admin=modelMapper.map(userRepo.findByEmail(jwtUtil.getEmailFromToken(token))
+                .orElseThrow(RuntimeException::new),UserDetailResponseDto.class);
+
+        List<UserDetailResponseDto> list = new java.util.ArrayList<>(userRepo.findAll().stream()
+                .map(user -> modelMapper.map(user, UserDetailResponseDto.class))
+                .toList());
+        list.remove(admin);
+        return list;
+
+    }
+
+    public List<ParcelResponseDto> getAllParcels() {
+        return parcelRepo.findAll().stream().map(parcel ->
+                modelMapper.map(parcel, ParcelResponseDto.class)).toList();
     }
 
     public User updateUserRole(long id, Role role) {

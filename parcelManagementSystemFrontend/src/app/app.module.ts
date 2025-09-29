@@ -3,9 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ParcelRequestComponent } from './feature/receptionist/parcel-request/parcel-request.component';
-import { FormsModule } from '@angular/forms';
-import { LoginComponentComponent } from './shared/component/login-component/login-component.component';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { FormsModule, NgModel } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
 import { OauthcallbackComponent } from './feature/oauthcallback/oauthcallback.component';
 
 import { UserListComponent } from './feature/receptionist/user-list/user-list.component';
@@ -13,6 +12,7 @@ import { ParcelListComponent } from './feature/receptionist/parcel-list/parcel-l
 import { HttpClientModule } from '@angular/common/http';
 import { ParcelHistoryComponent } from './feature/receptionist/parcel-history/parcel-history.component';
 import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,7 +23,7 @@ import { RouterModule } from '@angular/router';
     ParcelListComponent,
     ParcelHistoryComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule, RouterModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule, RouterModule,CommonModule],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideBrowserGlobalErrorListeners(),

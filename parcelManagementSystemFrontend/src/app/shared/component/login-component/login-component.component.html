@@ -1,8 +1,18 @@
-<div class="login-container">
-  <div class="login-box">
-    <button class="google-login-button" (click)="onLoginWithGoogle()">
-      <img src="https://www.gstatic.com/images/branding/product/2x/google_glogo_color_20dp.png" alt="Google logo" class="google-icon">
-      Login with Google
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="bg-white w-80 p-6 rounded-2xl shadow-lg text-center">
+    <img 
+      src="https://apps.argusoft.com/ems/assets/images/logo.png" 
+      alt="argusoft logo" 
+      class="mx-auto h-12 mb-4"
+    />
+
+    <h2 class="text-lg font-semibold text-gray-700 mb-6">Welcome to Parcel Management</h2>
+
+    <button 
+    (click)="onLoginWithGoogle()"
+    class="flex items-center justify-center w-full bg-gray-800 text-white rounded-full py-3 px-4 font-medium hover:bg-gray-900 transition">
+      <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google logo" class="h-5 mr-2" />
+      Sign In
     </button>
   </div>
 </div>

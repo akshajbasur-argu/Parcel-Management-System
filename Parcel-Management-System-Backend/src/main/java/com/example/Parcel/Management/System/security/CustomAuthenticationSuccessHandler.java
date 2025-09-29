@@ -6,6 +6,7 @@ import com.example.Parcel.Management.System.service.impl.CustomOAuth2UserService
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -18,11 +19,11 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.Duration;
 
+@RequiredArgsConstructor
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     private final JwtUtil jwtUtil;
     @Value("${app.jwt.access-token-ttl-seconds}")
@@ -30,11 +31,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Value("${app.jwt.refresh-token-ttl-seconds}")
     private long refreshTokenTtlSeconds;
-
-    public CustomAuthenticationSuccessHandler(JwtUtil jwtUtil, CustomOAuth2UserService customOAuth2UserService) {
-        this.jwtUtil = jwtUtil;
-        this.customOAuth2UserService = customOAuth2UserService;
-    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -46,6 +42,33 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         User user = customOAuth2UserService.loadUser(email,name);
         System.out.println("in side success handler after user"+user);
+
+        try {
+            String accessToken = jwtUtil.generateAccessToken(user);
+            String refreshToken = jwtUtil.generateRefreshToken(user);
+
+            ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+                    .httpOnly(false)
+                    .path("/")
+                    .maxAge(Duration.ofSeconds(accessTokenTtlSeconds))
+                    .build();
+            ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+                    .httpOnly(false)
+                    .path("/")
+                    .maxAge(Duration.ofSeconds(refreshTokenTtlSeconds))
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+            response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+
+            response.sendRedirect("http://localhost:4200/oauth2/callback");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("http://localhost:4200/login-error");
+        }
+
+    }
+}
 //
 //        String targetUrl;
 //        switch (user.getRole()) {
@@ -62,29 +85,3 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 //                break;
 //        }
 //        response.sendRedirect(targetUrl);
-        try {
-            String accessToken = jwtUtil.generateAccessToken(user);
-            String refreshToken = jwtUtil.generateRefreshToken(user);
-
-            ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
-                    .httpOnly(true)
-                    .path("/")
-                    .maxAge(Duration.ofSeconds(accessTokenTtlSeconds))
-                    .build();
-            ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
-                    .httpOnly(true)
-                    .path("/")
-                    .maxAge(Duration.ofSeconds(refreshTokenTtlSeconds))
-                    .build();
-
-            response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
-            response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-
-            response.sendRedirect("http://localhost:4200/oauth2/callback");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("http://localhost:4200/login-error");
-        }
-
-    }
-}
