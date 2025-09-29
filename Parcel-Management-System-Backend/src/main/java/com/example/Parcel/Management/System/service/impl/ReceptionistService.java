@@ -1,10 +1,8 @@
-package com.example.Parcel.Management.System.service;
+package com.example.Parcel.Management.System.service.impl;
 
+import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.dto.common.UsersListResponseDto;
-import com.example.Parcel.Management.System.dto.receptionist.EmailDto;
-import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
-import com.example.Parcel.Management.System.dto.receptionist.RequestParcelDto;
-import com.example.Parcel.Management.System.dto.receptionist.ValidateOtpRequestDto;
+import com.example.Parcel.Management.System.dto.receptionist.*;
 import com.example.Parcel.Management.System.entity.*;
 import com.example.Parcel.Management.System.repository.OtpRepo;
 import com.example.Parcel.Management.System.repository.ParcelRepo;
@@ -35,17 +33,25 @@ public class ReceptionistService {
     private final OtpRepo otpRepo;
     private final EmailService emailService;
     private final BCryptPasswordEncoder encoder;
+    private final JwtUtil jwtUtil;
 
-    public ParcelResponseDto createParcel(RequestParcelDto parcelDto) {
+    public ParcelResponseDto createParcel(RequestParcelDto parcelDto, String header) {
         parcelDto.setReceptionistId(1);
-        System.out.println(parcelDto.getRecipientId());
         Parcel parcel = Parcel.builder().recipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(RuntimeException::new))
-        .receptionist(userRepo.findById(parcelDto.getReceptionistId()).orElseThrow(RuntimeException::new))
+        .receptionist(userRepo.findById(getReceptionistId(header)).orElseThrow(RuntimeException::new))
                 .shortcode("random ").status(Status.RECEIVED).description(parcelDto.getDescription()).trackingId("random tracking Id").build();
 
         setOtp(parcel);
 
-        return modelMapper.map(parcel, ParcelResponseDto.class);
+        ParcelResponseDto parcelResponseDto= modelMapper.map(parcel, ParcelResponseDto.class);
+        parcelResponseDto.setReceptionistId(getReceptionistId(header));
+        parcelResponseDto.setEmployeeId(parcel.getRecipient().getId());
+        return parcelResponseDto;
+
+    }
+
+    private long getReceptionistId(String token){
+        return userRepo.findByEmail(jwtUtil.getEmailFromToken(token)).orElseThrow().getId();
 
     }
 
@@ -66,28 +72,40 @@ public class ReceptionistService {
 
     }
 
-    public String validateOtp(ValidateOtpRequestDto otp){
+    public GenericAopDto validateOtp(ValidateOtpRequestDto otp, String header){
         Parcel parcel= parcelRepo.findById(otp.getParcelId()).orElseThrow(RuntimeException::new);
 //        if(parcel.getOtp().getHashedOtp()==encoder.encode(otp.getOtp()))
+        long receptionistId= getReceptionistId(header);
         if(encoder.matches(otp.getOtp(),parcel.getOtp().getHashedOtp()))
-        {
-            parcel.setStatus(Status.PICKED_UP);
-            long otpId= parcel.getOtp().getId();
-            parcel.setOtp(null);
-            otpRepo.deleteById(otpId);
-            parcelRepo.save(parcel);
-            return "Successfully saved";
-        }
-        return "Wrong otp";
-    }
+            {
+                parcel.setStatus(Status.PICKED_UP);
+                long otpId= parcel.getOtp().getId();
+                parcel.setOtp(null);
+                otpRepo.deleteById(otpId);
+                parcelRepo.save(parcel);
+                return GenericAopDto.builder().recipientName(parcel.getRecipient().getName())
+                        .receptionistId(receptionistId)
+                        .employeeId(parcel.getRecipient().getId())
+                        .status("Successfull" ).build();
 
-    public String resendOtp(long parcelId) {
+            }
+            return GenericAopDto.builder().recipientName(parcel.getRecipient().getName())
+                    .receptionistId(receptionistId)
+                    .employeeId(parcel.getRecipient().getId())
+                    .status("Failed" ).build();
+        }
+
+
+    public GenericAopDto resendOtp(long parcelId, String header) {
         Parcel parcel=parcelRepo.findById(parcelId).orElseThrow(RuntimeException::new);
         long otp = parcel.getOtp().getId();
         parcel.setOtp(null);
         otpRepo.deleteById(otp);
         setOtp(parcel);
-        return "Email sent";
+        return GenericAopDto.builder().receptionistId(getReceptionistId(header))
+                .recipientName(parcel.getRecipient().getName())
+                .employeeId(parcel.getRecipient().getId())
+                .status("Succesfull").build();
     }
     private void setOtp(Parcel parcel)
     {
@@ -112,10 +130,13 @@ public class ReceptionistService {
                 modelMapper.map(parcel, ParcelResponseDto.class));
     }
 
-    public void sendNotification(long id) {
+    public GenericAopDto sendNotification(long id , String header) {
+
         emailService.getNotificationDetails(userRepo.findById(id).
                 orElseThrow(RuntimeException::new).getEmail());
-
+        return GenericAopDto.builder().receptionistId(getReceptionistId(header))
+                .recipientName(userRepo.findById(id).orElseThrow().getName())
+                .employeeId(id).status("successfull").build();
     }
 
     public List<UsersListResponseDto> getAllUsers() {
