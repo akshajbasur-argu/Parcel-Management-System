@@ -18,6 +18,6 @@ export class AdminApiService {
 }
   fetchParcel():Observable<any>{
     console.log("inside")
-    return this.httpClient.get(this.url+'/parcels')
+    return this.httpClient.get(this.url+'/parcels', { withCredentials: true })
   }
 }
