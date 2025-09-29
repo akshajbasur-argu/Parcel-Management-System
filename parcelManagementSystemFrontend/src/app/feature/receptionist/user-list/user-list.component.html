@@ -1,6 +1,14 @@
 <div class="max-w-3xl mx-auto mt-10">
   <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">User List</h2>
-
+  <div class="flex justify-end">
+    <input
+      type="text"
+      placeholder="search user..."
+      [(ngModel)]="searchTerm"
+      (keyup)="onSearch()"
+      class="border p-2 rounded mb-4"
+    />
+  </div>
   <div class="overflow-x-auto">
     <table class="w-full border border-gray-200 rounded-lg shadow-md">
       <thead class="bg-gray-100">
@@ -12,20 +20,21 @@
         </tr>
       </thead>
       <tbody>
-        @for ( user of users; track $index) {
-        <tr  class="border-t hover:bg-gray-50">
-          <td class="px-4 py-2 text-sm text-gray-700">{{ $index+1 }}</td>
+        @for ( user of filteredusers; track $index) {
+        <tr class="border-t hover:bg-gray-50">
+          <td class="px-4 py-2 text-sm text-gray-700">{{ $index + 1 }}</td>
           <td class="px-4 py-2 text-sm text-gray-700">{{ user.name }}</td>
           <td class="px-4 py-2 text-sm text-gray-700">{{ user.email }}</td>
           <td class="px-4 py-2 flex justify-center space-x-2">
-            <button 
+            <button
               (click)="sendNotification(user.id)"
               class="bg-blue-500 text-white px-3 py-1 rounded-lg text-sm shadow hover:bg-blue-600"
             >
               send Notification
             </button>
           </td>
-        </tr>}
+        </tr>
+        }
       </tbody>
     </table>
   </div>

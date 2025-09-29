@@ -1,3 +1,4 @@
+import { AuthGuard } from './core/auth/auth-guard';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
@@ -22,14 +23,14 @@ const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () =>
-      import('./layout/admin-layout/admin-layout.module').then((m) => m.AdminLayoutModule),
+      import('./layout/admin-layout/admin-layout.module').then((m) => m.AdminLayoutModule),canActivate:[AuthGuard],data:{role: 'ADMIN'}
   },
   {
     path: 'receptionist',
     loadChildren: () =>
       import('./layout/receptionist-layout/receptionist-layout.module').then(
         (m) => m.ReceptionistLayoutModule
-      ),
+      ),canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'}
   },
 ];
 

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { LoaderService } from '../../../core/service/loader.service';
 
 @Component({
   selector: 'receptionist-dashboard',
@@ -7,11 +8,12 @@ import { Component } from '@angular/core';
   styleUrl: './dashboard.component.css'
 })
 export class ReceptionistDashboardComponent {
+  constructor(public loaderService: LoaderService){}
   menuItems = [
     { label: 'View Users', route: 'users', icon: 'view_agenda' },
     { label: 'Active Parcels', route: 'parcels', icon: 'box' },
     { label: 'Create New Parcel', route: 'parcels/create', icon: 'add_ad' },
-    { label: 'Parcel History', route: 'parcels/history', icon: 'history' }
+    { label: 'Parcel History', route: 'parcels/history', icon: 'history' },
   ];
 
 }

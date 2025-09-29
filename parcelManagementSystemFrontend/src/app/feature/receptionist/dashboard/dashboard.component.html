@@ -1,4 +1,22 @@
-<div class="flex ">
-    <div ></div><app-sidebar [menuItems]="menuItems"/>
-    <div class="  w-full"><router-outlet/></div>
+<!-- <div >
+
+  <app-loader class="w-full"></app-loader>
+  <div class="flex" >
+    <app-sidebar [menuItems]="menuItems" />
+    <div class="w-full">
+      <router-outlet> </router-outlet>
+    </div>
+  </div>
+</div> -->
+@if((loaderService.isLoading$|async)===true){
+  <div class="fixed inset-0 flex items-center justify-center bg-white/75 z-50">
+  <app-loader></app-loader>
+</div>
+}
+
+<div class="flex">
+  <app-sidebar [menuItems]="menuItems" />
+  <div class="w-full">
+    <router-outlet></router-outlet>
+  </div>
 </div>

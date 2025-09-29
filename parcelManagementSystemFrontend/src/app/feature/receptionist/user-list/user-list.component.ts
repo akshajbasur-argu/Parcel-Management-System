@@ -5,28 +5,34 @@ import { ReceptionistApiService } from '../../../core/service/receptionist-api.s
   selector: 'app-user-list',
   standalone: false,
   templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css'
+  styleUrl: './user-list.component.css',
 })
 export class UserListComponent {
-  constructor(private service:ReceptionistApiService){}
-  ngOnInit():any{
-    this.service.fetchUsers().subscribe((res)=>{
-      this.users=res;
+  constructor(private service: ReceptionistApiService) {}
+  ngOnInit(): any {
+    this.service.fetchUsers().subscribe((res) => {
+      this.users = res;
+      this.filteredusers=this.users;
       console.log(res);
-    })
+    });
   }
-users:any=[
-  // {id:1,name:'Akshaj',email:'akshajbasur@gmail.com'},
-  // {id:2,name:'Arun',email:'Arun@gmail.com'},
-  // {id:3,name:'Sangam',email:'Sangam@gmail.com'},
-  // {id:4,name:'Tanishka',email:'Tanishka@gmail.com'}
-]
-sendNotification(id:number){
-  this.service.sendNotification(id).subscribe((res)=>{
-    alert("Notification sent successfully !!!");
-
-  })
-
+  users: Array<Users> = [
+    // {id:1,name:'Akshaj',email:'akshajbasur@gmail.com'},
+    // {id:2,name:'Arun',email:'Arun@gmail.com'},
+    // {id:3,name:'Sangam',email:'Sangam@gmail.com'},
+    // {id:4,name:'Tanishka',email:'Tanishka@gmail.com'}
+  ];
+  filteredusers:any=[]
+  sendNotification(id: number) {
+    this.service.sendNotification(id).subscribe((res) => {
+      alert('Notification sent successfully !!!');
+    });
+  }
+  searchTerm:string=''
+  onSearch(){
+    this.filteredusers=this.users.filter(user=>
+      user.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+    )
+  }
 }
-}
-type Users={id:number,name:string,email:string}
+type Users = { id: number; name: string; email: string };

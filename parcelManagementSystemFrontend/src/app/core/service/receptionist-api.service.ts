@@ -11,26 +11,30 @@ export class ReceptionistApiService {
   url:string="http://localhost:8081/api/v1/receptionist"
   fetchUsers():Observable<any>{
     console.log("inside")
-    return this.httpClient.get(this.url+'/users')
+    return this.httpClient.get(this.url+'/users',{withCredentials:true})
   }
-  fetchParcel():Observable<any>{
+  fetchActiveParcel(num:number):Observable<any>{
     console.log("inside")
-    return this.httpClient.get(this.url+'/parcels')
+    return this.httpClient.get(this.url+`/parcels/${num}`,{withCredentials:true})
+  }
+
+  fetchParcelHistory(num:number):Observable<any>{
+    return this.httpClient.get(this.url+`/parcels/history/${num}`,{withCredentials:true})
   }
 
   submitForm(form:any):Observable<any>{
-    return this.httpClient.post(this.url+'/create/parcel',form);
+    return this.httpClient.post(this.url+'/create/parcel',form,{withCredentials:true});
   }
 
   resend(id:number):Observable<any>{
-    return this.httpClient.get(this.url+`/resend/${id}`)
+    return this.httpClient.get(this.url+`/resend/${id}`,{withCredentials:true})
   }
 
   sendNotification(id:number):Observable<any>{
-    return this.httpClient.get(this.url+`/notify/${id}`)
+    return this.httpClient.get(this.url+`/notify/${id}`,{withCredentials:true})
   }
 
   validateOtp(data:any):Observable<any>{
-    return this.httpClient.post(this.url+'/validate',data)
+    return this.httpClient.post(this.url+'/validate',data,{withCredentials:true})
   }
 }

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { AuthService } from '../../../core/service/auth-service';
 
 
 @Component({
@@ -8,6 +9,11 @@ import { Component, Input } from '@angular/core';
   styleUrl: './sidebar.css'
 })
 export class Sidebar {
+  constructor(private authService:AuthService){}
    @Input() menuItems:Array<Menu> | undefined
+
+   logout(){
+    this.authService.logout();
+   }
 }
 type Menu={label:string,route:string,icon:any}

@@ -6,9 +6,10 @@ import { LoginComponentComponent } from './component/login-component/login-compo
 import { Sidebar } from './component/sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Loader } from './component/loader/loader';
 
 @NgModule({
-  declarations: [Sidebar, LoginComponentComponent],
+  declarations: [Sidebar, LoginComponentComponent,Loader],
   imports: [CommonModule, SharedRoutingModule, FormsModule, RouterModule],
   exports: [
     CommonModule,
@@ -17,6 +18,7 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     LoginComponentComponent,
     Sidebar,
+Loader
   ],
 })
 export class SharedModule {}
