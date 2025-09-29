@@ -1,0 +1,65 @@
+package com.example.Parcel.Management.System.aspect;
+
+import com.example.Parcel.Management.System.dto.receptionist.GenericAopDto;
+import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
+import com.example.Parcel.Management.System.entity.LogData;
+import com.example.Parcel.Management.System.entity.Role;
+import com.example.Parcel.Management.System.repository.LogDataRepo;
+import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
+@Aspect
+@Component
+@RequiredArgsConstructor
+public class LogAspect {
+
+//    @Pointcut("execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistService.createParcel(..))")
+//    public void aspectForCreateParcelService() {}
+//
+//    @Pointcut("execution(* com.example.Parcel.Management.System.service.impl.ReceptionistService.validateOtp(..)")
+//    public void aspectForValidateOtpService() {}
+//
+//    @Pointcut("execution(* com.example.Parcel.Management.System.service.impl.ReceptionistService.sendNotification(..)")
+//    public void aspectForSendNotificationService() {}
+//
+//    @Pointcut("execution(* com.example.Parcel.Management.System.service.impl.ReceptionistService.resendOtp(..)")
+//    public void aspectForResendOtpService() {}
+
+
+//    @AfterReturning(pointcut = "aspectForCreateParcelService()", returning = "result")
+//    public void afterReturning(JoinPoint joinPoint, ParcelResponseDto result) {
+//        System.out.println("inside aop");
+//        genericAopMethod(joinPoint,result.getEmployeeId(),Role.RECEPTIONIST,result.getReceptionistId(),"Parcel for "+result.getRecipientName()+" create successfully");
+//
+//    }
+
+
+    private final LogDataRepo logDataRepo;
+
+    @AfterReturning(pointcut = "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistService.createParcel(..)) || " +
+            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistService.validateOtp(..))|| " +
+            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistService.sendNotification(..)) || " +
+            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistService.resendOtp(..))",
+            returning = "res")
+    public void afterReturning(JoinPoint joinPoint, Object res) {
+        System.out.println("inside aop");
+        if (res instanceof GenericAopDto result) {
+            genericAopMethod(joinPoint, result.getEmployeeId(), Role.RECEPTIONIST, result.getReceptionistId(), "Executed " + joinPoint.getSignature().getName() + " executed successfully for " + result.getRecipientName());
+        }
+        if (res instanceof ParcelResponseDto result) {
+            genericAopMethod(joinPoint, result.getEmployeeId(), Role.RECEPTIONIST, result.getReceptionistId(), "Parcel for " + result.getRecipientName() + " create successfully");
+        }
+    }
+    private void genericAopMethod(JoinPoint joinPoint, long employeeid, Role role, long authorityId, String action) {
+        logDataRepo.save(LogData.builder().action(action).authorityId(authorityId).role(role).employeeId(employeeid)
+                .dateStamp(LocalDateTime.now()).build());
+    }
+
+}

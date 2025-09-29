@@ -12,12 +12,12 @@ const routes: Routes = [{
   path: '',
   component: ReceptionistDashboardComponent,
   children: [
-    { path: "", component: ParcelListComponent, canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'}},
+    { path: "", component: ParcelListComponent, canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'},},
     { path: "users", component: UserListComponent, canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'} },
     { path: "parcels", component: ParcelListComponent, canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'} },
     { path: "parcels/create", component: ParcelRequestComponent, canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'} },
     { path: "parcels/history", component: ParcelHistoryComponent, canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'} },
-    
+
 
   ]
 }];
