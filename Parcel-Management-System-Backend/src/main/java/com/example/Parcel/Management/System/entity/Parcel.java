@@ -7,14 +7,13 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Entity
 @Builder
 public class Parcel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     private String trackingId;
     private String description;
     private String shortcode;
@@ -25,11 +24,17 @@ public class Parcel {
     @ManyToOne
     @JoinColumn(name = "recipient_id")
     @ToString.Exclude
+
+    @EqualsAndHashCode.Exclude
+
     private User recipient;
 
     @ManyToOne
     @JoinColumn(name = "receptionist_id")
     @ToString.Exclude
+
+    @EqualsAndHashCode.Exclude
+
     private User receptionist;
 
     @OneToOne

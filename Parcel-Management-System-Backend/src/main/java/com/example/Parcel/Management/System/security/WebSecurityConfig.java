@@ -13,6 +13,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,23 +30,27 @@ public class WebSecurityConfig {
     @Autowired
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
+    @Autowired
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/error", "/login/oauth2/**", "/api/auth/**").authenticated()
-                        .anyRequest().permitAll())
-
+                        .requestMatchers("/error", "/login/oauth2/**").permitAll()
+                       .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(restAuthenticationEntryPoint)
+                )
                 .oauth2Login(oauth2 -> oauth2
                                 .successHandler(customAuthenticationSuccessHandler)
-                        //.userInfoEndpoint(userInfo -> userInfo
-                        //.userService(customOAuth2UserService))
-                        // .successHandler(customAuthenticationSuccessHandler)
                 )
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll());
         return http.build();
+
 
     }
 
@@ -52,11 +58,14 @@ public class WebSecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:4200"));
-        configuration.setAllowedMethods(Collections.singletonList("*"));
-        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
+//.userInfoEndpoint(userInfo -> userInfo
+//.userService(customOAuth2UserService))
+// .successHandler(customAuthenticationSuccessHandler)

@@ -6,6 +6,7 @@ import com.example.Parcel.Management.System.service.impl.CustomOAuth2UserService
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -18,11 +19,11 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.Duration;
 
+@RequiredArgsConstructor
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     private final JwtUtil jwtUtil;
     @Value("${app.jwt.access-token-ttl-seconds}")
@@ -30,11 +31,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Value("${app.jwt.refresh-token-ttl-seconds}")
     private long refreshTokenTtlSeconds;
-
-    public CustomAuthenticationSuccessHandler(JwtUtil jwtUtil, CustomOAuth2UserService customOAuth2UserService) {
-        this.jwtUtil = jwtUtil;
-        this.customOAuth2UserService = customOAuth2UserService;
-    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -46,22 +42,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         User user = customOAuth2UserService.loadUser(email,name);
         System.out.println("in side success handler after user"+user);
-//
-//        String targetUrl;
-//        switch (user.getRole()) {
-//            case ADMIN:
-//                targetUrl = "http://localhost:4200/admin/dashboard";
-//                break;
-//            case RECEPTIONIST:
-//                targetUrl = "http://localhost:4200/receptionist/dashboard";
-//                break;
-//            case EMPLOYEE:
-//                targetUrl = "http://localhost:4200/employee/dashboard";
-//            default:
-//                targetUrl = "http://localhost:4200/employee/dashboard";
-//                break;
-//        }
-//        response.sendRedirect(targetUrl);
+
         try {
             String accessToken = jwtUtil.generateAccessToken(user);
             String refreshToken = jwtUtil.generateRefreshToken(user);
@@ -88,3 +69,19 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     }
 }
+//
+//        String targetUrl;
+//        switch (user.getRole()) {
+//            case ADMIN:
+//                targetUrl = "http://localhost:4200/admin/dashboard";
+//                break;
+//            case RECEPTIONIST:
+//                targetUrl = "http://localhost:4200/receptionist/dashboard";
+//                break;
+//            case EMPLOYEE:
+//                targetUrl = "http://localhost:4200/employee/dashboard";
+//            default:
+//                targetUrl = "http://localhost:4200/employee/dashboard";
+//                break;
+//        }
+//        response.sendRedirect(targetUrl);

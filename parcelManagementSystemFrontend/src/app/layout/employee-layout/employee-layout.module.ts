@@ -4,11 +4,14 @@ import { CommonModule } from '@angular/common';
 import { EmployeeLayoutRoutingModule } from './employee-layout-routing.module';
 import { EmployeeLayoutComponent } from './employee-layout.component';
 import { SharedModule } from '../../shared/shared.module';
+import { DashboardComponent } from '../../feature/employee/dashboard/dashboard.component';
 
 
 @NgModule({
   declarations: [
-    EmployeeLayoutComponent
+    EmployeeLayoutComponent,
+    DashboardComponent,
+    
   ],
   imports: [
     CommonModule,

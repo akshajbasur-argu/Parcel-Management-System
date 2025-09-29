@@ -1,13 +1,27 @@
 package com.example.Parcel.Management.System.controller;
 
+import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
+import com.example.Parcel.Management.System.service.impl.EmployeeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin(value="http://localhost:4200")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/employee")
 public class EmployeeController {
+
+
+
+    private final EmployeeService employeeService;
+
+    @GetMapping("parcels")
+    public ResponseEntity<List<ParcelResponseDto>> getAllParcels(@CookieValue(name="accessToken") String token){
+        System.out.println(token);
+        return new ResponseEntity<>(employeeService.getAllParcels(token), HttpStatus.OK);
+    }
 }
