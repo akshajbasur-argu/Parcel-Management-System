@@ -33,9 +33,9 @@ public class AdminController {
     }
 
     @PutMapping("updateUser/{id}")
-    public ResponseEntity<?> updateUserRole(@PathVariable long id, @RequestBody String role) {
+    public ResponseEntity<?> updateUserRole(@PathVariable long id, @RequestBody String role,@CookieValue(name = "accessToken") String token) {
         System.out.println("inside controller");
-        adminService.updateUserRole(id, Role.valueOf(role));
+        adminService.updateUserRole(id, Role.valueOf(role),token);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
