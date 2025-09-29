@@ -44,9 +44,9 @@ public class AdminService {
                 modelMapper.map(parcel, ParcelResponseDto.class)).toList();
     }
 
-    public User updateUserRole(long id, Role role) {
-        User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("USER NOT Found"));
+    public void updateUserRole(long id, Role role) {
+        User user= userRepo.findById(id).orElseThrow(() -> new RuntimeException("USER NOT Found"));
         user.setRole(role);
-        return userRepo.save(user);
+        userRepo.save(user);
     }
 }
