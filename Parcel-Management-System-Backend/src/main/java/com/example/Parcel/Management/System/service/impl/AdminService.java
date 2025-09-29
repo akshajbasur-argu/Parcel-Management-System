@@ -2,6 +2,7 @@ package com.example.Parcel.Management.System.service.impl;
 
 import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
+import com.example.Parcel.Management.System.dto.receptionist.GenericAopDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.entity.Role;
 import com.example.Parcel.Management.System.entity.User;
@@ -44,9 +45,14 @@ public class AdminService {
                 modelMapper.map(parcel, ParcelResponseDto.class)).toList();
     }
 
-    public void updateUserRole(long id, Role role) {
+    public GenericAopDto updateUserRole(long id, Role role,String token) {
         User user= userRepo.findById(id).orElseThrow(() -> new RuntimeException("USER NOT Found"));
+        String oldRole = user.getRole().name();
         user.setRole(role);
         userRepo.save(user);
+        return GenericAopDto.builder().recipientName(user.getName())
+                .receptionistId(userRepo.findByEmail(jwtUtil.getEmailFromToken(token)).orElseThrow().getId())
+                .employeeId(user.getId())
+                .status("Successfully changed user role from "+oldRole+" to "+role.name()).build();
     }
 }
