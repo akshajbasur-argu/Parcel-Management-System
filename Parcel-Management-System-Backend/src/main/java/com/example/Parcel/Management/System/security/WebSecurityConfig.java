@@ -40,6 +40,10 @@ public class WebSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/error", "/login/oauth2/**").permitAll()
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/receptionist/**").hasRole("RECEPTIONIST")
+                        .requestMatchers("/api/v1/employee/**").hasRole("EMPLOYEE")
+
                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptions -> exceptions

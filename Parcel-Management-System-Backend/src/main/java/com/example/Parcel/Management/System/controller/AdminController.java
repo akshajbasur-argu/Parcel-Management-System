@@ -21,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin(value="http://localhost:4200")
 @RequestMapping("api/v1/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     @Autowired
