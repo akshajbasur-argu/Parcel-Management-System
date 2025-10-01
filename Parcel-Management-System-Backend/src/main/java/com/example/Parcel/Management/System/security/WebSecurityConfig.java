@@ -1,6 +1,6 @@
 package com.example.Parcel.Management.System.security;
 
-import com.example.Parcel.Management.System.service.impl.CustomOAuth2UserService;
+import com.example.Parcel.Management.System.service.impl.CustomOAuth2UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,9 +14,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -26,7 +24,7 @@ import java.util.List;
 public class WebSecurityConfig {
 
     @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
+    private CustomOAuth2UserServiceImpl customOAuth2UserService;
 
     @Autowired
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;

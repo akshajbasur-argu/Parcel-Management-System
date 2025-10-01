@@ -4,9 +4,7 @@ import com.example.Parcel.Management.System.dto.common.UsersListResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.RequestParcelDto;
 import com.example.Parcel.Management.System.dto.receptionist.ValidateOtpRequestDto;
-import com.example.Parcel.Management.System.service.impl.ReceptionistService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,7 +23,7 @@ import java.util.List;
 public class ReceptionistController {
 
     @Autowired
-    private ReceptionistService receptionistService;
+    private ReceptionistServiceImpl receptionistService;
     @PostMapping("create/parcel")
     public ResponseEntity<ParcelResponseDto> createParcel(@RequestBody RequestParcelDto parcel,@CookieValue(name="accessToken") String header)
     {
