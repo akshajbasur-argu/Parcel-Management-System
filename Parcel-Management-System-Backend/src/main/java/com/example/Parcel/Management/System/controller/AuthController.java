@@ -22,12 +22,13 @@ public class AuthController {
     private UserRepo userRepo;
 
     @GetMapping("/me")
-    public ResponseEntity<UserDetailResponseDto> getCurrentUser(@AuthenticationPrincipal OAuth2User principal){
-        if (principal == null){
+    public ResponseEntity<UserDetailResponseDto> getCurrentUser(
+            @AuthenticationPrincipal String email){
+        if (email == null){
             return ResponseEntity.status((HttpStatus.UNAUTHORIZED)).build();
         }
 
-        String email = principal.getAttribute("email");
+//        String email = principal.getAttribute("email");
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 
