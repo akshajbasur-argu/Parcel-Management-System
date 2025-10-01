@@ -7,9 +7,9 @@ const routes: Routes = [{
   path: '',
     component: DashboardComponent,
     children: [
-      { path: "", component: ParcelHistoryComponent }
+      { path: "", component: ParcelHistoryComponent },
       // { path: "roles", component: RoleComponent },
-      // { path: "parcels", component: ParcelHistoryComponent }
+      { path: "parcels", component: ParcelHistoryComponent }
     ]
 }];
 

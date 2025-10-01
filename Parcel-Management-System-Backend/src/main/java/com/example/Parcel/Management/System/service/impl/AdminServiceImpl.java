@@ -8,17 +8,18 @@ import com.example.Parcel.Management.System.entity.Role;
 import com.example.Parcel.Management.System.entity.User;
 import com.example.Parcel.Management.System.repository.ParcelRepo;
 import com.example.Parcel.Management.System.repository.UserRepo;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.Parcel.Management.System.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdminService {
+public class AdminServiceImpl implements AdminService {
 
     private final ModelMapper modelMapper;
     @Autowired
@@ -30,7 +31,7 @@ public class AdminService {
     public List<UserDetailResponseDto> getAllUsers(String token) {
 
         UserDetailResponseDto admin=modelMapper.map(userRepo.findByEmail(jwtUtil.getEmailFromToken(token))
-                .orElseThrow(RuntimeException::new),UserDetailResponseDto.class);
+                .orElseThrow(()->new UsernameNotFoundException("No User found")),UserDetailResponseDto.class);
 
         List<UserDetailResponseDto> list = new java.util.ArrayList<>(userRepo.findAll().stream()
                 .map(user -> modelMapper.map(user, UserDetailResponseDto.class))
@@ -46,7 +47,7 @@ public class AdminService {
     }
 
     public GenericAopDto updateUserRole(long id, Role role,String token) {
-        User user= userRepo.findById(id).orElseThrow(() -> new RuntimeException("USER NOT Found"));
+        User user= userRepo.findById(id).orElseThrow(() -> new UsernameNotFoundException("USER NOT Found"));
         String oldRole = user.getRole().name();
         user.setRole(role);
         userRepo.save(user);

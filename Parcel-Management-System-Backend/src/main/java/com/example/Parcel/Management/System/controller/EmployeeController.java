@@ -1,7 +1,7 @@
 package com.example.Parcel.Management.System.controller;
 
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
-import com.example.Parcel.Management.System.service.impl.EmployeeService;
+import com.example.Parcel.Management.System.service.impl.EmployeeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ public class EmployeeController {
 
 
 
-    private final EmployeeService employeeService;
+    private final EmployeeServiceImpl employeeService;
 
     @GetMapping("parcels")
     public ResponseEntity<List<ParcelResponseDto>> getAllParcels(@CookieValue(name="accessToken") String token){

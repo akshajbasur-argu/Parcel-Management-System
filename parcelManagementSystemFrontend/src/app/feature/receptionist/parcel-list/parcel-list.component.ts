@@ -14,7 +14,7 @@ export class ParcelListComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): any {
-    this.getParcels(0);
+    this.getParcels();
   }
   num: number = 0;
   //     // this.parcels = res
@@ -25,11 +25,12 @@ export class ParcelListComponent {
   //   console.error('API response did not contain an array of parcels:', res);
   //   this.parcels = []; // Assign an empty array to prevent the error
   // }
-  getParcels(num:number) {
+  getParcels() {
     this.service.fetchActiveParcel(this.num).subscribe((res) => {
-
+      console.log(res)
       this.parcels = res.content;
       this.length = res.totalElements;
+
     });
   }
   parcels: Array<Parcel> = [
@@ -78,7 +79,7 @@ export class ParcelListComponent {
     this.popupData.parcelId = id;
     this.service.validateOtp(this.popupData).subscribe((res) => {
       alert('submitted successfully');
-      this.getParcels(this.num);
+      this.getParcels();
     });
     this.closePopup();
   }
@@ -89,15 +90,12 @@ export class ParcelListComponent {
   }
 
   length: number = 0;
-
+pageSize=5;
   onPageChange(event: PageEvent) {
-    this.service.fetchParcelHistory(event.pageIndex).subscribe((res) => {
-      console.log('Page event');
-      console.log(res);
-      this.parcels = res.content;
-      this.length = res.totalElements;
-      console.log('wbrivb', this.parcels);
-    });
+    console.log(event.pageIndex);
+    this.num = event.pageIndex;
+    this.getParcels();
+
   }
 }
 type Parcel = {
