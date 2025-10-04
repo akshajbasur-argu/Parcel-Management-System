@@ -39,8 +39,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
 
-        User user = customOAuth2UserService.loadUser(email,name);
-        System.out.println("in side success handler after user"+user);
+        User user = customOAuth2UserService.loadUser(email, name);
+        System.out.println("in side success handler after user" + user);
 
         try {
             String accessToken = jwtUtil.generateAccessToken(user);

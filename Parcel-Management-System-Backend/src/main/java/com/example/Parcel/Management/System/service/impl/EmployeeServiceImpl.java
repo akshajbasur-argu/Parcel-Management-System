@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -21,11 +22,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final JwtUtil jwtUtil;
     private final UserRepo userRepo;
 
-public List<ParcelResponseDto> getAllParcels(String token) {
+    public List<ParcelResponseDto> getAllParcels(String token) {
 
-    return parcelRepo.findByRecipient((int)userRepo.findByEmail(jwtUtil.getEmailFromToken(token)).orElseThrow().getId()).stream().map(parcel ->
-            modelMapper.map(parcel, ParcelResponseDto.class)).toList();
+        return parcelRepo.findByRecipient((int) userRepo.findByEmail(jwtUtil.getEmailFromToken(token)).orElseThrow().getId()).stream().map(parcel ->
+                modelMapper.map(parcel, ParcelResponseDto.class)).toList();
 
 
-}
+    }
 }

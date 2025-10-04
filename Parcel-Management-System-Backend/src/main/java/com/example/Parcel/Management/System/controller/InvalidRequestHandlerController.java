@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class InvalidRequestHandlerController {
 
     @RequestMapping("/**")
-    public void handleInvalidRequest()
-    {
+    public void handleInvalidRequest() {
         throw new InvalidRequestException("The Request is not valid");
     }
 }

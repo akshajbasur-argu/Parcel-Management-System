@@ -3,7 +3,6 @@ package com.example.Parcel.Management.System.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
