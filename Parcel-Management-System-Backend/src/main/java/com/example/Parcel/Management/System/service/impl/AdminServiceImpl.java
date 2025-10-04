@@ -9,11 +9,12 @@ import com.example.Parcel.Management.System.entity.Role;
 import com.example.Parcel.Management.System.entity.User;
 import com.example.Parcel.Management.System.repository.ParcelRepo;
 import com.example.Parcel.Management.System.repository.UserRepo;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.Parcel.Management.System.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.dialect.unique.CreateTableUniqueDelegate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class AdminService {
     public List<UserDetailResponseDto> getAllUsers(String token) {
 
         UserDetailResponseDto admin=modelMapper.map(userRepo.findByEmail(jwtUtil.getEmailFromToken(token))
-                .orElseThrow(RuntimeException::new),UserDetailResponseDto.class);
+                .orElseThrow(()->new UsernameNotFoundException("No User found")),UserDetailResponseDto.class);
 
         List<UserDetailResponseDto> list = new java.util.ArrayList<>(userRepo.findAll().stream()
                 .map(user -> modelMapper.map(user, UserDetailResponseDto.class))

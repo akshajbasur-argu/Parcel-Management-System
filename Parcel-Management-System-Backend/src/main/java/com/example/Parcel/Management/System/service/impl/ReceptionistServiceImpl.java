@@ -4,16 +4,18 @@ import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.dto.common.UsersListResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.*;
 import com.example.Parcel.Management.System.entity.*;
+import com.example.Parcel.Management.System.exceptions.InvalidRequestException;
 import com.example.Parcel.Management.System.repository.OtpRepo;
 import com.example.Parcel.Management.System.repository.ParcelRepo;
 import com.example.Parcel.Management.System.repository.UserRepo;
-import com.example.Parcel.Management.System.service.impl.EmailService;
+import com.example.Parcel.Management.System.service.ReceptionistService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ReceptionistService {
+public class ReceptionistServiceImpl implements ReceptionistService {
 
     private int intOtp;
 
@@ -31,14 +33,14 @@ public class ReceptionistService {
     private final UserRepo userRepo;
     private final ParcelRepo parcelRepo;
     private final OtpRepo otpRepo;
-    private final EmailService emailService;
+    private final EmailServiceImpl emailService;
     private final BCryptPasswordEncoder encoder;
     private final JwtUtil jwtUtil;
 
     public ParcelResponseDto createParcel(RequestParcelDto parcelDto, String header) {
         parcelDto.setReceptionistId(1);
-        Parcel parcel = Parcel.builder().recipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(RuntimeException::new))
-        .receptionist(userRepo.findById(getReceptionistId(header)).orElseThrow(RuntimeException::new))
+        Parcel parcel = Parcel.builder().recipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(()->new UsernameNotFoundException("User not Found")))
+        .receptionist(userRepo.findById(getReceptionistId(header)).orElseThrow(()-> new UsernameNotFoundException("Receptionist not found")))
                 .shortcode("random ").status(Status.RECEIVED).description(parcelDto.getDescription()).trackingId("random tracking Id").build();
 
         setOtp(parcel);
@@ -51,7 +53,7 @@ public class ReceptionistService {
     }
 
     private long getReceptionistId(String token){
-        return userRepo.findByEmail(jwtUtil.getEmailFromToken(token)).orElseThrow().getId();
+        return userRepo.findByEmail(jwtUtil.getEmailFromToken(token)).orElseThrow(()-> new InvalidRequestException("Wrong Email")).getId();
 
     }
 
@@ -73,7 +75,7 @@ public class ReceptionistService {
     }
 
     public GenericAopDto validateOtp(ValidateOtpRequestDto otp, String header){
-        Parcel parcel= parcelRepo.findById(otp.getParcelId()).orElseThrow(RuntimeException::new);
+        Parcel parcel= parcelRepo.findById(otp.getParcelId()).orElseThrow(()->new InvalidRequestException("Parcel does not exist"));
 //        if(parcel.getOtp().getHashedOtp()==encoder.encode(otp.getOtp()))
         long receptionistId= getReceptionistId(header);
         if(encoder.matches(otp.getOtp(),parcel.getOtp().getHashedOtp()))
@@ -97,7 +99,7 @@ public class ReceptionistService {
 
 
     public GenericAopDto resendOtp(long parcelId, String header) {
-        Parcel parcel=parcelRepo.findById(parcelId).orElseThrow(RuntimeException::new);
+        Parcel parcel=parcelRepo.findById(parcelId).orElseThrow(()->new InvalidRequestException("Parcel does not exist"));
         long otp = parcel.getOtp().getId();
         parcel.setOtp(null);
         otpRepo.deleteById(otp);
@@ -119,13 +121,13 @@ public class ReceptionistService {
 
 
     public Page<ParcelResponseDto> getActiveParcels(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber,3, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(pageNumber,10, Sort.by("id").descending());
         return parcelRepo.findByStatus(pageable,Status.RECEIVED).map(parcel ->
                 modelMapper.map(parcel, ParcelResponseDto.class));
     }
 
     public Page<ParcelResponseDto> getParcelHistory(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber,3, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(pageNumber,10, Sort.by("id").descending());
         return parcelRepo.findByStatus(pageable,Status.PICKED_UP).map(parcel ->
                 modelMapper.map(parcel, ParcelResponseDto.class));
     }
@@ -135,7 +137,7 @@ public class ReceptionistService {
         emailService.getNotificationDetails(userRepo.findById(id).
                 orElseThrow(RuntimeException::new).getEmail());
         return GenericAopDto.builder().receptionistId(getReceptionistId(header))
-                .recipientName(userRepo.findById(id).orElseThrow().getName())
+                .recipientName(userRepo.findById(id).orElseThrow(()->new UsernameNotFoundException("User does not exit")).getName())
                 .employeeId(id).status("successfull").build();
     }
 

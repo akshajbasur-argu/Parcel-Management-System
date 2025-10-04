@@ -2,12 +2,11 @@ package com.example.Parcel.Management.System.security;
 
 import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.entity.User;
-import com.example.Parcel.Management.System.service.impl.CustomOAuth2UserService;
+import com.example.Parcel.Management.System.service.impl.CustomOAuth2UserServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -23,7 +22,7 @@ import java.time.Duration;
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserServiceImpl customOAuth2UserService;
 
     private final JwtUtil jwtUtil;
     @Value("${app.jwt.access-token-ttl-seconds}")
@@ -50,7 +49,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
                     .httpOnly(false)
                     .path("/")
-                    .maxAge(Duration.ofSeconds(accessTokenTtlSeconds))
+                    .maxAge(Duration.ofSeconds(30))
                     .build();
             ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
                     .httpOnly(false)

@@ -10,6 +10,7 @@ const routes: Routes = [{
     children: [
       { path: "", component: ParcelHistoryComponent , canActivate:[AuthGuard],data:{role: 'EMPLOYEE'},},
       { path: "parcels", component: ParcelHistoryComponent , canActivate:[AuthGuard],data:{role: 'EMPLOYEE'},}
+
     ]
 }];
 

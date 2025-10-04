@@ -3,6 +3,7 @@ import { ReceptionistApiService } from '../../../core/service/receptionist-api.s
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { finalize } from 'rxjs';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-parcel-list',
   standalone: false,
@@ -14,7 +15,7 @@ export class ParcelListComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): any {
-    this.getParcels(0);
+    this.getParcels();
   }
   num: number = 0;
   //     // this.parcels = res
@@ -25,10 +26,11 @@ export class ParcelListComponent {
   //   console.error('API response did not contain an array of parcels:', res);
   //   this.parcels = []; // Assign an empty array to prevent the error
   // }
-  getParcels(num:number) {
+  getParcels() {
     this.service.fetchActiveParcel(this.num).subscribe((res) => {
-
+      console.log(res);
       this.parcels = res.content;
+      this.filteredparcels = this.parcels;
       this.length = res.totalElements;
     });
   }
@@ -53,10 +55,11 @@ export class ParcelListComponent {
           this.loading = null;
         })
       )
-      .subscribe((res) => {
-        setTimeout(() => {
-          alert('Mail sent successfully');
-        }, 5000);
+      .subscribe({
+        next: (res) => {},
+        error: (err) => {
+          alert('Please try again, Message could not be sent');
+        },
       });
   }
 
@@ -76,9 +79,16 @@ export class ParcelListComponent {
 
   submitPopup(id: number) {
     this.popupData.parcelId = id;
-    this.service.validateOtp(this.popupData).subscribe((res) => {
-      alert('submitted successfully');
-      this.getParcels(this.num);
+    this.service.validateOtp(this.popupData).subscribe({
+      next: (res) => {
+        alert('submitted successfully');
+        this.getParcels();
+      },
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 409) {
+          alert("Invalid Otp")
+        }
+      },
     });
     this.closePopup();
   }
@@ -89,15 +99,19 @@ export class ParcelListComponent {
   }
 
   length: number = 0;
-
+  pageSize = 5;
   onPageChange(event: PageEvent) {
-    this.service.fetchParcelHistory(event.pageIndex).subscribe((res) => {
-      console.log('Page event');
-      console.log(res);
-      this.parcels = res.content;
-      this.length = res.totalElements;
-      console.log('wbrivb', this.parcels);
-    });
+    console.log(event.pageIndex);
+    this.num = event.pageIndex;
+    this.getParcels();
+  }
+
+  filteredparcels: Array<Parcel> = [];
+  searchTerm: string = '';
+  onSearch() {
+    this.filteredparcels = this.parcels.filter((parcel) =>
+      parcel.recipientName.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 }
 type Parcel = {

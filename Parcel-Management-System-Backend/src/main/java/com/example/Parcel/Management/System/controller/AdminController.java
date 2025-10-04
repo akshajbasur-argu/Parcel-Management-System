@@ -4,11 +4,7 @@ import com.example.Parcel.Management.System.dto.admin.UpdateRoleRequest;
 import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.entity.Role;
-import com.example.Parcel.Management.System.entity.User;
-import com.example.Parcel.Management.System.service.impl.AdminService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.example.Parcel.Management.System.service.impl.AdminServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +22,7 @@ import java.util.List;
 public class AdminController {
 
     @Autowired
-    private AdminService adminService;
+    private AdminServiceImpl adminService;
 
     @GetMapping("users")
     public ResponseEntity<List<UserDetailResponseDto>> getUsers(@CookieValue(name="accessToken") String token) {

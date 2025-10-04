@@ -3,6 +3,7 @@ package com.example.Parcel.Management.System.service.impl;
 import com.example.Parcel.Management.System.entity.Role;
 import com.example.Parcel.Management.System.entity.User;
 import com.example.Parcel.Management.System.repository.UserRepo;
+import com.example.Parcel.Management.System.service.CustomOAuth2UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CustomOAuth2UserService {
+public class CustomOAuth2UserServiceImpl implements CustomOAuth2UserService {
 
     @Autowired
     private UserRepo userRepo;
