@@ -9,53 +9,50 @@ import { AdminApiService } from '../../../core/service/admin-api.service';
 })
 export class RoleComponent implements OnInit{
 
-  showPopup:boolean=false;
-
-  selectedUser : Users | null = null;
-  popupData = {
-    role : ''
-  }
-  closePopup() {
-    this.showPopup = false;
-  }
-
-  openPopup(id : number) {
-    this.showPopup = true;
-    this.selectedUser = this.users.find((user:Users) => user.id === id) || null;
-    console.log(this.selectedUser);
-  }
-
-
   constructor(private service:AdminApiService){}
-    ngOnInit():any{
-      this.service.fetchUsers().subscribe({
-        next: (res) => {
-          this.users = res;
-          console.log(res);
-        },
-        error:(err)=>{
-          console.log(err); }
+
+  ngOnInit():void{
+    this.loadUsers();
+  }
+
+  loadUsers():void {
+    this.service.fetchUsers().subscribe({
+      next:(res) =>{
+        this.users=res;
+        console.log("Users=",res);
+      },
+      error:(err)=>{
+        console.log("Error while fetching users",err);
       }
-        
-      //   (res)=>{
-      //   this.users=res;
-      //   console.log(res);
-      // }
-    )}
-  users:any=[
+    });
+  }
+
+  saveAllRoles():void{
+    const updatedUsers = this.users.map(user => ({
+      id: user.id,
+      role: user.role // Assuming 'role' is a property of user
+    }));
+
+    console.log("Updated Users:", updatedUsers);
+
+    this.service.updateUserRole(updatedUsers).subscribe({
+      next: () => {
+        alert("Roles Updated Successfully");
+        this.loadUsers();
+      },
+      error: (err) => {
+        console.error("Error updating roles:", err);
+        alert("Failed to update roles. Please try again.");
+      }
+
+    })
+  }
+
+
+  users:Users[]=[
     // {id:1,name:'Akshaj',email:'akshajbasur@gmail.com'},
   ]
-
-
-  submitPopup(role : string){
-    console.log(role);
-    
-    this.service.updateUserRole(this.selectedUser?.id!,role).subscribe((res)=>{
-      console.log(res);
-      this.ngOnInit();
-      this.closePopup();
-    })
-
-  }
 }
-  type Users={id:number,name:string,email:string}
+
+
+  type Users={id:number,name:string,email:string,role:string}

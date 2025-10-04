@@ -11,10 +11,16 @@ import java.util.List;
 
 public interface ReceptionistService {
     public ParcelResponseDto createParcel(RequestParcelDto parcelDto, String header);
+
     public GenericAopDto validateOtp(ValidateOtpRequestDto otp, String header);
-    public GenericAopDto resendOtp(long parcelId, String header) ;
+
+    public GenericAopDto resendOtp(long parcelId, String header);
+
     public Page<ParcelResponseDto> getActiveParcels(int pageNumber);
+
     public Page<ParcelResponseDto> getParcelHistory(int pageNumber);
-    public GenericAopDto sendNotification(long id , String header);
-    public List<UsersListResponseDto> getAllUsers() ;
-    }
+
+    public GenericAopDto sendNotification(long id, String header);
+
+    public List<UsersListResponseDto> getAllUsers();
+}

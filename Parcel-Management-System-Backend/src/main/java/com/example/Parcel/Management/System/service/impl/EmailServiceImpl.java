@@ -3,7 +3,6 @@ package com.example.Parcel.Management.System.service.impl;
 import com.example.Parcel.Management.System.dto.receptionist.EmailDto;
 import com.example.Parcel.Management.System.entity.EmailDetails;
 import com.example.Parcel.Management.System.service.EmailService;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -17,15 +16,15 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender mailSender;
 
 
-    public String sendMail(EmailDetails emailDetails){
+    public String sendMail(EmailDetails emailDetails) {
 
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setFrom("akshaj.basur@argusoft.com");
-            mailMessage.setTo(emailDetails.getReciepient());
-            mailMessage.setText(emailDetails.getMessageBody());
-            mailMessage.setSubject(emailDetails.getSubject());
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom("akshaj.basur@argusoft.com");
+        mailMessage.setTo(emailDetails.getReciepient());
+        mailMessage.setText(emailDetails.getMessageBody());
+        mailMessage.setSubject(emailDetails.getSubject());
 
-        try{
+        try {
             mailSender.send(mailMessage);
             return "Mail Sent Successfully";
         } catch (MailException ex) {

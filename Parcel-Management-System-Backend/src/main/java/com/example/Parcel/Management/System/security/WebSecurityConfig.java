@@ -45,13 +45,13 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/receptionist/**").hasRole("RECEPTIONIST")
                         .requestMatchers("/api/v1/employee/**").hasRole("EMPLOYEE")
-                       .anyRequest().authenticated()
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(restAuthenticationEntryPoint)
                 )
                 .oauth2Login(oauth2 -> oauth2
-                                .successHandler(customAuthenticationSuccessHandler)
+                        .successHandler(customAuthenticationSuccessHandler)
                 )
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

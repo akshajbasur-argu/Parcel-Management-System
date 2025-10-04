@@ -8,8 +8,10 @@ import com.example.Parcel.Management.System.entity.Role;
 import java.util.List;
 
 public interface AdminService {
-    public List<UserDetailResponseDto> getAllUsers(String token) ;
-    public List<ParcelResponseDto> getAllParcels() ;
-        public GenericAopDto updateUserRole(long id, Role role, String token) ;
+    public List<UserDetailResponseDto> getAllUsers(String token);
 
-    }
+    public List<ParcelResponseDto> getAllParcels();
+
+    public GenericAopDto updateUserRole(long id, Role role, String token);
+
+}

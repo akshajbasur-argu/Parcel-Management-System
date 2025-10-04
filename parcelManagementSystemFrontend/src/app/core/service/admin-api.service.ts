@@ -13,8 +13,8 @@ export class AdminApiService {
     return this.httpClient.get(this.url+'/users', { withCredentials: true })
   }
 
-  updateUserRole(userId: number, role: string ): Observable<any> {
-  return this.httpClient.put(`${this.url}/updateUser/${userId}`, role, { withCredentials: true });
+  updateUserRole(updatedUsers:{id: number, role: string}[] ): Observable<any> {
+  return this.httpClient.post(this.url+'/updateUser',updatedUsers,{ withCredentials: true });
 }
   fetchParcel():Observable<any>{
     console.log("inside")
