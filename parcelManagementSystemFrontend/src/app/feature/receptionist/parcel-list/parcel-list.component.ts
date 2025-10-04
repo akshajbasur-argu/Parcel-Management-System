@@ -3,6 +3,7 @@ import { ReceptionistApiService } from '../../../core/service/receptionist-api.s
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { finalize } from 'rxjs';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-parcel-list',
   standalone: false,
@@ -27,10 +28,10 @@ export class ParcelListComponent {
   // }
   getParcels() {
     this.service.fetchActiveParcel(this.num).subscribe((res) => {
-      console.log(res)
+      console.log(res);
       this.parcels = res.content;
+      this.filteredparcels = this.parcels;
       this.length = res.totalElements;
-
     });
   }
   parcels: Array<Parcel> = [
@@ -54,10 +55,11 @@ export class ParcelListComponent {
           this.loading = null;
         })
       )
-      .subscribe((res) => {
-        setTimeout(() => {
-          alert('Mail sent successfully');
-        }, 5000);
+      .subscribe({
+        next: (res) => {},
+        error: (err) => {
+          alert('Please try again, Message could not be sent');
+        },
       });
   }
 
@@ -77,9 +79,16 @@ export class ParcelListComponent {
 
   submitPopup(id: number) {
     this.popupData.parcelId = id;
-    this.service.validateOtp(this.popupData).subscribe((res) => {
-      alert('submitted successfully');
-      this.getParcels();
+    this.service.validateOtp(this.popupData).subscribe({
+      next: (res) => {
+        alert('submitted successfully');
+        this.getParcels();
+      },
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 409) {
+          alert("Invalid Otp")
+        }
+      },
     });
     this.closePopup();
   }
@@ -90,12 +99,19 @@ export class ParcelListComponent {
   }
 
   length: number = 0;
-pageSize=5;
+  pageSize = 5;
   onPageChange(event: PageEvent) {
     console.log(event.pageIndex);
     this.num = event.pageIndex;
     this.getParcels();
+  }
 
+  filteredparcels: Array<Parcel> = [];
+  searchTerm: string = '';
+  onSearch() {
+    this.filteredparcels = this.parcels.filter((parcel) =>
+      parcel.recipientName.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 }
 type Parcel = {

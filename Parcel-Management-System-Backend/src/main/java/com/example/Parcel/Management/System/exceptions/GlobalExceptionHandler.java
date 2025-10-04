@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MailException.class)
     public ResponseEntity<ApiError> mailException(MailException ex){
-        ApiError apiError= new ApiError("Some Error Occured "+ex.getMessage(),HttpStatus.NOT_FOUND);
+        ApiError apiError= new ApiError("Some Error Occured "+ex.getMessage(),HttpStatus.EXPECTATION_FAILED);
         return new ResponseEntity<>(apiError,apiError.getHttpStatus());
     }
 

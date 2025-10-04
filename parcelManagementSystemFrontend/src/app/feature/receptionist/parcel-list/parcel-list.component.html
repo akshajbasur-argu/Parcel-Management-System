@@ -1,6 +1,15 @@
 <div>
-  <div class="max-w-4xl mx-auto mt-10" [class]="showPopup ? 'opacity-40' : ''">
-    <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Active Parcel List</h2>
+  <div class="max-w-3xl mx-auto mt-10">
+  <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Active Parcel List</h2>
+  <div class="flex justify-end">
+    <input
+      type="text"
+      placeholder="search by user..."
+      [(ngModel)]="searchTerm"
+      (keyup)="onSearch()"
+      class="border p-2 rounded mb-4"
+    />
+  </div>
 
     <div class="overflow-x-auto">
       <table class="w-full border border-gray-200 rounded-lg shadow-md">
@@ -15,7 +24,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (parcel of parcels; track parcel.id;) {
+          @for (parcel of filteredparcels; track parcel.id;) {
 
           <tr class="border-t hover:bg-gray-50">
             <td class="px-4 py-2 text-sm text-gray-700">{{ parcel.id }}</td>
@@ -74,7 +83,7 @@
     <div class="mt-5">
       <mat-paginator
         [length]="length"
-        [pageSize]="3"
+        [pageSize]="10"
         (page)="onPageChange($event)"
         aria-label="Select page"
       >

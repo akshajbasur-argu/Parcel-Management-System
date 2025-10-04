@@ -13,9 +13,8 @@ export class ParcelHistoryComponent {
   constructor(private service: ReceptionistApiService) {}
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   length: number = 0;
-  num: number = 0;
   ngOnInit(): any {
-    this.service.fetchParcelHistory(this.num).subscribe((res) => {
+    this.service.fetchParcelHistory(0).subscribe((res) => {
       console.log(res);
       this.parcels = res.content;
       this.length = res.totalElements;

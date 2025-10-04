@@ -49,7 +49,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
                     .httpOnly(false)
                     .path("/")
-                    .maxAge(Duration.ofSeconds(accessTokenTtlSeconds))
+                    .maxAge(Duration.ofSeconds(30))
                     .build();
             ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
                     .httpOnly(false)

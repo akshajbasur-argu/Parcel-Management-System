@@ -1,6 +1,7 @@
 <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
-  <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">User Form</h2> 
-   <form #myForm="ngForm" (ngSubmit)="onSubmit(myForm)" class="space-y-4">    <!-- Description -->
+  <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">User Form</h2>
+  <form #myForm="ngForm" (ngSubmit)="onSubmit(myForm)" class="space-y-4">
+    <!-- Description -->
     <div>
       <label for="description" class="block text-sm font-medium text-gray-600">Description</label>
       <input
@@ -11,7 +12,8 @@
         required
         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
       />
-    </div>    <!-- Shortcode -->
+    </div>
+    <!-- Shortcode -->
     <div>
       <label for="shortcode" class="block text-sm font-medium text-gray-600">Shortcode</label>
       <input
@@ -22,11 +24,12 @@
         required
         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
       />
-    </div>    <!-- Username Dropdown -->
+    </div>
+    <!-- Username Dropdown -->
     <div>
       <label for="username" class="block text-sm font-medium text-gray-600">Select Username</label>
       <select
-      type="number"
+        type="number"
         id="username"
         name="username"
         [(ngModel)]="formData.recipientId"
@@ -34,9 +37,20 @@
         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
       >
         <option value="" disabled>Select a user</option>
-        <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+        @for (user of users; track $index) {
+        <option [value]="user.id">
+          <span
+            >{{
+              user.id
+            }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
+              user.name
+            }}</span
+          >
+        </option>
+        }
       </select>
-    </div>    <!-- Submit Button -->
+    </div>
+    <!-- Submit Button -->
     <div>
       <button
         type="submit"
@@ -46,6 +60,5 @@
         Submit
       </button>
     </div>
-  </form>  <div class="mt-6 p-4 bg-gray-100 rounded-lg text-sm text-gray-700">
-  </div>
+  </form>
 </div>

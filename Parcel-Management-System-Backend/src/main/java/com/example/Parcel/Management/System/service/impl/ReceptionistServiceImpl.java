@@ -121,13 +121,13 @@ public class ReceptionistServiceImpl implements ReceptionistService {
 
 
     public Page<ParcelResponseDto> getActiveParcels(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber,3, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(pageNumber,10, Sort.by("id").descending());
         return parcelRepo.findByStatus(pageable,Status.RECEIVED).map(parcel ->
                 modelMapper.map(parcel, ParcelResponseDto.class));
     }
 
     public Page<ParcelResponseDto> getParcelHistory(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber,3, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(pageNumber,10, Sort.by("id").descending());
         return parcelRepo.findByStatus(pageable,Status.PICKED_UP).map(parcel ->
                 modelMapper.map(parcel, ParcelResponseDto.class));
     }

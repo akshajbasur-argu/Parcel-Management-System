@@ -18,6 +18,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { Loader } from './shared/component/loader/loader';
 import { LoaderInterceptor } from './core/interceptor/loader-interceptor';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,7 @@ import { LoaderInterceptor } from './core/interceptor/loader-interceptor';
 
   ],
 
-  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule, RouterModule,CommonModule,MatPaginatorModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule, RouterModule,CommonModule,MatPaginatorModule,ToastrModule.forRoot(),BrowserAnimationsModule],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideBrowserGlobalErrorListeners(),

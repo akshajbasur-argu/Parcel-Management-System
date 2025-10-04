@@ -43,16 +43,16 @@ public class LogAspect {
 
     private final LogDataRepo logDataRepo;
 
-    @AfterReturning(pointcut = "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistService.createParcel(..)) || " +
-            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistService.validateOtp(..))|| " +
-            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistService.sendNotification(..)) || " +
-            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistService.resendOtp(..)) || "+
-            "execution(* com.example.Parcel.Management.System.service.impl.AdminService.updateUserRole(..))",
+    @AfterReturning(pointcut = "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.createParcel(..)) || " +
+            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.validateOtp(..)) || " +
+            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.sendNotification(..)) || " +
+            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.resendOtp(..)) || "+
+            "execution(* com.example.Parcel.Management.System.service.impl.AdminServiceImpl.updateUserRole(..))",
             returning = "res")
     public void afterReturning(JoinPoint joinPoint, Object res) {
         System.out.println("inside aop");
         if (res instanceof GenericAopDto result && joinPoint.getSignature().getName()=="updateUserRole"){
-            genericAopMethod(joinPoint, result.getEmployeeId(), Role.RECEPTIONIST, result.getReceptionistId()
+            genericAopMethod(joinPoint, result.getEmployeeId(), Role.ADMIN, result.getReceptionistId()
                     , result.getStatus());
         }
         else if (res instanceof GenericAopDto result) {
