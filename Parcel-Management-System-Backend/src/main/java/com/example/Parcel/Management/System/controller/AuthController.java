@@ -83,7 +83,7 @@ public class AuthController {
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
-                    .header(HttpHeaders.SET_COOKIE, refreshToken.toString())
+                    .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                     .body(Map.of("message", "Tokens refreshed successfully"));
 
         } catch (Exception e) {
