@@ -1,5 +1,6 @@
 package com.example.Parcel.Management.System.controller;
 
+import com.example.Parcel.Management.System.dto.admin.UpdateRoleRequest;
 import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.entity.Role;
@@ -33,10 +34,12 @@ public class AdminController {
         return new ResponseEntity<>(adminService.getAllUsers(token), HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("updateUser/{id}")
-    public ResponseEntity<?> updateUserRole(@PathVariable long id, @RequestBody String role,@CookieValue(name = "accessToken") String token) {
+    @PostMapping("updateUser")
+    public ResponseEntity<List<UserDetailResponseDto>> updateUserRole(
+            @RequestBody List<UpdateRoleRequest> updates,
+            @CookieValue(name = "accessToken") String token) {
         System.out.println("inside controller");
-        adminService.updateUserRole(id, Role.valueOf(role),token);
+        adminService.updateUserRole(updates ,token);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
