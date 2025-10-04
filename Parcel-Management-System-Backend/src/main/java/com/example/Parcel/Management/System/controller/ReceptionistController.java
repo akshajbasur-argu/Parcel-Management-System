@@ -4,6 +4,7 @@ import com.example.Parcel.Management.System.dto.common.UsersListResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.RequestParcelDto;
 import com.example.Parcel.Management.System.dto.receptionist.ValidateOtpRequestDto;
+import com.example.Parcel.Management.System.service.ReceptionistService;
 import com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ import java.util.List;
 public class ReceptionistController {
 
     @Autowired
-    private ReceptionistServiceImpl receptionistService;
+    private ReceptionistService receptionistService;
     @PostMapping("create/parcel")
     public ResponseEntity<ParcelResponseDto> createParcel(@RequestBody RequestParcelDto parcel,@CookieValue(name="accessToken") String header)
     {
@@ -32,8 +33,10 @@ public class ReceptionistController {
 
     @PostMapping("validate")
     public ResponseEntity<Void> validateOtp(@RequestBody ValidateOtpRequestDto otp, @CookieValue(name="accessToken") String header){
-        receptionistService.validateOtp(otp, header);
-        return new ResponseEntity<>(HttpStatus.OK);
+        if(receptionistService.validateOtp(otp, header).getStatus().equals("Successfull")) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @GetMapping("resend/{parcelId}")

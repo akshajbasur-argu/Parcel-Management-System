@@ -22,7 +22,7 @@ export class UserListComponent {
     // {id:3,name:'Sangam',email:'Sangam@gmail.com'},
     // {id:4,name:'Tanishka',email:'Tanishka@gmail.com'}
   ];
-  filteredusers:any=[]
+  filteredusers:Array<Users>=[]
   sendNotification(id: number) {
     this.service.sendNotification(id).subscribe((res) => {
       alert('Notification sent successfully !!!');

@@ -15,7 +15,6 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
-        // Tells the browser and Angular that authentication is required
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Authentication required.");
     }
 }
