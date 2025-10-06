@@ -1,10 +1,12 @@
 package com.example.Parcel.Management.System.aspect;
 
+import com.example.Parcel.Management.System.dto.admin.UserRoleUpdateDto;
 import com.example.Parcel.Management.System.dto.receptionist.GenericAopDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.entity.LogData;
 import com.example.Parcel.Management.System.entity.Role;
 import com.example.Parcel.Management.System.repository.LogDataRepo;
+import com.example.Parcel.Management.System.service.impl.AdminServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -42,16 +44,16 @@ public class LogAspect {
     private final LogDataRepo logDataRepo;
 
     @AfterReturning(pointcut = "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.createParcel(..)) || " +
-            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.validateOtp(..)) || " +
-            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.sendNotification(..)) || " +
-            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.resendOtp(..)) || " +
-            "execution(* com.example.Parcel.Management.System.service.impl.AdminServiceImpl.updateUserRole(..))",
+            "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.validateOtp(..)) || " +
+            "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.sendNotification(..)) || " +
+            "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.resendOtp(..)) || " +
+            "execution(public * com.example.Parcel.Management.System.service.impl.UpdateRole.changeRole(..)) || ",
             returning = "res")
     public void afterReturning(JoinPoint joinPoint, Object res) {
-        System.out.println("inside aop");
-        if (res instanceof GenericAopDto result && joinPoint.getSignature().getName() == "updateUserRole") {
-            genericAopMethod(joinPoint, result.getEmployeeId(), Role.ADMIN, result.getReceptionistId()
-                    , result.getStatus());
+        System.out.println("inside aop "+ joinPoint.getSignature().getName());
+        if (res instanceof UserRoleUpdateDto result) {
+            genericAopMethod(joinPoint, result.getId(), Role.ADMIN, result.getAdminId()
+                    ,"Successfully updated role from "+result.getOldRole()+" to "+result.getRole() + " for "+ result.getName());
         } else if (res instanceof GenericAopDto result) {
             genericAopMethod(joinPoint, result.getEmployeeId(), Role.RECEPTIONIST, result.getReceptionistId()
                     , "Executed " + joinPoint.getSignature().getName()

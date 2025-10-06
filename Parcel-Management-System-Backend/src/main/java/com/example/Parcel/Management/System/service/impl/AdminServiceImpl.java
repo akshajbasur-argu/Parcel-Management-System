@@ -2,8 +2,10 @@ package com.example.Parcel.Management.System.service.impl;
 
 import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.dto.admin.UpdateRoleRequest;
+import com.example.Parcel.Management.System.dto.admin.UserRoleUpdateDto;
 import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
+import com.example.Parcel.Management.System.entity.Role;
 import com.example.Parcel.Management.System.entity.User;
 import com.example.Parcel.Management.System.repository.ParcelRepo;
 import com.example.Parcel.Management.System.repository.UserRepo;
@@ -18,13 +20,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl {
-
+    private final UpdateRole updateRole;
     private final ModelMapper modelMapper;
     private final JwtUtil jwtUtil;
-    @Autowired
-    private UserRepo userRepo;
-    @Autowired
-    private ParcelRepo parcelRepo;
+
+    private final UserRepo userRepo;
+
+    private final ParcelRepo parcelRepo;
 
     public List<UserDetailResponseDto> getAllUsers(String token) {
 
@@ -45,26 +47,36 @@ public class AdminServiceImpl {
     }
 
     public List<UserDetailResponseDto> updateUserRole(List<UpdateRoleRequest> list, String token) {
-        list.forEach(update -> changeRole(update, token));
+        list.forEach(update -> updateRole.changeRole(update, token));
 
         return getAllUsers(token);
     }
 
-    public UserDetailResponseDto changeRole(UpdateRoleRequest update, String token) {
+
+}
+@Service
+@RequiredArgsConstructor
+class UpdateRole{
+    private final UserRepo userRepo;
+    private final JwtUtil jwtUtil;
+    public UserRoleUpdateDto changeRole(UpdateRoleRequest update, String token) {
         User user = userRepo.findById(update.getId())
                 .orElseThrow(() -> new RuntimeException("User Not Found with id: " + update.getId()));
 
-        String oldRole = user.getRole().name();
+        Role oldRole = user.getRole();
         user.setRole(update.getRole());
         userRepo.save(user);
 
-        return new UserDetailResponseDto(
+        return new UserRoleUpdateDto(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole()
+                user.getRole(),
+                oldRole,
+                userRepo.findByEmail(jwtUtil.getEmailFromToken(token)).orElseThrow().getId()
         );
     }
+
 }
 //        User user= userRepo.findById(id).orElseThrow(() -> new RuntimeException("USER NOT Found"));
 //        String oldRole = user.getRole().name();
