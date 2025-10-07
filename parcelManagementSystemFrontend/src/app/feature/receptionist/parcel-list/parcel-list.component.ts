@@ -56,7 +56,7 @@ export class ParcelListComponent {
         })
       )
       .subscribe({
-        next: (res) => {},
+        next: (res) => {alert('Otp resent successfully')},
         error: (err) => {
           alert('Please try again, Message could not be sent');
         },

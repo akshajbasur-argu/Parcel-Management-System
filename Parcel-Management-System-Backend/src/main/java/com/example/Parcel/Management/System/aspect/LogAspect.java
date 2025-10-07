@@ -47,13 +47,14 @@ public class LogAspect {
             "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.validateOtp(..)) || " +
             "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.sendNotification(..)) || " +
             "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.resendOtp(..)) || " +
-            "execution(public * com.example.Parcel.Management.System.service.impl.UpdateRole.changeRole(..)) || ",
+            "execution(public * com.example.Parcel.Management.System.service.impl.UpdateRole.changeRole(..))",
             returning = "res")
     public void afterReturning(JoinPoint joinPoint, Object res) {
-        System.out.println("inside aop "+ joinPoint.getSignature().getName());
+        System.out.println("inside aop " + joinPoint.getSignature().getName());
         if (res instanceof UserRoleUpdateDto result) {
-            genericAopMethod(joinPoint, result.getId(), Role.ADMIN, result.getAdminId()
-                    ,"Successfully updated role from "+result.getOldRole()+" to "+result.getRole() + " for "+ result.getName());
+            if (!result.getRole().name().equals(result.getOldRole().name()))
+                genericAopMethod(joinPoint, result.getId(), Role.ADMIN, result.getAdminId()
+                        , "Successfully updated role from " + result.getOldRole() + " to " + result.getRole() + " for " + result.getName());
         } else if (res instanceof GenericAopDto result) {
             genericAopMethod(joinPoint, result.getEmployeeId(), Role.RECEPTIONIST, result.getReceptionistId()
                     , "Executed " + joinPoint.getSignature().getName()

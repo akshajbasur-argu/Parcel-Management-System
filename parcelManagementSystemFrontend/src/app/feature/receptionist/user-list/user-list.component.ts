@@ -34,5 +34,6 @@ export class UserListComponent {
       user.name.toLowerCase().includes(this.searchTerm.toLowerCase())
     )
   }
+  
 }
 type Users = { id: number; name: string; email: string };

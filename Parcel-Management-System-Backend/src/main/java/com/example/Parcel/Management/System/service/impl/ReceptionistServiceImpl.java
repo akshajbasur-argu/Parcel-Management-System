@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -144,7 +145,13 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     }
 
     public List<UsersListResponseDto> getAllUsers() {
-        return userRepo.findAllByRole(Role.EMPLOYEE).stream()
-                .map(user -> modelMapper.map(user, UsersListResponseDto.class)).toList();
+//        return userRepo.findAllByRole(Role.EMPLOYEE).stream()
+//                .map(user -> modelMapper.map(user, UsersListResponseDto.class)).toList();
+        List<UsersListResponseDto> list= new ArrayList<>();
+        userRepo.findAll().forEach(user -> {
+                    if (user.getRole() != Role.RECEPTIONIST)
+                        list.add(modelMapper.map(user, UsersListResponseDto.class));
+                });
+        return list;
     }
 }
