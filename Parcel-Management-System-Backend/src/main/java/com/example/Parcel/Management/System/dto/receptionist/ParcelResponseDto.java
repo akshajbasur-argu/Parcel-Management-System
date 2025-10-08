@@ -17,8 +17,8 @@ public class ParcelResponseDto {
     private String shortcode;
     private Status status;
     private String recipientName;
-    private long receptionistId;
     private long employeeId;
+    private String parcelName;
 
 
 }

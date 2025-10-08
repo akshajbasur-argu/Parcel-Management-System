@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidRequestException.class)
     public ResponseEntity<ApiError> invalidRequestException(InvalidRequestException ex) {
-        ApiError apiError = new ApiError("Some Error Occured " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+        ApiError apiError = new ApiError("Some Error Occured " + ex.getMessage(), HttpStatus.CONFLICT);
         return new ResponseEntity<>(apiError, apiError.getHttpStatus());
     }
 

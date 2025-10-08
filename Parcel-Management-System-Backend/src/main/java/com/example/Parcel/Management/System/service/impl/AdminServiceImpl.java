@@ -1,5 +1,6 @@
 package com.example.Parcel.Management.System.service.impl;
 
+import com.example.Parcel.Management.System.Utils.AuthUtil;
 import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.dto.admin.UpdateRoleRequest;
 import com.example.Parcel.Management.System.dto.admin.UserRoleUpdateDto;
@@ -9,28 +10,30 @@ import com.example.Parcel.Management.System.entity.Role;
 import com.example.Parcel.Management.System.entity.User;
 import com.example.Parcel.Management.System.repository.ParcelRepo;
 import com.example.Parcel.Management.System.repository.UserRepo;
+import com.example.Parcel.Management.System.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdminServiceImpl {
+public class AdminServiceImpl implements AdminService {
     private final UpdateRole updateRole;
     private final ModelMapper modelMapper;
     private final JwtUtil jwtUtil;
-
+    private final AuthUtil authUtil;
     private final UserRepo userRepo;
 
     private final ParcelRepo parcelRepo;
 
-    public List<UserDetailResponseDto> getAllUsers(String token) {
+    public List<UserDetailResponseDto> getAllUsers() {
 
-        UserDetailResponseDto admin = modelMapper.map(userRepo.findByEmail(jwtUtil.getEmailFromToken(token))
+        UserDetailResponseDto admin = modelMapper.map(userRepo.findById(authUtil.getAuthorityId())
                 .orElseThrow(() -> new UsernameNotFoundException("No User found")), UserDetailResponseDto.class);
 
         List<UserDetailResponseDto> list = new java.util.ArrayList<>(userRepo.findAll().stream()
@@ -46,10 +49,10 @@ public class AdminServiceImpl {
                 modelMapper.map(parcel, ParcelResponseDto.class)).toList();
     }
 
-    public List<UserDetailResponseDto> updateUserRole(List<UpdateRoleRequest> list, String token) {
-        list.forEach(update -> updateRole.changeRole(update, token));
+    public List<UserDetailResponseDto> updateUserRole(List<UpdateRoleRequest> list) {
+        list.forEach(update -> updateRole.changeRole(update));
 
-        return getAllUsers(token);
+        return getAllUsers();
     }
 
 
@@ -58,8 +61,8 @@ public class AdminServiceImpl {
 @RequiredArgsConstructor
 class UpdateRole{
     private final UserRepo userRepo;
-    private final JwtUtil jwtUtil;
-    public UserRoleUpdateDto changeRole(UpdateRoleRequest update, String token) {
+    private final AuthUtil authUtil;
+    public UserRoleUpdateDto changeRole(UpdateRoleRequest update) {
         User user = userRepo.findById(update.getId())
                 .orElseThrow(() -> new RuntimeException("User Not Found with id: " + update.getId()));
 
@@ -73,7 +76,7 @@ class UpdateRole{
                 user.getEmail(),
                 user.getRole(),
                 oldRole,
-                userRepo.findByEmail(jwtUtil.getEmailFromToken(token)).orElseThrow().getId()
+                authUtil.getAuthorityId()
         );
     }
 

@@ -26,21 +26,21 @@ public class ReceptionistController {
     private ReceptionistService receptionistService;
 
     @PostMapping("create/parcel")
-    public ResponseEntity<ParcelResponseDto> createParcel(@RequestBody RequestParcelDto parcel, @CookieValue(name = "accessToken") String header) {
-        return new ResponseEntity<>(receptionistService.createParcel(parcel, header), HttpStatus.OK);
+    public ResponseEntity<ParcelResponseDto> createParcel(@RequestBody RequestParcelDto parcel) {
+        return new ResponseEntity<>(receptionistService.createParcel(parcel), HttpStatus.OK);
     }
 
     @PostMapping("validate")
-    public ResponseEntity<Void> validateOtp(@RequestBody ValidateOtpRequestDto otp, @CookieValue(name = "accessToken") String header) {
-        if (receptionistService.validateOtp(otp, header).getStatus().equals("Successfull")) {
+    public ResponseEntity<Void> validateOtp(@RequestBody ValidateOtpRequestDto otp) {
+        if (receptionistService.validateOtp(otp).getStatus().equals("Successfull")) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @GetMapping("resend/{parcelId}")
-    public ResponseEntity<String> resendOtp(@PathVariable long parcelId, @CookieValue(name = "accessToken") String header) {
-        receptionistService.resendOtp(parcelId, header);
+    public ResponseEntity<String> resendOtp(@PathVariable long parcelId) {
+        receptionistService.resendOtp(parcelId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -55,8 +55,8 @@ public class ReceptionistController {
     }
 
     @GetMapping("notify/{id}")
-    public ResponseEntity notifyAboutParcel(@PathVariable long id, @CookieValue(name = "accessToken") String header) {
-        receptionistService.sendNotification(id, header);
+    public ResponseEntity notifyAboutParcel(@PathVariable long id) {
+        receptionistService.sendNotification(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
