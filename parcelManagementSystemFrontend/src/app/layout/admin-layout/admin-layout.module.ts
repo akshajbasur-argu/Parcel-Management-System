@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { AdminLayoutRoutingModule } from './admin-layout-routing.module';
 import { AdminLayoutComponent } from './admin-layout.component';
@@ -7,19 +7,21 @@ import { DashboardComponent } from '../../feature/admin/dashboard/dashboard.comp
 import { SharedModule } from '../../shared/shared.module';
 import { FormsModule, NgModel } from '@angular/forms';
 import { RoleComponent } from '../../feature/admin/role/role.component';
+import { ParcelHistoryComponent } from '../../feature/admin/parcel-history/parcel-history.component';
 
 
 @NgModule({
   declarations: [
     AdminLayoutComponent,
     DashboardComponent,
-    RoleComponent
+    RoleComponent,
+    ParcelHistoryComponent
   ],
   imports: [
-    CommonModule,
     AdminLayoutRoutingModule,
     SharedModule,
-    FormsModule
+    FormsModule,
+    CommonModule
   ]
 })
 export class AdminLayoutModule { }

@@ -10,6 +10,6 @@ export class DashboardComponent {
 
   menuItems = [
     { label: 'Edit Role', route: 'roles', icon: 'view_agenda' },
-    { label: 'View Parcel History', route: 'parcels', icon: 'box' }
+    { label: 'View Parcel History', route: 'parcels', icon: 'add_ad' }
   ];
 }

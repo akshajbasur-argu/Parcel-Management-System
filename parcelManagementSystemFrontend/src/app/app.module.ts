@@ -13,7 +13,7 @@ import { ParcelListComponent } from './feature/receptionist/parcel-list/parcel-l
 import { HttpClientModule } from '@angular/common/http';
 import { ParcelHistoryComponent } from './feature/receptionist/parcel-history/parcel-history.component';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { Loader } from './shared/component/loader/loader';
@@ -30,10 +30,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     UserListComponent,
     ParcelListComponent,
     ParcelHistoryComponent,
+    
 
   ],
 
-  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule, RouterModule,CommonModule,MatPaginatorModule,ToastrModule.forRoot(),BrowserAnimationsModule],
+  imports: [BrowserModule, 
+    AppRoutingModule, 
+    FormsModule, HttpClientModule, 
+    RouterModule,CommonModule,MatPaginatorModule,
+    ToastrModule.forRoot(),BrowserAnimationsModule,
+    
+  ],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideBrowserGlobalErrorListeners(),
