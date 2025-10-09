@@ -1,34 +1,39 @@
 package com.example.Parcel.Management.System.service.impl;
 
+import com.example.Parcel.Management.System.Utils.AuthUtil;
 import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.dto.admin.UpdateRoleRequest;
+import com.example.Parcel.Management.System.dto.admin.UserRoleUpdateDto;
 import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
+import com.example.Parcel.Management.System.entity.Role;
 import com.example.Parcel.Management.System.entity.User;
 import com.example.Parcel.Management.System.repository.ParcelRepo;
 import com.example.Parcel.Management.System.repository.UserRepo;
+import com.example.Parcel.Management.System.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdminServiceImpl {
-
+public class AdminServiceImpl implements AdminService {
+    private final UpdateRole updateRole;
     private final ModelMapper modelMapper;
     private final JwtUtil jwtUtil;
-    @Autowired
-    private UserRepo userRepo;
-    @Autowired
-    private ParcelRepo parcelRepo;
+    private final AuthUtil authUtil;
+    private final UserRepo userRepo;
 
-    public List<UserDetailResponseDto> getAllUsers(String token) {
+    private final ParcelRepo parcelRepo;
 
-        UserDetailResponseDto admin = modelMapper.map(userRepo.findByEmail(jwtUtil.getEmailFromToken(token))
+    public List<UserDetailResponseDto> getAllUsers() {
+
+        UserDetailResponseDto admin = modelMapper.map(userRepo.findById(authUtil.getAuthorityId())
                 .orElseThrow(() -> new UsernameNotFoundException("No User found")), UserDetailResponseDto.class);
 
         List<UserDetailResponseDto> list = new java.util.ArrayList<>(userRepo.findAll().stream()
@@ -44,27 +49,37 @@ public class AdminServiceImpl {
                 modelMapper.map(parcel, ParcelResponseDto.class)).toList();
     }
 
-    public List<UserDetailResponseDto> updateUserRole(List<UpdateRoleRequest> list, String token) {
-        list.forEach(update -> changeRole(update, token));
+    public List<UserDetailResponseDto> updateUserRole(List<UpdateRoleRequest> list) {
+        list.forEach(update -> updateRole.changeRole(update));
 
-        return getAllUsers(token);
+        return getAllUsers();
     }
 
-    public UserDetailResponseDto changeRole(UpdateRoleRequest update, String token) {
+
+}
+@Service
+@RequiredArgsConstructor
+class UpdateRole{
+    private final UserRepo userRepo;
+    private final AuthUtil authUtil;
+    public UserRoleUpdateDto changeRole(UpdateRoleRequest update) {
         User user = userRepo.findById(update.getId())
                 .orElseThrow(() -> new RuntimeException("User Not Found with id: " + update.getId()));
 
-        String oldRole = user.getRole().name();
+        Role oldRole = user.getRole();
         user.setRole(update.getRole());
         userRepo.save(user);
 
-        return new UserDetailResponseDto(
+        return new UserRoleUpdateDto(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole()
+                user.getRole(),
+                oldRole,
+                authUtil.getAuthorityId()
         );
     }
+
 }
 //        User user= userRepo.findById(id).orElseThrow(() -> new RuntimeException("USER NOT Found"));
 //        String oldRole = user.getRole().name();

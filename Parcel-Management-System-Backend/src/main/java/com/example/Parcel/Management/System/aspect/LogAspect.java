@@ -1,5 +1,7 @@
 package com.example.Parcel.Management.System.aspect;
 
+import com.example.Parcel.Management.System.Utils.AuthUtil;
+import com.example.Parcel.Management.System.dto.admin.UserRoleUpdateDto;
 import com.example.Parcel.Management.System.dto.receptionist.GenericAopDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.entity.LogData;
@@ -40,24 +42,25 @@ public class LogAspect {
 
 
     private final LogDataRepo logDataRepo;
-
+    private final AuthUtil authUtil;
     @AfterReturning(pointcut = "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.createParcel(..)) || " +
-            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.validateOtp(..)) || " +
-            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.sendNotification(..)) || " +
-            "execution(* com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.resendOtp(..)) || " +
-            "execution(* com.example.Parcel.Management.System.service.impl.AdminServiceImpl.updateUserRole(..))",
+            "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.validateOtp(..)) || " +
+            "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.sendNotification(..)) || " +
+            "execution(public * com.example.Parcel.Management.System.service.impl.ReceptionistServiceImpl.resendOtp(..)) || " +
+            "execution(public * com.example.Parcel.Management.System.service.impl.UpdateRole.changeRole(..))",
             returning = "res")
     public void afterReturning(JoinPoint joinPoint, Object res) {
-        System.out.println("inside aop");
-        if (res instanceof GenericAopDto result && joinPoint.getSignature().getName() == "updateUserRole") {
-            genericAopMethod(joinPoint, result.getEmployeeId(), Role.ADMIN, result.getReceptionistId()
-                    , result.getStatus());
+        long id =authUtil.getAuthorityId();
+        if (res instanceof UserRoleUpdateDto result) {
+            if (!result.getRole().name().equals(result.getOldRole().name()))
+                genericAopMethod(joinPoint, result.getId(), Role.ADMIN, id
+                        , "Successfully updated role from " + result.getOldRole() + " to " + result.getRole() + " for " + result.getName());
         } else if (res instanceof GenericAopDto result) {
-            genericAopMethod(joinPoint, result.getEmployeeId(), Role.RECEPTIONIST, result.getReceptionistId()
+            genericAopMethod(joinPoint, result.getEmployeeId(), Role.RECEPTIONIST, id
                     , "Executed " + joinPoint.getSignature().getName()
-                            + " executed successfully for " + result.getRecipientName());
+                            + "successfully for " + result.getRecipientName());
         } else if (res instanceof ParcelResponseDto result) {
-            genericAopMethod(joinPoint, result.getEmployeeId(), Role.RECEPTIONIST, result.getReceptionistId()
+            genericAopMethod(joinPoint, result.getEmployeeId(), Role.RECEPTIONIST, id
                     , "Parcel for " + result.getRecipientName() + " create successfully");
         }
 

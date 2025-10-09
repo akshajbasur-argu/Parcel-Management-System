@@ -31,7 +31,9 @@ export class ParcelListComponent {
       console.log(res);
       this.parcels = res.content;
       this.filteredparcels = this.parcels;
-      this.length = res.totalElements;
+      this.length = res.page.totalElements;
+      console.log(res.page.totalElements);
+
     });
   }
   parcels: Array<Parcel> = [
@@ -56,7 +58,7 @@ export class ParcelListComponent {
         })
       )
       .subscribe({
-        next: (res) => {},
+        next: (res) => {alert('Otp resent successfully')},
         error: (err) => {
           alert('Please try again, Message could not be sent');
         },
@@ -64,7 +66,7 @@ export class ParcelListComponent {
   }
 
   showPopup = false;
-  selecteditem: Parcel = { id: 0, shortcode: '', recipientName: '', status: '', description: '' };
+  selecteditem: Parcel = { id: 0, shortcode: '', recipientName: '', status: '', description: '', parcelName:'' };
   popupData: Otp = { parcelId: 0, otp: 0 };
 
   openPopup(parcel: Parcel) {
@@ -84,10 +86,8 @@ export class ParcelListComponent {
         alert('submitted successfully');
         this.getParcels();
       },
-      error: (err: HttpErrorResponse) => {
-        if (err.status === 409) {
+      error: (err) => {
           alert("Invalid Otp")
-        }
       },
     });
     this.closePopup();
@@ -120,6 +120,7 @@ type Parcel = {
   recipientName: string;
   status: string;
   description: string;
+  parcelName:string;
 };
 type Otp = {
   parcelId: number;

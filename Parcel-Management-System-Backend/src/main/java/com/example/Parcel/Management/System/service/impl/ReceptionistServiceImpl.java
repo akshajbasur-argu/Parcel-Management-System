@@ -1,5 +1,6 @@
 package com.example.Parcel.Management.System.service.impl;
 
+import com.example.Parcel.Management.System.Utils.AuthUtil;
 import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.dto.common.UsersListResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.*;
@@ -21,10 +22,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CookieValue;
 
 import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,19 +42,20 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     private final BCryptPasswordEncoder encoder;
     private final JwtUtil jwtUtil;
     private int intOtp;
-
-    public ParcelResponseDto createParcel(RequestParcelDto parcelDto, String header) {
-        parcelDto.setReceptionistId(1);
+    private final AuthUtil authUtil;
+    public ParcelResponseDto createParcel(RequestParcelDto parcelDto) {
         Parcel parcel = Parcel.builder().recipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(() -> new UsernameNotFoundException("User not Found")))
-                .receptionist(userRepo.findById(getReceptionistId(header)).orElseThrow(() -> new UsernameNotFoundException("Receptionist not found")))
+                .receptionist(userRepo.findById(authUtil.getAuthorityId())).orElseThrow(() -> new UsernameNotFoundException("Receptionist not found")))
                 .shortcode("random ").status(Status.RECEIVED).description(parcelDto.getDescription()).trackingId("random tracking Id")
+                .name(parcelDto.getName())
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
+               
 
         setOtp(parcel);
 
         ParcelResponseDto parcelResponseDto = modelMapper.map(parcel, ParcelResponseDto.class);
-        parcelResponseDto.setReceptionistId(getReceptionistId(header));
+
         parcelResponseDto.setEmployeeId(parcel.getRecipient().getId());
         return parcelResponseDto;
 
@@ -80,10 +84,9 @@ public class ReceptionistServiceImpl implements ReceptionistService {
 
     }
 
-    public GenericAopDto validateOtp(ValidateOtpRequestDto otp, String header) {
+    public GenericAopDto validateOtp(ValidateOtpRequestDto otp) {
         Parcel parcel = parcelRepo.findById(otp.getParcelId()).orElseThrow(() -> new InvalidRequestException("Parcel does not exist"));
 //        if(parcel.getOtp().getHashedOtp()==encoder.encode(otp.getOtp()))
-        long receptionistId = getReceptionistId(header);
         if (encoder.matches(otp.getOtp(), parcel.getOtp().getHashedOtp())) {
             parcel.setStatus(Status.PICKED_UP);
             long otpId = parcel.getOtp().getId();
@@ -91,25 +94,27 @@ public class ReceptionistServiceImpl implements ReceptionistService {
             otpRepo.deleteById(otpId);
             parcelRepo.save(parcel);
             return GenericAopDto.builder().recipientName(parcel.getRecipient().getName())
-                    .receptionistId(receptionistId)
                     .employeeId(parcel.getRecipient().getId())
                     .status("Successfull").build();
 
         }
-        return GenericAopDto.builder().recipientName(parcel.getRecipient().getName())
-                .receptionistId(receptionistId)
-                .employeeId(parcel.getRecipient().getId())
-                .status("Failed").build();
+        else {
+            throw new InvalidRequestException("Invalid Otp");
+        }
+//        return GenericAopDto.builder().recipientName(parcel.getRecipient().getName())
+//                .receptionistId(receptionistId)
+//                .employeeId(parcel.getRecipient().getId())
+//                .status("Failed").build();
     }
 
 
-    public GenericAopDto resendOtp(long parcelId, String header) {
+    public GenericAopDto resendOtp(long parcelId) {
         Parcel parcel = parcelRepo.findById(parcelId).orElseThrow(() -> new InvalidRequestException("Parcel does not exist"));
         long otp = parcel.getOtp().getId();
         parcel.setOtp(null);
         otpRepo.deleteById(otp);
         setOtp(parcel);
-        return GenericAopDto.builder().receptionistId(getReceptionistId(header))
+        return GenericAopDto.builder()
                 .recipientName(parcel.getRecipient().getName())
                 .employeeId(parcel.getRecipient().getId())
                 .status("Succesfull").build();
@@ -127,6 +132,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
 
     public Page<ParcelResponseDto> getActiveParcels(int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
+
         return parcelRepo.findByStatus(pageable, Status.RECEIVED).map(parcel ->
                 modelMapper.map(parcel, ParcelResponseDto.class));
     }
@@ -137,17 +143,23 @@ public class ReceptionistServiceImpl implements ReceptionistService {
                 modelMapper.map(parcel, ParcelResponseDto.class));
     }
 
-    public GenericAopDto sendNotification(long id, String header) {
+    public GenericAopDto sendNotification(long id) {
 
         emailService.getNotificationDetails(userRepo.findById(id).
                 orElseThrow(RuntimeException::new).getEmail());
-        return GenericAopDto.builder().receptionistId(getReceptionistId(header))
+        return GenericAopDto.builder()
                 .recipientName(userRepo.findById(id).orElseThrow(() -> new UsernameNotFoundException("User does not exit")).getName())
                 .employeeId(id).status("successfull").build();
     }
 
     public List<UsersListResponseDto> getAllUsers() {
-        return userRepo.findAllByRole(Role.EMPLOYEE).stream()
-                .map(user -> modelMapper.map(user, UsersListResponseDto.class)).toList();
+//        return userRepo.findAllByRole(Role.EMPLOYEE).stream()
+//                .map(user -> modelMapper.map(user, UsersListResponseDto.class)).toList();
+        List<UsersListResponseDto> list= new ArrayList<>();
+        userRepo.findAll().forEach(user -> {
+                    if (user.getRole() != Role.RECEPTIONIST)
+                        list.add(modelMapper.map(user, UsersListResponseDto.class));
+                });
+        return list;
     }
 }

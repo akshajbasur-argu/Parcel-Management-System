@@ -49,12 +49,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
                     .httpOnly(false)
                     .path("/")
-                    .maxAge(Duration.ofSeconds(30))
+                    .maxAge(Duration.ofSeconds(300))
                     .build();
             ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
                     .httpOnly(false)
                     .path("/")
-                    .maxAge(Duration.ofSeconds(refreshTokenTtlSeconds))
+                    .maxAge(Duration.ofSeconds(1200))
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
