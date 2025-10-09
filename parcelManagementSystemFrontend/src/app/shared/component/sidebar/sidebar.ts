@@ -11,6 +11,11 @@ import { AuthService } from '../../../core/service/auth-service';
 export class Sidebar {
   constructor(private authService:AuthService){}
    @Input() menuItems:Array<Menu> | undefined
+ collapsed = false;
+
+  toggleSidebar() {
+    this.collapsed = !this.collapsed;
+  }
 
    logout(){
     this.authService.logout();

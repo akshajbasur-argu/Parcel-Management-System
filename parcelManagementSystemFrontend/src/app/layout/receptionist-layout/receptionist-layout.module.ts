@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { ReceptionistLayoutRoutingModule } from './receptionist-layout-routing.module';
 import { ReceptionistLayoutComponent } from './receptionist-layout.component';

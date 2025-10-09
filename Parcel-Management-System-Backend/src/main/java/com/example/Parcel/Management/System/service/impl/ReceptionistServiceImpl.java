@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CookieValue;
 
 import java.security.SecureRandom;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +45,12 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     private final AuthUtil authUtil;
     public ParcelResponseDto createParcel(RequestParcelDto parcelDto) {
         Parcel parcel = Parcel.builder().recipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(() -> new UsernameNotFoundException("User not Found")))
-                .receptionist(userRepo.findById(authUtil.getAuthorityId())
-                        .orElseThrow(() -> new UsernameNotFoundException("Receptionist not found")))
-                .shortcode("random ").status(Status.RECEIVED).description(parcelDto.getDescription()).trackingId("random tracking Id").name(parcelDto.getName()).build();
+                .receptionist(userRepo.findById(authUtil.getAuthorityId())).orElseThrow(() -> new UsernameNotFoundException("Receptionist not found")))
+                .shortcode("random ").status(Status.RECEIVED).description(parcelDto.getDescription()).trackingId("random tracking Id")
+                .name(parcelDto.getName())
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
+               
 
         setOtp(parcel);
 

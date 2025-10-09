@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,6 +20,7 @@ public class ParcelResponseDto {
     private Status status;
     private String recipientName;
     private long employeeId;
+    private Timestamp createdAt;
     private String parcelName;
 
 

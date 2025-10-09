@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AdminApiService } from '../../../core/service/admin-api.service';
-
+import { DatePipe, CommonModule } from '@angular/common';
 @Component({
   selector: 'app-parcel-history',
   standalone: false,
@@ -12,10 +12,13 @@ export class ParcelHistoryComponent {
     
       ngOnInit(): any {
         this.service.fetchParcel().subscribe((res) => {
+          console.log(res)
           this.parcels = res
+          console.log(this.parcels)
         })
       }
       parcels: Array<Parcel> = []
+      
   
   }
   type Parcel = {
@@ -23,7 +26,8 @@ export class ParcelHistoryComponent {
     shortcode: string,
     recipientName: string,
     status: string,
-    description: string
+    description: string,
+    createdAt: string
   }
   
 
