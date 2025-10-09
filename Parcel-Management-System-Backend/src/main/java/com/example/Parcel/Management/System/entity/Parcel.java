@@ -4,6 +4,9 @@ package com.example.Parcel.Management.System.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,4 +42,6 @@ public class Parcel {
 
     @OneToOne
     private Otp otp;
+
+    private Timestamp createdAt;
 }

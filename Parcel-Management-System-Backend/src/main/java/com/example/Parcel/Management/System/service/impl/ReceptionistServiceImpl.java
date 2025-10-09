@@ -23,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,7 +44,9 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         parcelDto.setReceptionistId(1);
         Parcel parcel = Parcel.builder().recipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(() -> new UsernameNotFoundException("User not Found")))
                 .receptionist(userRepo.findById(getReceptionistId(header)).orElseThrow(() -> new UsernameNotFoundException("Receptionist not found")))
-                .shortcode("random ").status(Status.RECEIVED).description(parcelDto.getDescription()).trackingId("random tracking Id").build();
+                .shortcode("random ").status(Status.RECEIVED).description(parcelDto.getDescription()).trackingId("random tracking Id")
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
 
         setOtp(parcel);
 
