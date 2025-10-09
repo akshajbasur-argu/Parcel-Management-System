@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class GenericAopDto {
-    private long receptionistId;
     private long employeeId;
     private String status;
     private String recipientName;

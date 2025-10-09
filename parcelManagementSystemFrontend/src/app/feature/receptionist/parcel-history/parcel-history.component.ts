@@ -17,7 +17,53 @@ export class ParcelHistoryComponent {
     this.service.fetchParcelHistory(0).subscribe((res) => {
       console.log(res);
       this.parcels = res.content;
-      this.length = res.totalElements;
+      this.length = res.page.totalElements
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ;
       console.log('wbrivb', this.parcels);
     });
   }
@@ -26,7 +72,7 @@ export class ParcelHistoryComponent {
       console.log('Page event');
       console.log(res);
       this.parcels = res.content;
-      this.length = res.totalElements;
+      this.length = res.page.totalElements;
       console.log('wbrivb', this.parcels);
     });
   }
@@ -44,4 +90,5 @@ type Parcel = {
   recipientName: string;
   status: string;
   description: string;
+  parcelName:string;
 };

@@ -16,7 +16,7 @@ public class Parcel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
+    private String name;
     private String trackingId;
     private String description;
     private String shortcode;

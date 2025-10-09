@@ -24,9 +24,9 @@ public class AdminController {
     private AdminServiceImpl adminService;
 
     @GetMapping("users")
-    public ResponseEntity<List<UserDetailResponseDto>> getUsers(@CookieValue(name = "accessToken") String token) {
+    public ResponseEntity<List<UserDetailResponseDto>> getUsers() {
 
-        return new ResponseEntity<>(adminService.getAllUsers(token), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(adminService.getAllUsers(), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("updateUser")
@@ -34,7 +34,7 @@ public class AdminController {
             @RequestBody List<UpdateRoleRequest> updates,
             @CookieValue(name = "accessToken") String token) {
         System.out.println("inside controller");
-        adminService.updateUserRole(updates, token);
+        adminService.updateUserRole(updates);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
