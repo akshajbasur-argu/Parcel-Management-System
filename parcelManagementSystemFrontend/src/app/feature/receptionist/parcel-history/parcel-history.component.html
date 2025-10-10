@@ -1,4 +1,4 @@
-<div class="max-w-4xl mx-auto mt-10">
+<!-- <div class="max-w-4xl mx-auto mt-10">
   <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Parcel List</h2>
 
   <div class="overflow-x-auto">
@@ -24,6 +24,55 @@
           <td class="px-4 py-2 text-sm text-gray-700">{{ parcel.status }}</td>
         </tr>
         } }
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-5">
+    <mat-paginator
+      [length]="length"
+      [pageSize]="10"
+      (page)="onPageChange($event)"
+      aria-label="Select page"
+    >
+    </mat-paginator>
+  </div>
+</div>
+
+ -->
+
+<div class="max-w-6xl mx-auto mt-12 px-4 animate-fade-in">
+  <h2 class="text-3xl font-bold mb-8 text-center text-gray-800">📦 Parcel List</h2>
+
+  <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-6 py-3 text-center text-sm font-semibold text-gray-600">#</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Name</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Description</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Time</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Shortcode</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Status</th>
+        </tr>
+      </thead>
+
+      <tbody class="bg-white divide-y divide-gray-100">
+        @for (parcel of parcels; track $index) {
+        <tr class="hover:bg-gray-50 transition-all duration-150">
+          <td class="px-6 py-4 text-sm text-center text-gray-700 font-medium">{{ $index + 1 }}</td>
+          <td class="px-6 py-4 text-sm text-gray-800">{{ parcel.recipientName }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.description }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">
+            {{ parcel.createdAt | date : 'MM/dd/yyyy HH:mm' }}
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.shortcode }}</td>
+          <td class="px-6 py-4 text-sm">
+            <span class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+              {{ parcel.status }}
+            </span>
+          </td>
+        </tr>
+        }
       </tbody>
     </table>
   </div>

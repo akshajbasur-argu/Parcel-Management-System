@@ -10,7 +10,7 @@ import { LoaderService } from '../../../core/service/loader.service';
 export class ReceptionistDashboardComponent {
   constructor(public loaderService: LoaderService){}
   menuItems = [
-    { label: 'Active Parcels', route: 'parcels', icon: 'box' },
+    { label: 'Active Parcels', route: 'parcels', icon: 'apps' },
     { label: 'View Users', route: 'users', icon: 'view_agenda' },
     { label: 'Create New Parcel', route: 'parcels/create', icon: 'add_ad' },
     { label: 'Parcel History', route: 'parcels/history', icon: 'history' },

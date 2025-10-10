@@ -16,7 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String googleId;
+    private String picture;
     private String email;
     private String name;
 

@@ -12,13 +12,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 @NgModule({
   declarations: [Sidebar, LoginComponentComponent, Loader],
-  imports: [CommonModule, 
-    SharedRoutingModule, 
-    FormsModule, 
+  imports: [CommonModule,
+    SharedRoutingModule,
+    FormsModule,
     RouterModule,
     MatIconModule,
     MatTooltipModule,
-    MatButtonModule 
+    MatButtonModule
   ],
   exports: [
     CommonModule,
@@ -28,7 +28,10 @@ import { MatButtonModule } from '@angular/material/button';
     LoginComponentComponent,
     Sidebar,
     Loader,
-   
+     MatIconModule,
+    MatTooltipModule,
+    MatButtonModule 
+
   ],
 })
 export class SharedModule { }

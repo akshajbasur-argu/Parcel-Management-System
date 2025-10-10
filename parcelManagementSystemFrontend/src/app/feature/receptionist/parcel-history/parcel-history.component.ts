@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { ReceptionistApiService } from '../../../core/service/receptionist-api.service';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-parcel-history',
@@ -9,65 +8,17 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
   styleUrl: './parcel-history.component.css',
 })
 export class ParcelHistoryComponent {
-
   constructor(private service: ReceptionistApiService) {}
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   length: number = 0;
   ngOnInit(): any {
     this.service.fetchParcelHistory(0).subscribe((res) => {
       console.log(res);
       this.parcels = res.content;
-      this.length = res.page.totalElements
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ;
+      this.length = res.page.totalElements;
       console.log('wbrivb', this.parcels);
     });
   }
-  onPageChange(event: PageEvent) {
+  onPageChange(event: any) {
     this.service.fetchParcelHistory(event.pageIndex).subscribe((res) => {
       console.log('Page event');
       console.log(res);
@@ -90,5 +41,6 @@ type Parcel = {
   recipientName: string;
   status: string;
   description: string;
-  parcelName:string;
+  parcelName: string;
+  createdAt: string;
 };

@@ -15,13 +15,14 @@ import { ParcelHistoryComponent } from '../../feature/admin/parcel-history/parce
     AdminLayoutComponent,
     DashboardComponent,
     RoleComponent,
-    ParcelHistoryComponent
+    
   ],
   imports: [
     AdminLayoutRoutingModule,
     SharedModule,
     FormsModule,
-    CommonModule
+    CommonModule,
+    DatePipe
   ]
 })
 export class AdminLayoutModule { }

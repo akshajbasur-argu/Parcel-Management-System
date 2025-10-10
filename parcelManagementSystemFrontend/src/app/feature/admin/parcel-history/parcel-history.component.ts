@@ -14,7 +14,7 @@ export class ParcelHistoryComponent {
   parcelsResponse: Array<Parcel> = []
   filteredParcels: Array<Parcel> = []
   selectedFilter: string = 'ALL';
-  
+
 
   ngOnInit():void{
     this.loadParcels();
@@ -41,7 +41,7 @@ loadParcels():void {
 
   // filterParcels(): void {
   //   if (this.selectedFilter === 'ALL') {
-      
+
   //   } else {
   //     this.filteredParcels = this.parcels.filter(
   //       p => p.status === this.selectedFilter
@@ -49,17 +49,17 @@ loadParcels():void {
   //   }
   // }
 
-      
+
   printParcels():void{
     console.log("ParcelsResponse:",this.parcelsResponse);
     console.log("Parcel:",this.parcels);
-    
+
   }
-  
+
   saveAllStatus():void{
     const updatedParcels = this.parcelsResponse.map(parcel => ({
       id: parcel.id,
-      status: parcel.status 
+      status: parcel.status
     }));
 
     console.log("Updated Users:", updatedParcels);
