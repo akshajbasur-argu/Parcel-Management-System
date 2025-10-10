@@ -10,6 +10,8 @@ import { AuthService } from '../../../core/service/auth-service';
 })
 export class Sidebar {
   constructor(private authService: AuthService) {
+    console.log("sidebar loaded");
+
     authService.userDetails().subscribe((res)=>{this.user=res})
   }
   @Input() menuItems: Array<Menu> | undefined;
