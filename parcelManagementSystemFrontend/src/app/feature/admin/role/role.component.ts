@@ -30,7 +30,7 @@ export class RoleComponent implements OnInit{
   saveAllRoles():void{
     const updatedUsers = this.users.map(user => ({
       id: user.id,
-      role: user.role // Assuming 'role' is a property of user
+      role: user.role 
     }));
 
     console.log("Updated Users:", updatedUsers);

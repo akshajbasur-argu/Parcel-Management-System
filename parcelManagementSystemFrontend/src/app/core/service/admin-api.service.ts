@@ -20,4 +20,8 @@ export class AdminApiService {
     console.log("inside")
     return this.httpClient.get(this.url+'/parcels', { withCredentials: true })
   }
+
+  updateParcelStatus(updatedParcels:{id: number, status: string}[] ): Observable<any> {
+  return this.httpClient.post(this.url+'/updateParcel',updatedParcels,{ withCredentials: true });
+  }
 }

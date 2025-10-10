@@ -1,6 +1,7 @@
 package com.example.Parcel.Management.System.controller;
 
 import com.example.Parcel.Management.System.dto.admin.UpdateRoleRequest;
+import com.example.Parcel.Management.System.dto.admin.UpdateStatusRequest;
 import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.service.impl.AdminServiceImpl;
@@ -31,9 +32,7 @@ public class AdminController {
 
     @PostMapping("updateUser")
     public ResponseEntity<List<UserDetailResponseDto>> updateUserRole(
-            @RequestBody List<UpdateRoleRequest> updates,
-            @CookieValue(name = "accessToken") String token) {
-        System.out.println("inside controller");
+            @RequestBody List<UpdateRoleRequest> updates ){
         adminService.updateUserRole(updates);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -43,6 +42,14 @@ public class AdminController {
     @GetMapping("parcels")
     public ResponseEntity<List<ParcelResponseDto>> getAllParcels() {
         return new ResponseEntity<>(adminService.getAllParcels(), HttpStatus.OK);
+    }
+
+    @PostMapping("updateParcel")
+    public ResponseEntity<List<UserDetailResponseDto>> updateParcelStatus(
+            @RequestBody List<UpdateStatusRequest> updates ){
+        adminService.updateParcelStatus(updates);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

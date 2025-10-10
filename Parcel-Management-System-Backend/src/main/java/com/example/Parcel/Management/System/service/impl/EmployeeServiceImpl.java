@@ -24,7 +24,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public List<ParcelResponseDto> getAllParcels(String token) {
 
-        return parcelRepo.findByRecipient((int) userRepo.findByEmail(jwtUtil.getEmailFromToken(token)).orElseThrow().getId()).stream().map(parcel ->
+        return parcelRepo.findByRecipient((int) userRepo.findByEmail(jwtUtil.getEmailFromToken(token))
+                .orElseThrow().getId()).stream().map(parcel ->
                 modelMapper.map(parcel, ParcelResponseDto.class)).toList();
 
 

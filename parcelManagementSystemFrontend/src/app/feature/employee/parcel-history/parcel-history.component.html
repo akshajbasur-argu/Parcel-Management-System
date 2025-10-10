@@ -1,4 +1,4 @@
-<div class="max-w-4xl mx-auto mt-10">
+<!-- <div class="max-w-4xl mx-auto mt-10">
     <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Parcel List</h2>
 
     <div class="overflow-x-auto">
@@ -28,4 +28,80 @@
 
         </table>
     </div>
+</div> -->
+
+<div class="max-w-6xl mx-auto mt-12 px-4 animate-fade-in">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">📦 Parcel List</h2>
+
+    <div class="flex items-center space-x-2">
+      <label class="text-gray-700 text-sm font-medium">Filter by:</label>
+      <select
+        [(ngModel)]="selectedFilter"
+        
+        class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+      >
+        <option value="ALL">All</option>
+        <option value="RECEIVED">RECEIVED</option>
+        <option value="PICKED_UP">PICKED_UP</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-6 py-3 text-center text-sm font-semibold text-gray-600">#</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Name</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Description</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Time</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Shortcode</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Status</th>
+        </tr>
+      </thead>
+
+      <tbody class="bg-white divide-y divide-gray-100">
+        @for (parcel of filteredParcels; track $index) {
+       @if (selectedFilter === 'ALL') {
+         <tr class="hover:bg-gray-50 transition-all duration-150">
+          <td class="px-6 py-4 text-sm text-center text-gray-700 font-medium">{{ $index + 1 }}</td>
+          <td class="px-6 py-4 text-sm text-gray-800">{{ parcel.parcelName }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.description }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">
+            {{ parcel.createdAt | date:'MM/dd/yyyy hh:mm a' }}
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.shortcode }}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">{{ parcel.status }}</td>
+        </tr>
+       }
+       @else if (selectedFilter === 'RECEIVED' && parcel.status === "RECEIVED") {
+         <tr class="hover:bg-gray-50 transition-all duration-150">
+          <td class="px-6 py-4 text-sm text-center text-gray-700 font-medium">{{ $index + 1 }}</td>
+          <td class="px-6 py-4 text-sm text-gray-800">{{ parcel.parcelName }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.description }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">
+            {{ parcel.createdAt | date:'MM/dd/yyyy hh:mm a' }}
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.shortcode }}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">{{ parcel.status }}</td>
+            
+        </tr>
+       }
+       @else if (selectedFilter === 'PICKED_UP' && parcel.status === "PICKED_UP") {
+         <tr class="hover:bg-gray-50 transition-all duration-150">
+          <td class="px-6 py-4 text-sm text-center text-gray-700 font-medium">{{ $index + 1 }}</td>
+          <td class="px-6 py-4 text-sm text-gray-800">{{ parcel.parcelName }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.description }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">
+            {{ parcel.createdAt | date:'MM/dd/yyyy hh:mm a' }}
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.shortcode }}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">{{ parcel.status }}</td>
+        }}
+      </tbody>
+    </table>
+
+
+  </div>
 </div>

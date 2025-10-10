@@ -1,40 +1,111 @@
 <div class="max-w-6xl mx-auto mt-12 px-4 animate-fade-in">
-    <h2 class="text-3xl font-bold mb-8 text-center text-gray-800">📦 Parcel List</h2>
+  <!-- 🔹 Header + Filter Row -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">📦 Parcel List</h2>
 
-    <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="px-6 py-3 text-center text-sm font-semibold text-gray-600">#</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Name</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Description</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Time</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Shortcode</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Status</th>
-                </tr>
-            </thead>
-
-            <tbody class="bg-white divide-y divide-gray-100">
-                @for (parcel of parcels; track $index) {
-                <tr class="hover:bg-gray-50 transition-all duration-150">
-                    <td class="px-6 py-4 text-sm text-center text-gray-700 font-medium">{{ $index + 1 }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-800">{{ parcel.recipientName }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.description }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">
-                        {{ parcel.createdAt | date:'MM/dd/yyyy hh:mm a' }}
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.shortcode }}</td>
-                    <td class="px-6 py-4 text-sm">
-                        <span class="px-2 py-1 rounded-full text-xs font-medium" [ngClass]="{
-    'bg-green-100 text-green-700': parcel.status === 'PICKED_UP',
-    'bg-yellow-100 text-yellow-700': parcel.status === 'RECEIVED'  }">
-                            {{ parcel.status }}
-                        </span>
-
-                    </td>
-                </tr>
-                }
-            </tbody>
-        </table>
+    <!-- 🔹 Filter Dropdown -->
+    <div class="flex items-center space-x-2">
+      <label class="text-gray-700 text-sm font-medium">Filter by:</label>
+      <select
+        [(ngModel)]="selectedFilter"
+        
+        class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+      >
+        <option value="ALL">All</option>
+        <option value="RECEIVED">RECEIVED</option>
+        <option value="PICKED_UP">PICKED_UP</option>
+      </select>
     </div>
+  </div>
+
+  <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-6 py-3 text-center text-sm font-semibold text-gray-600">#</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Name</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Description</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Time</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Shortcode</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Status</th>
+        </tr>
+      </thead>
+
+      <tbody class="bg-white divide-y divide-gray-100">
+        @for (parcel of filteredParcels; track $index) {
+       @if (selectedFilter === 'ALL') {
+         <tr class="hover:bg-gray-50 transition-all duration-150">
+          <td class="px-6 py-4 text-sm text-center text-gray-700 font-medium">{{ $index + 1 }}</td>
+          <td class="px-6 py-4 text-sm text-gray-800">{{ parcel.recipientName }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.description }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">
+            {{ parcel.createdAt | date:'MM/dd/yyyy hh:mm a' }}
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.shortcode }}</td>
+          <td class="px-6 py-4 text-sm">
+            <select
+              [(ngModel)]="parcelsResponse[$index].status"
+              [disabled]="parcel.status == 'PICKED_UP'"
+              class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            >
+              <option value="PICKED_UP">PICKED_UP</option>
+              <option value="RECEIVED">RECEIVED</option>
+            </select>
+          </td>
+        </tr>
+       }
+       @else if (selectedFilter === 'RECEIVED' && parcel.status === "RECEIVED") {
+         <tr class="hover:bg-gray-50 transition-all duration-150">
+          <td class="px-6 py-4 text-sm text-center text-gray-700 font-medium">{{ $index + 1 }}</td>
+          <td class="px-6 py-4 text-sm text-gray-800">{{ parcel.recipientName }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.description }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">
+            {{ parcel.createdAt | date:'MM/dd/yyyy hh:mm a' }}
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.shortcode }}</td>
+          <td class="px-6 py-4 text-sm">
+            <select
+              [(ngModel)]="parcelsResponse[$index].status"
+              
+              class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            >
+              <option value="PICKED_UP">PICKED_UP</option>
+              <option value="RECEIVED">RECEIVED</option>
+            </select>
+          </td>
+        </tr>
+       }
+       @else if (selectedFilter === 'PICKED_UP' && parcel.status === "PICKED_UP") {
+         <tr class="hover:bg-gray-50 transition-all duration-150">
+          <td class="px-6 py-4 text-sm text-center text-gray-700 font-medium">{{ $index + 1 }}</td>
+          <td class="px-6 py-4 text-sm text-gray-800">{{ parcel.recipientName }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.description }}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">
+            {{ parcel.createdAt | date:'MM/dd/yyyy hh:mm a' }}
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.shortcode }}</td>
+          <td class="px-6 py-4 text-sm">
+            <select
+              [(ngModel)]="parcelsResponse[$index].status"
+              [disabled]="parcel.status == 'PICKED_UP'"
+              class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            >
+              <option value="PICKED_UP">PICKED_UP</option>
+              <option value="RECEIVED">RECEIVED</option>
+            </select>
+          </td>
+        }}
+      </tbody>
+    </table>
+  </div>
+
+
+  <div class="flex justify-end mt-6">
+    <button
+      class="bg-blue-600 text-white font-medium px-5 py-2.5 rounded-lg shadow-md hover:bg-blue-700 transition-transform duration-200 transform hover:scale-105 active:scale-95"
+      (click)="saveAllStatus()"
+    >
+      💾 Save Changes
+    </button>
+  </div>
 </div>
