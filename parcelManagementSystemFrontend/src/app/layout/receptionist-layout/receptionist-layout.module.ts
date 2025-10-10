@@ -39,7 +39,7 @@ import { ParcelHistoryComponent } from '../../feature/receptionist/parcel-histor
     FormsModule,
     CommonModule,
     DatePipe,
-    MatPaginator
+    MatPaginator,
   ],
 })
 export class ReceptionistLayoutModule {}

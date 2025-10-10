@@ -58,6 +58,7 @@ public class AdminServiceImpl implements AdminService {
 
         return getAllUsers();
     }
+
     public List<ParcelResponseDto> updateParcelStatus(List<UpdateStatusRequest> list) {
         list.forEach(updateStatus::changeStatus);
 
@@ -66,6 +67,7 @@ public class AdminServiceImpl implements AdminService {
 
 
 }
+
 @Service
 @RequiredArgsConstructor
 class Updates {
@@ -73,6 +75,7 @@ class Updates {
     private final AuthUtil authUtil;
     private final ParcelRepo parcelRepo;
     private final OtpRepo otpRepo;
+
     public UserRoleUpdateDto changeRole(UpdateRoleRequest update) {
         User user = userRepo.findById(update.getId())
                 .orElseThrow(() -> new RuntimeException("User Not Found with id: " + update.getId()));
@@ -91,28 +94,29 @@ class Updates {
         );
     }
 
-    public ParcelStatusUpdateDto changeStatus(UpdateStatusRequest update){
+    public ParcelStatusUpdateDto changeStatus(UpdateStatusRequest update) {
         Parcel parcel = parcelRepo.findById(update.getId())
                 .orElseThrow(() -> new RuntimeException("Parcel Not Found with id: " + update.getId()));
-if(parcel.getStatus().name().equals(Status.RECEIVED.name())){
-        Status oldStatus = parcel.getStatus();
-        parcel.setStatus(update.getStatus());
-        long otpId = parcel.getOtp().getId();
-        parcel.setOtp(null);
-        otpRepo.deleteById(otpId);
-        System.out.println(parcelRepo.save(parcel));
+        if (parcel.getStatus().name().equals(Status.RECEIVED.name())) {
+            Status oldStatus = parcel.getStatus();
+            parcel.setStatus(update.getStatus());
+            long otpId = parcel.getOtp().getId();
+            parcel.setOtp(null);
+            otpRepo.deleteById(otpId);
+            System.out.println(parcelRepo.save(parcel));
 
-        return new ParcelStatusUpdateDto(
-                parcel.getId(),
-                parcel.getName(),
-                parcel.getShortcode(),
-                parcel.getDescription(),
-                parcel.getStatus(),
-                oldStatus,
-                parcel.getCreatedAt(),
-                authUtil.getAuthorityId()
-        );}
-return null;
+            return new ParcelStatusUpdateDto(
+                    parcel.getId(),
+                    parcel.getName(),
+                    parcel.getShortcode(),
+                    parcel.getDescription(),
+                    parcel.getStatus(),
+                    oldStatus,
+                    parcel.getCreatedAt(),
+                    authUtil.getAuthorityId()
+            );
+        }
+        return null;
     }
 
 
