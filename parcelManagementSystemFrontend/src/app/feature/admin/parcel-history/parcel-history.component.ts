@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { AdminApiService } from '../../../core/service/admin-api.service';
-import { DatePipe, CommonModule } from '@angular/common';
 @Component({
   selector: 'app-parcel-history',
   standalone: false,
@@ -9,7 +8,7 @@ import { DatePipe, CommonModule } from '@angular/common';
 })
 export class ParcelHistoryComponent {
   constructor(private service: AdminApiService) { }
-    
+
       ngOnInit(): any {
         this.service.fetchParcel().subscribe((res) => {
           console.log(res)
@@ -18,8 +17,8 @@ export class ParcelHistoryComponent {
         })
       }
       parcels: Array<Parcel> = []
-      
-  
+
+
   }
   type Parcel = {
     id: number,
@@ -29,6 +28,6 @@ export class ParcelHistoryComponent {
     description: string,
     createdAt: string
   }
-  
+
 
 

@@ -45,8 +45,8 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     private final AuthUtil authUtil;
     public ParcelResponseDto createParcel(RequestParcelDto parcelDto) {
         Parcel parcel = Parcel.builder().recipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(() -> new UsernameNotFoundException("User not Found")))
-                .receptionist(userRepo.findById(authUtil.getAuthorityId())).orElseThrow(() -> new UsernameNotFoundException("Receptionist not found")))
-                .shortcode("random ").status(Status.RECEIVED).description(parcelDto.getDescription()).trackingId("random tracking Id")
+                .receptionist(userRepo.findById(authUtil.getAuthorityId()).orElseThrow(() -> new UsernameNotFoundException("Receptionist not found")))
+                .shortcode(parcelDto.getShortcode()).status(Status.RECEIVED).description(parcelDto.getDescription()).trackingId("random tracking Id")
                 .name(parcelDto.getName())
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();

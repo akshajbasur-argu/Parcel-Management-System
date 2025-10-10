@@ -1,5 +1,6 @@
 package com.example.Parcel.Management.System.controller;
 
+import com.example.Parcel.Management.System.Utils.AuthUtil;
 import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
 import com.example.Parcel.Management.System.entity.User;
@@ -35,6 +36,8 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private AuthUtil authUtil;
     @Value("${app.jwt.access-token-ttl-seconds}")
     private long accessTokenTtlSeconds;
 
@@ -52,7 +55,7 @@ public class AuthController {
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 
-        UserDetailResponseDto dto = new UserDetailResponseDto(user.getId(), user.getName(), user.getEmail(), user.getRole());
+        UserDetailResponseDto dto = new UserDetailResponseDto(user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getPicture());
         return ResponseEntity.ok(dto);
     }
 
@@ -90,5 +93,12 @@ public class AuthController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Failed to refresh token"));
         }
+
+
+    }
+
+    @GetMapping("user/details")
+    public ResponseEntity<UserDetailResponseDto> getUserDetails() {
+        return new ResponseEntity<>(customOAuth2UserService.getUserDetails(),HttpStatus.OK);
     }
 }

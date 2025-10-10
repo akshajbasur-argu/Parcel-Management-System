@@ -14,9 +14,12 @@
 </div>
 }
 
-<div class="flex">
-  <app-sidebar [menuItems]="menuItems" />
-  <div class="w-full">
+<div class="flex h-screen">
+  <!-- Sidebar -->
+  <app-sidebar [menuItems]="menuItems" class="w-64"></app-sidebar>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 bg-gray-50 overflow-y-auto">
     <router-outlet></router-outlet>
   </div>
 </div>

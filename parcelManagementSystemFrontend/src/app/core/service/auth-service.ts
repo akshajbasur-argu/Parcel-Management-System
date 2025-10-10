@@ -22,6 +22,9 @@ export class AuthService {
   public refreshTokens(): Observable<any> {
     return this.http.get('http://localhost:8081/api/auth/refresh', { withCredentials: true });
   }
+  public userDetails(): Observable<any> {
+    return this.http.get('http://localhost:8081/api/auth/user/details', { withCredentials: true });
+  }
   public logout() {
     // console.log(this.cookieService.get('refreshToken'))
     // // console.log(this.cookieService.set('refreshToken',''));

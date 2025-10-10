@@ -36,10 +36,13 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        System.out.println(oAuth2User);
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
+        String photo =(String) oAuth2User.getAttribute("picture");
+        System.out.println("Picture "+photo);
 
-        User user = customOAuth2UserService.loadUser(email, name);
+        User user = customOAuth2UserService.loadUser(email, name,photo);
         System.out.println("in side success handler after user" + user);
 
         try {
