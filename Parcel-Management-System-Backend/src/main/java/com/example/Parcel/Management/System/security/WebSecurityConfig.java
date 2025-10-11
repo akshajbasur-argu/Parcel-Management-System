@@ -38,12 +38,18 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/ws/**") // Disable CSRF for WebSocket
+                )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // Disable frame options to allow SockJS iframe transport
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.disable())
+                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ws/**","/error", "/login/oauth2/**", "/api/auth/**").permitAll()
+                        .requestMatchers("/ws/**","/ws", "/error", "/login/oauth2/**", "/api/auth/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/receptionist/**").hasAnyRole("RECEPTIONIST","EMPLOYEE")
+                        .requestMatchers("/api/v1/receptionist/**").hasAnyRole("RECEPTIONIST", "EMPLOYEE")
                         .requestMatchers("/api/v1/employee/**").hasRole("EMPLOYEE")
                         .anyRequest().authenticated()
                 )
@@ -56,8 +62,6 @@ public class WebSecurityConfig {
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-
-
     }
 
     @Bean
@@ -67,11 +71,12 @@ public class WebSecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
+
+
         return source;
     }
 }
-//.userInfoEndpoint(userInfo -> userInfo
-//.userService(customOAuth2UserService))
-// .successHandler(customAuthenticationSuccessHandler)

@@ -1,6 +1,6 @@
-import { NotificationService } from './../../../core/service/notification.service';
 import { Component } from '@angular/core';
 import { ReceptionistApiService } from '../../../core/service/receptionist-api.service';
+import { NotificationService } from '../../../core/service/notification.service';
 
 
 @Component({
@@ -27,13 +27,11 @@ export class UserListComponent {
     // {id:4,name:'Tanishka',email:'Tanishka@gmail.com'}
   ];
   filteredusers:Array<Users>=[]
-  sendNotification(id: number) {
-    this.service.sendNotification(id).subscribe((res) => {
-      alert('Notification sent successfully !!!');
-      this.notificationService.connect('employee',id)
-
-    });
-  }
+ sendNotification(id: number) {
+  this.service.sendNotification(id).subscribe(() => {
+    alert('Notification sent successfully!');
+  });
+}
   searchTerm:string=''
   onSearch(){
     this.filteredusers=this.users.filter(user=>

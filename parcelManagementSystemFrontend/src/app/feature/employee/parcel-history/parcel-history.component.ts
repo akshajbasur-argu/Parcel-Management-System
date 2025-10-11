@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { EmployeeApiService } from '../../../core/service/employee-api.service';
+import { NotificationService } from '../../../core/service/notification.service';
 
 @Component({
   selector: 'app-parcel-history',
@@ -9,7 +10,7 @@ import { EmployeeApiService } from '../../../core/service/employee-api.service';
 })
 export class ParcelHistoryComponent {
 
-   constructor(private service: EmployeeApiService) { }
+   constructor(private service: EmployeeApiService,private notificationService:NotificationService) { }
    
      parcels: Array<Parcel> = []
      filteredParcels: Array<Parcel> = []
@@ -18,6 +19,7 @@ export class ParcelHistoryComponent {
    
      ngOnInit():void{
        this.loadParcels();
+       this.notificationService.subscribeToEmployeeNotifications(2);
      }
    
    setParcels() {

@@ -12,21 +12,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ParcelRequestComponent } from '../../feature/receptionist/parcel-request/parcel-request.component';
-import { UserListComponent } from '../../feature/receptionist/user-list/user-list.component';
 import { ParcelListComponent } from '../../feature/receptionist/parcel-list/parcel-list.component';
 import { FormsModule } from '@angular/forms';
 import { ParcelHistoryComponent } from '../../feature/receptionist/parcel-history/parcel-history.component';
-import { NotificationService } from '../../core/service/notification.service';
+import { UserListComponent } from '../../feature/receptionist/user-list/user-list.component';
 
 @NgModule({
   declarations: [
     ReceptionistLayoutComponent,
     ReceptionistDashboardComponent,
     ParcelRequestComponent,
-    UserListComponent,
     ParcelListComponent,
     ParcelRequestComponent,
     ParcelHistoryComponent,
+    UserListComponent
   ],
   imports: [
     ReceptionistLayoutRoutingModule,
