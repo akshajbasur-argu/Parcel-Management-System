@@ -4,10 +4,8 @@ import com.example.Parcel.Management.System.Utils.AuthUtil;
 import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.dto.common.UsersListResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.*;
-import com.example.Parcel.Management.System.entity.Otp;
-import com.example.Parcel.Management.System.entity.Parcel;
-import com.example.Parcel.Management.System.entity.Role;
-import com.example.Parcel.Management.System.entity.Status;
+import com.example.Parcel.Management.System.entity.*;
+import com.example.Parcel.Management.System.exceptions.GlobalExceptionHandler;
 import com.example.Parcel.Management.System.exceptions.InvalidRequestException;
 import com.example.Parcel.Management.System.repository.OtpRepo;
 import com.example.Parcel.Management.System.repository.ParcelRepo;
@@ -15,10 +13,13 @@ import com.example.Parcel.Management.System.repository.UserRepo;
 import com.example.Parcel.Management.System.service.ReceptionistService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     private final JwtUtil jwtUtil;
     private int intOtp;
     private final AuthUtil authUtil;
+    private final SimpMessagingTemplate messagingTemplate;
     public ParcelResponseDto createParcel(RequestParcelDto parcelDto) {
         Parcel parcel = Parcel.builder().recipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(() -> new UsernameNotFoundException("User not Found")))
                 .receptionist(userRepo.findById(authUtil.getAuthorityId()).orElseThrow(() -> new UsernameNotFoundException("Receptionist not found")))
@@ -144,12 +146,58 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     }
 
     public GenericAopDto sendNotification(long id) {
+        final Logger log = LoggerFactory.getLogger(ReceptionistService.class);
+        log.info("sendNotification called for id={}", id);
 
-        emailService.getNotificationDetails(userRepo.findById(id).
-                orElseThrow(RuntimeException::new).getEmail());
-        return GenericAopDto.builder()
-                .recipientName(userRepo.findById(id).orElseThrow(() -> new UsernameNotFoundException("User does not exit")).getName())
-                .employeeId(id).status("successfull").build();
+        try {
+            User user = userRepo.findById(id)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
+
+            String email = user.getEmail();
+            String name = user.getName();
+            log.info("Found user: id={}, name={}, email={}", id, name, email);
+
+            if (email == null || email.isBlank()) {
+                throw new InvalidRequestException("User email is null/empty for id: " + id);
+            }
+
+            // call email service safely
+            try {
+                emailService.getNotificationDetails(email);
+                log.info("emailService.getNotificationDetails(...) succeeded for {}", email);
+            } catch (Exception e) {
+                log.error("emailService failed for {}:", email, e);
+                // decide whether to continue sending websocket or abort
+                // throw new RuntimeException("Email service failed", e);
+            }
+
+            String sender = authUtil.getAuthorityName(); // could be null, check
+            if (sender == null) {
+                log.warn("authUtil.getAuthorityName() returned null");
+                sender = "System";
+            }
+
+            Notifications notification = new Notifications(sender, "parcel added", Status.PENDING);
+            log.info("Prepared notification: {}", notification);
+
+            try {
+                messagingTemplate.convertAndSend("/topic/employee/" + id, notification);
+                log.info("messagingTemplate.convertAndSend succeeded to /topic/employee/{}", id);
+            } catch (Exception e) {
+                log.error("WebSocket send failed:", e);
+                throw new RuntimeException("WebSocket send failed: " + e.getMessage(), e);
+            }
+
+            return GenericAopDto.builder()
+                    .recipientName(name)
+                    .employeeId(id)
+                    .status("successful")
+                    .build();
+
+        } catch (Exception e) {
+            log.error("sendNotification failed for id={}", id, e);
+            throw e; // let global handler return details (it will now, per step 1)
+        }
     }
 
     public List<UsersListResponseDto> getAllUsers() {

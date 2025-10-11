@@ -16,6 +16,7 @@ import { UserListComponent } from '../../feature/receptionist/user-list/user-lis
 import { ParcelListComponent } from '../../feature/receptionist/parcel-list/parcel-list.component';
 import { FormsModule } from '@angular/forms';
 import { ParcelHistoryComponent } from '../../feature/receptionist/parcel-history/parcel-history.component';
+import { NotificationService } from '../../core/service/notification.service';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,7 @@ import { ParcelHistoryComponent } from '../../feature/receptionist/parcel-histor
     UserListComponent,
     ParcelListComponent,
     ParcelRequestComponent,
-    ParcelHistoryComponent
+    ParcelHistoryComponent,
   ],
   imports: [
     ReceptionistLayoutRoutingModule,

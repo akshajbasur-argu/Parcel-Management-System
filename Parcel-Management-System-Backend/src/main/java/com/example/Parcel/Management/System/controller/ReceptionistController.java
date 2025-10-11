@@ -57,6 +57,7 @@ public class ReceptionistController {
     @GetMapping("notify/{id}")
     public ResponseEntity notifyAboutParcel(@PathVariable long id) {
         receptionistService.sendNotification(id);
+
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

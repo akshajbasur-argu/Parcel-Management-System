@@ -1,5 +1,7 @@
+import { NotificationService } from './../../../core/service/notification.service';
 import { Component } from '@angular/core';
 import { ReceptionistApiService } from '../../../core/service/receptionist-api.service';
+
 
 @Component({
   selector: 'app-user-list',
@@ -8,7 +10,9 @@ import { ReceptionistApiService } from '../../../core/service/receptionist-api.s
   styleUrl: './user-list.component.css',
 })
 export class UserListComponent {
-  constructor(private service: ReceptionistApiService) {}
+  constructor(private service: ReceptionistApiService, private notificationService: NotificationService) {
+
+  }
   ngOnInit(): any {
     this.service.fetchUsers().subscribe((res) => {
       this.users = res;
@@ -18,7 +22,7 @@ export class UserListComponent {
   }
   users: Array<Users> = [
     // {id:1,name:'Akshaj',email:'akshajbasur@gmail.com'},
-    // {id:2,name:'Arun',email:'Arun@gmail.com'},
+    // {id:2,name:'Arun',email:'Arun@gmail.com'}
     // {id:3,name:'Sangam',email:'Sangam@gmail.com'},
     // {id:4,name:'Tanishka',email:'Tanishka@gmail.com'}
   ];
@@ -26,6 +30,8 @@ export class UserListComponent {
   sendNotification(id: number) {
     this.service.sendNotification(id).subscribe((res) => {
       alert('Notification sent successfully !!!');
+      this.notificationService.connect('employee',id)
+
     });
   }
   searchTerm:string=''
@@ -34,6 +40,6 @@ export class UserListComponent {
       user.name.toLowerCase().includes(this.searchTerm.toLowerCase())
     )
   }
-  
+
 }
 type Users = { id: number; name: string; email: string };

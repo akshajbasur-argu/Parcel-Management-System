@@ -15,4 +15,8 @@ public class AuthUtil {
         return userRepo.findByEmail((String) SecurityContextHolder
                 .getContext().getAuthentication().getPrincipal()).orElseThrow().getId();
     }
+    public String getAuthorityName(){
+        return SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal().toString();
+    }
 }

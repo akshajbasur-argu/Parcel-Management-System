@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -37,4 +38,5 @@ export class ReceptionistApiService {
   validateOtp(data:any):Observable<any>{
     return this.httpClient.post(this.url+'/validate',data,{withCredentials:true})
   }
+
 }

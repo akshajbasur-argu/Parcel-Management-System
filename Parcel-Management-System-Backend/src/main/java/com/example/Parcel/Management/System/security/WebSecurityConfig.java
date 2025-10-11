@@ -41,9 +41,9 @@ public class WebSecurityConfig {
                 .csrf().disable()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/error", "/login/oauth2/**", "/api/auth/**").permitAll()
+                        .requestMatchers("/ws/**","/error", "/login/oauth2/**", "/api/auth/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/receptionist/**").hasRole("RECEPTIONIST")
+                        .requestMatchers("/api/v1/receptionist/**").hasAnyRole("RECEPTIONIST","EMPLOYEE")
                         .requestMatchers("/api/v1/employee/**").hasRole("EMPLOYEE")
                         .anyRequest().authenticated()
                 )
