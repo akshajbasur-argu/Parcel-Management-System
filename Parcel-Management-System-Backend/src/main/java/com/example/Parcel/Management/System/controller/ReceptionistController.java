@@ -1,9 +1,12 @@
 package com.example.Parcel.Management.System.controller;
 
+import com.example.Parcel.Management.System.dto.common.NotificationResponseDto;
 import com.example.Parcel.Management.System.dto.common.UsersListResponseDto;
+import com.example.Parcel.Management.System.dto.receptionist.NotifyRequestDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.RequestParcelDto;
 import com.example.Parcel.Management.System.dto.receptionist.ValidateOtpRequestDto;
+import com.example.Parcel.Management.System.entity.Notifications;
 import com.example.Parcel.Management.System.service.ReceptionistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +57,9 @@ public class ReceptionistController {
         return new ResponseEntity<>(receptionistService.getParcelHistory(num), HttpStatus.OK);
     }
 
-    @GetMapping("notify/{id}")
-    public ResponseEntity notifyAboutParcel(@PathVariable long id) {
-        receptionistService.sendNotification(id);
+    @PostMapping("notify")
+    public ResponseEntity<Void> notifyAboutParcel(@RequestBody NotifyRequestDto notifyRequestDto) {
+        receptionistService.sendNotification(notifyRequestDto.getId(),notifyRequestDto.getMessage());
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -64,5 +67,15 @@ public class ReceptionistController {
     @GetMapping("users")
     public ResponseEntity<List<UsersListResponseDto>> getAllUsers() {
         return new ResponseEntity<>(receptionistService.getAllUsers(), HttpStatus.OK);
+    }
+    @GetMapping("get/notifications")
+    public ResponseEntity<List<NotificationResponseDto>> getNotifications(){
+        return new ResponseEntity<>(receptionistService.getNotifications(),HttpStatus.OK);
+    }
+
+    @PostMapping("change/status")
+    public ResponseEntity<Void> changeStatus(@RequestBody long id){
+        receptionistService.changeStatus(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -1,6 +1,6 @@
 package com.example.Parcel.Management.System.exceptions;
 
-import com.example.Parcel.Management.System.controller.InvalidRequestHandlerController;
+//import com.example.Parcel.Management.System.controller.InvalidRequestHandlerController;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleAllExceptions(Exception ex) {
         final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-        log.error("Unhandled exception caught by global handler"+ ex.getMessage());
+        log.error("Unhandled exception caught by global handler"+ ex);
         Map<String, Object> body = new HashMap<>();
         body.put("error", ex.getClass().getSimpleName());
         body.put("message", ex.getMessage());

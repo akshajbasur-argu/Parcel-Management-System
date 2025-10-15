@@ -1,3 +1,8 @@
+@if((loaderService.isLoading$|async)===true){
+  <div class="fixed inset-0 flex items-center justify-center bg-white/75 z-50">
+  <app-loader></app-loader>
+</div>
+}
 <div class="flex h-screen">
   <!-- Sidebar -->
   <app-sidebar [menuItems]="menuItems" class="w-64"></app-sidebar>

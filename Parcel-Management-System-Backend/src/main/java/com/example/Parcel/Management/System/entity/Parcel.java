@@ -3,6 +3,7 @@ package com.example.Parcel.Management.System.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -27,17 +28,15 @@ public class Parcel {
     @ManyToOne
     @JoinColumn(name = "recipient_id")
     @ToString.Exclude
-
     @EqualsAndHashCode.Exclude
-
+//    @JsonIgnore // Arun
     private User recipient;
 
     @ManyToOne
     @JoinColumn(name = "receptionist_id")
     @ToString.Exclude
-
     @EqualsAndHashCode.Exclude
-
+//    @JsonIgnore // Arun
     private User receptionist;
 
     @OneToOne

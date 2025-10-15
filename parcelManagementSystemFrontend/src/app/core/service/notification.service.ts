@@ -69,7 +69,7 @@ export class NotificationService {
       console.warn('⚠️ Waiting for WebSocket connection...');
       const maxAttempts = 20; // 10 seconds max wait
       let attempts = 0;
-      
+
       const interval = setInterval(() => {
         attempts++;
         if (this.connected) {
@@ -85,7 +85,7 @@ export class NotificationService {
 
     this.subscriptionAttempted = true;
     console.log(`📡 Subscribing to /topic/employee/${employeeId}`);
-    
+
     try {
       this.stompClient.subscribe(`/topic/employee/${employeeId}`, (msg) => {
         try {
@@ -120,4 +120,27 @@ export class NotificationService {
   clearNotifications() {
     this.notifications.next([]);
   }
+  subscribeToReceptionistNotifications(receptionistMail: string) {
+  console.log("Attempting to subscribe to receptionist notifications for", receptionistMail);
+    if (!this.connected) {
+    console.warn("WebSocket not connected yet, retrying...");
+    const interval = setInterval(() => {
+      if (this.connected) {
+        clearInterval(interval);
+        console.log("done connection");
+        this.subscribeToReceptionistNotifications(receptionistMail);
+      }
+    }, 500);
+    return;
+  }
+  const topic = `/topic/receptionist/${receptionistMail}`;
+  
+  console.log("Subscribing to topic:", topic);
+   this.stompClient.subscribe(topic, (msg) => {
+    console.log("Notification received:", msg.body);
+    const body = JSON.parse(msg.body);
+    const current = this.notifications.value;
+    this.notifications.next([...current, body]);
+  });
+}
 }

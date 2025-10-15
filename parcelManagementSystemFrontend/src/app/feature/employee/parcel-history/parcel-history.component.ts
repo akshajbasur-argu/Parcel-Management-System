@@ -11,21 +11,22 @@ import { NotificationService } from '../../../core/service/notification.service'
 export class ParcelHistoryComponent {
 
    constructor(private service: EmployeeApiService,private notificationService:NotificationService) { }
-   
+
      parcels: Array<Parcel> = []
      filteredParcels: Array<Parcel> = []
      selectedFilter: string = 'ALL';
-     
-   
+
+
      ngOnInit():void{
        this.loadParcels();
-       this.notificationService.subscribeToEmployeeNotifications(2);
+
+
      }
-   
+
    setParcels() {
      this.filteredParcels = this.parcels.map(parcel => ({ ...parcel }));
    }
-   
+
    loadParcels():void {
      this.service.fetchParcel().subscribe({
        next:(res) =>{
@@ -33,16 +34,19 @@ export class ParcelHistoryComponent {
          this.setParcels()
          console.log("Parcels=",res);
          console.log("FilteredParcels=",this.filteredParcels);
-         
+       console.log("recipientId",this.parcels[0].recipientId);
+
+
        },
        error:(err)=>{
          console.log("Error while fetching parcels",err);
        }
      });
      }
-     
+
    }
      type Parcel = {
+      recipientId:number
        id: number,
        shortcode: string,
        parcelName: string,

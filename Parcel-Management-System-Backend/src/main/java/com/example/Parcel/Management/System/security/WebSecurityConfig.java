@@ -38,9 +38,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/ws/**") // Disable CSRF for WebSocket
-                )
+                .csrf().disable()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // Disable frame options to allow SockJS iframe transport
                 .headers(headers -> headers
@@ -49,7 +47,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/ws/**","/ws", "/error", "/login/oauth2/**", "/api/auth/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/receptionist/**").hasAnyRole("RECEPTIONIST", "EMPLOYEE")
+                        .requestMatchers("/api/v1/receptionist/**").hasAnyRole("RECEPTIONIST")
                         .requestMatchers("/api/v1/employee/**").hasRole("EMPLOYEE")
                         .anyRequest().authenticated()
                 )
