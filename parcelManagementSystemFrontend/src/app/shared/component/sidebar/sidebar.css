@@ -20,7 +20,7 @@
   background: transparent;
 }
 .custom-scroll::-webkit-scrollbar-thumb {
-  background-color: #4b5563; /* Tailwind gray-700 */
+  background-color: #802f59; /* Tailwind gray-700 */
   border-radius: 10px;
 }
 .custom-scroll::-webkit-scrollbar {
@@ -30,7 +30,7 @@
   background: transparent;
 }
 .custom-scroll::-webkit-scrollbar-thumb {
-  background-color: #4b5563; /* gray-700 */
+  background-color:#802f59; /* gray-700 */
   border-radius: 10px;
 }
 

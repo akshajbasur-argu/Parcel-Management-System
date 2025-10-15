@@ -1,3 +1,4 @@
+import { Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
@@ -32,7 +33,7 @@ export class AuthGuard implements CanActivate {
     return true;
   }
   isRefreshTokenValid(): boolean {
-    console.log("in refreshToken valid",this.cookieService.get('refreshToken'));
+    console.log('in refreshToken valid', this.cookieService.get('refreshToken'));
     if (!this.cookieService.get('refreshToken')) {
       console.log('regresh tokrn nhi hai ');
       this.toastrService.error('Session Expired, Please Login Again !!', 'Token Expired', {
@@ -54,15 +55,14 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<GuardResult> {
     // console.log('inside can activacte');
-    console.log("refresh token ",this.cookieService.get('refreshToken'));
+    console.log('refresh token ', this.cookieService.get('refreshToken'));
     if (this.isAccessTokenValid()) {
       if (route.data['role'] === this.getRole()) {
         return true;
       }
       this.router.navigate(['login']);
       return false;
-    }
-     else if (this.isRefreshTokenValid()) {
+    } else if (this.isRefreshTokenValid()) {
       console.log('regresh tokrn hai ');
       this.authservice.refreshTokens().subscribe();
       return true;
@@ -73,4 +73,5 @@ export class AuthGuard implements CanActivate {
 }
 interface jwtPayload {
   role: string;
+  sub: string;
 }

@@ -14,4 +14,15 @@ export class EmployeeApiService {
     console.log("inside")
     return this.httpClient.get(this.url + '/parcels', { withCredentials: true })
   }
+    public submitStatus(status:string,sender:number, id:number):Observable<any>{
+    return this.httpClient.post(this.url+'/notification',{status,sender,id},{withCredentials:true});
+  }
+  public getNotifications():Observable<any>{
+    console.log("called emp service");
+
+    return this.httpClient.get(this.url+'/get/notifications',{withCredentials:true})
+  }
+  public getUserId():Observable<any>{
+    return this.httpClient.get(this.url+'/get/id',{withCredentials:true});
+  }
 }

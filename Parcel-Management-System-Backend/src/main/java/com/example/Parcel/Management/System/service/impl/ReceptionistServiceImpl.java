@@ -2,28 +2,32 @@ package com.example.Parcel.Management.System.service.impl;
 
 import com.example.Parcel.Management.System.Utils.AuthUtil;
 import com.example.Parcel.Management.System.Utils.JwtUtil;
+import com.example.Parcel.Management.System.dto.common.NotificationResponseDto;
 import com.example.Parcel.Management.System.dto.common.UsersListResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.*;
-import com.example.Parcel.Management.System.entity.Otp;
-import com.example.Parcel.Management.System.entity.Parcel;
-import com.example.Parcel.Management.System.entity.Role;
-import com.example.Parcel.Management.System.entity.Status;
+import com.example.Parcel.Management.System.entity.*;
+import com.example.Parcel.Management.System.exceptions.GlobalExceptionHandler;
 import com.example.Parcel.Management.System.exceptions.InvalidRequestException;
+import com.example.Parcel.Management.System.repository.NotificationsRepo;
 import com.example.Parcel.Management.System.repository.OtpRepo;
 import com.example.Parcel.Management.System.repository.ParcelRepo;
 import com.example.Parcel.Management.System.repository.UserRepo;
 import com.example.Parcel.Management.System.service.ReceptionistService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CookieValue;
 
+import javax.management.Notification;
 import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -43,6 +47,9 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     private final JwtUtil jwtUtil;
     private int intOtp;
     private final AuthUtil authUtil;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final NotificationsRepo notificationsRepo;
+
     public ParcelResponseDto createParcel(RequestParcelDto parcelDto) {
         Parcel parcel = Parcel.builder().recipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(() -> new UsernameNotFoundException("User not Found")))
                 .receptionist(userRepo.findById(authUtil.getAuthorityId()).orElseThrow(() -> new UsernameNotFoundException("Receptionist not found")))
@@ -50,7 +57,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
                 .name(parcelDto.getName())
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
-               
+
 
         setOtp(parcel);
 
@@ -143,13 +150,35 @@ public class ReceptionistServiceImpl implements ReceptionistService {
                 modelMapper.map(parcel, ParcelResponseDto.class));
     }
 
-    public GenericAopDto sendNotification(long id) {
+    public GenericAopDto sendNotification(long id,String message) {
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
 
-        emailService.getNotificationDetails(userRepo.findById(id).
-                orElseThrow(RuntimeException::new).getEmail());
+        String email = user.getEmail();
+        String name = user.getName();
+
+        emailService.getNotificationDetails(email);
+
+
+        Notifications notification = new Notifications(
+                userRepo.findById(authUtil.getAuthorityId()).orElseThrow()
+                ,message
+                ,Status.PENDING
+                ,userRepo.findById(id).orElseThrow()
+        );
+        notificationsRepo.save(notification);
+
+
+
+        messagingTemplate.convertAndSend("/topic/employee/" + id, notification);
+
         return GenericAopDto.builder()
-                .recipientName(userRepo.findById(id).orElseThrow(() -> new UsernameNotFoundException("User does not exit")).getName())
-                .employeeId(id).status("successfull").build();
+                .recipientName(name)
+                .employeeId(id)
+                .status("successful")
+                .build();
+
+
     }
 
     public List<UsersListResponseDto> getAllUsers() {
@@ -157,9 +186,20 @@ public class ReceptionistServiceImpl implements ReceptionistService {
 //                .map(user -> modelMapper.map(user, UsersListResponseDto.class)).toList();
         List<UsersListResponseDto> list= new ArrayList<>();
         userRepo.findAll().forEach(user -> {
-                    if (user.getRole() != Role.RECEPTIONIST)
-                        list.add(modelMapper.map(user, UsersListResponseDto.class));
-                });
+            if (user.getRole() != Role.RECEPTIONIST)
+                list.add(modelMapper.map(user, UsersListResponseDto.class));
+        });
         return list;
+    }
+    public List<NotificationResponseDto> getNotifications(){
+        return notificationsRepo.findByReceiver(Math.toIntExact(authUtil.getAuthorityId()))
+                .stream().map(notification -> modelMapper.map(notification, NotificationResponseDto.class))
+                .toList();
+    }
+    public void changeStatus(long id){
+        Notifications notification= notificationsRepo.findById(id).orElseThrow();
+        notification.setStatus(Status.COMPLETED);
+        notificationsRepo.save(notification);
+
     }
 }

@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,7 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -29,6 +31,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
+        // Skip JWT validation for WebSocket connections
+        String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/ws")) {
+            log.debug("Skipping JWT filter for WebSocket endpoint: {}", requestURI);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
 
         String token = extractTokenFromCookie(request);
 
@@ -52,10 +64,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 );
 
                         SecurityContextHolder.getContext().setAuthentication(authentication);
+                        log.debug("User authenticated: {} with role: {}", email, role);
                     }
                 }
             } catch (ParseException e) {
-                logger.error("Error parsing JWT token", e);
+                log.error("Error parsing JWT token", e);
             }
         }
 
