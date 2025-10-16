@@ -30,7 +30,6 @@ public class CustomOAuth2UserServiceImpl implements CustomOAuth2UserService {
     @Transactional
     public User loadUser(String email, String name, String picture) {
 
-        System.out.println("inside****************************************************");
 
         User user =userRepo.findByEmail(email).orElseGet(() -> {
             User newUser = new User();
