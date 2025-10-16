@@ -2,6 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { ReceptionistApiService } from '../../../core/service/receptionist-api.service';
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { finalize } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
+import { NotificationService } from '../../../core/service/notification.service';
 // import { MatPaginator, PageEvent } from '@angular/material/paginator';
 // import { HttpErrorResponse } from '@angular/common/http';
 // import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -13,7 +15,7 @@ import { finalize } from 'rxjs';
   styleUrl: './parcel-list.component.css',
 })
 export class ParcelListComponent {
-  constructor(private service: ReceptionistApiService, private router: Router) {}
+  constructor(private service: ReceptionistApiService, private router: Router,private cookieService:CookieService,private notificationService: NotificationService) {}
   // @ViewChild(MatPaginator) paginator!: MatPaginator;
   // @ViewChild(MatFormField) formField!: MatFormField;
   // @ViewChild(MatLabel) label!: MatLabel;
@@ -21,6 +23,8 @@ export class ParcelListComponent {
 
   ngOnInit(): any {
     this.getParcels();
+
+
   }
   num: number = 0;
   //     // this.parcels = res
@@ -33,18 +37,13 @@ export class ParcelListComponent {
   // }
   getParcels() {
     this.service.fetchActiveParcel(this.num).subscribe((res) => {
-      console.log(res);
       this.parcels = res.content;
       this.filteredparcels = this.parcels;
       this.length = res.page.totalElements;
-      console.log(res.page.totalElements);
     });
   }
+
   parcels: Array<Parcel> = [
-    //   { id: 1, shortcode: 'Random', recipientName: 'Akshaj', status: 'Received' },
-    // { id: 2, shortcode: 'Random', recipientName: 'Vishwa', status: 'Received' },
-    // { id: 3, shortcode: 'Random', recipientName: 'Tanishka', status: 'Received' },
-    // { id: 4, shortcode: 'Random', recipientName: 'Arun', status: 'Received' }
   ];
   validate(parcel: Parcel) {
     this.openPopup(parcel);
@@ -115,7 +114,6 @@ export class ParcelListComponent {
   length: number = 0;
   pageSize = 5;
   onPageChange(event: any) {
-    console.log(event.pageIndex);
     this.num = event.pageIndex;
     this.getParcels();
   }

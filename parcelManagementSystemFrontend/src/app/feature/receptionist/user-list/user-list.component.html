@@ -1,97 +1,109 @@
-<div class="min-h-screen bg-gray-50 px-4 py-10 animate-fade-in">
-  <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-xl">
-    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">📦 User List</h2>
-  <!-- <div class="flex justify-end">
-    <input
-      type="text"
-      placeholder="search user..."
-      [(ngModel)]="searchTerm"
-      (keyup)="onSearch()"
-      class="border p-2 rounded mb-4"
-    />
-  </div> -->
+<div class="max-w-6xl mx-auto mt-[-50px] animate-fade-in">
+  <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">User List</h2>
 
-    <!-- Search Input -->
-    <div class="flex justify-end mb-4">
-      <mat-form-field appearance="fill" class="w-full md:w-1/3">
-        <mat-label>Search user</mat-label>
-        <input
-          matInput
-          type="text"
-          [(ngModel)]="searchTerm"
-          (keyup)="onSearch()"
-          placeholder="Search User..."
-        />
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-    </div>
-<!--
-  <div class="overflow-x-auto">
-    <table class="w-full border border-gray-200 rounded-lg shadow-md">
+  <div class="flex justify-end mb-4">
+    <mat-form-field appearance="fill" class="w-full md:w-1/3">
+      <mat-label>Search user</mat-label>
+      <input
+        matInput
+        type="text"
+        [(ngModel)]="searchTerm"
+        (keyup)="onSearch()"
+        placeholder="Search User..."
+      />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+    <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-100">
         <tr>
-          <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">ID</th>
+          <th class="px-4 py-2 text-center text-sm font-medium text-gray-600">ID</th>
           <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Name</th>
           <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Email</th>
-          <th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Actions</th>
+          <th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Action</th>
         </tr>
       </thead>
       <tbody>
-        @for ( user of filteredusers; track $index) {
+        @for (user of filteredusers; track $index) {
         <tr class="border-t hover:bg-gray-50">
-          <td class="px-4 py-2 text-sm text-gray-700">{{ user.id }}</td>
+          <td class="px-4 py-2 text-sm text-center text-gray-700">{{ user.id }}</td>
           <td class="px-4 py-2 text-sm text-gray-700">{{ user.name }}</td>
           <td class="px-4 py-2 text-sm text-gray-700">{{ user.email }}</td>
-          <td class="px-4 py-2 flex justify-center space-x-2">
-            <button
-              (click)="sendNotification(user.id)"
-              class="bg-blue-500 text-white px-3 py-1 rounded-lg text-sm shadow hover:bg-blue-600"
-            >
-              send Notification
-            </button>
+          <td class="px-4 py-2 text-sm text-gray-700">
+            <div class="flex justify-center gap-2">
+              <button
+                mat-raised-button
+                color="primary"
+                class="text-xs"
+                (click)="openNotificationPopup(user.id)"
+              >
+                Send Notification
+              </button>
+            </div>
           </td>
         </tr>
         }
       </tbody>
     </table>
   </div>
- -->
-   <!-- Table -->
-    <div class="overflow-x-auto">
-      <table class="w-full border border-gray-200 rounded-lg shadow-sm">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="px-4 py-2 text-center text-sm font-medium text-gray-600">ID</th>
-            <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Name</th>
-            <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">Email</th>
-            <th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for ( user of filteredusers; track $index)  {
-            <tr class="border-t hover:bg-gray-50">
-              <td class="px-4 py-2 text-sm text-center text-gray-700">{{ user.id }}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{{ user.name }}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">{{ user.email }}</td>
-              <td class="px-4 py-2 text-sm text-gray-700">
-                <div class="flex justify-center gap-2">
-                  <button
-                    mat-raised-button
-                    color="primary"
-                    class="text-xs"
-                      (click)="sendNotification(user.id)"
-                  >
-                   Send Notificaton
-                  </button>
 
+  <!-- Notification Popup -->
+  @if (showPopup) {
+  <div
+    class="fixed inset-0 flex items-center pt-80 justify-center backdrop-blur-sm z-50 animate-fade-in"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-2xl w-[90%] max-w-md p-6 transform transition-all scale-100 animate-scale-in"
+    >
+      <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">
+        Send Notification
+      </h2>
 
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+      <form #notifyForm="ngForm" (ngSubmit)="confirmNotification()">
+        <mat-form-field appearance="fill" class="w-full mb-4">
+          <mat-label>Company</mat-label>
+          <input
+            matInput
+            type="text"
+            name="company"
+            [(ngModel)]="notificationData.company"
+            required
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full mb-4">
+          <mat-label>Order ID</mat-label>
+          <input
+            matInput
+            type="text"
+            name="orderId"
+            [(ngModel)]="notificationData.orderId"
+            required
+          />
+        </mat-form-field>
+
+        <div class="flex justify-end gap-3 mt-6">
+          <button
+            mat-button
+            type="button"
+            (click)="closePopup()"
+            class="text-gray-600"
+          >
+            Cancel
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="notifyForm.invalid"
+          >
+            Confirm
+          </button>
+        </div>
+      </form>
     </div>
-
-</div>
+  </div>
+  }
 </div>

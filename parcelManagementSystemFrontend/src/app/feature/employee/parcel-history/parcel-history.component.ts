@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { EmployeeApiService } from '../../../core/service/employee-api.service';
+import { NotificationService } from '../../../core/service/notification.service';
 
 @Component({
   selector: 'app-parcel-history',
@@ -9,35 +10,39 @@ import { EmployeeApiService } from '../../../core/service/employee-api.service';
 })
 export class ParcelHistoryComponent {
 
-   constructor(private service: EmployeeApiService) { }
-   
+   constructor(private service: EmployeeApiService,private notificationService:NotificationService) { }
+
      parcels: Array<Parcel> = []
      filteredParcels: Array<Parcel> = []
      selectedFilter: string = 'ALL';
-     
-   
+
+
      ngOnInit():void{
        this.loadParcels();
+
+
      }
-   
+
    setParcels() {
      this.filteredParcels = this.parcels.map(parcel => ({ ...parcel }));
    }
-   
+
    loadParcels():void {
      this.service.fetchParcel().subscribe({
        next:(res) =>{
          this.parcels=res;
-         this.setParcels()         
+         this.setParcels()
+
+
        },
        error:(err)=>{
-         console.log("Error while fetching parcels",err);
        }
      });
      }
-     
+
    }
      type Parcel = {
+      recipientId:number
        id: number,
        shortcode: string,
        parcelName: string,

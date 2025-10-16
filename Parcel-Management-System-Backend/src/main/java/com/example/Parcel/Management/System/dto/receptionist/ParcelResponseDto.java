@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ParcelResponseDto {
+    private long recipientId;
     private long id;
     private String trackingId;
     private String description;

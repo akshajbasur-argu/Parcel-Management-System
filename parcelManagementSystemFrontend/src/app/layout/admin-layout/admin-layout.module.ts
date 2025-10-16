@@ -8,6 +8,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { FormsModule, NgModel } from '@angular/forms';
 import { RoleComponent } from '../../feature/admin/role/role.component';
 import { ParcelHistoryComponent } from '../../feature/admin/parcel-history/parcel-history.component';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { MatInput, MatInputModule } from '@angular/material/input';
 
 
 @NgModule({
@@ -23,7 +25,10 @@ import { ParcelHistoryComponent } from '../../feature/admin/parcel-history/parce
     SharedModule,
     FormsModule,
     CommonModule,
-    DatePipe
+    DatePipe,
+    MatFormFieldModule,
+    MatInputModule,
+   MatLabel,MatInput
   ]
 })
 export class AdminLayoutModule { }

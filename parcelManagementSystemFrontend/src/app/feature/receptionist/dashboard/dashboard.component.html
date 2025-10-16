@@ -1,25 +1,96 @@
-<!-- <div >
-
-  <app-loader class="w-full"></app-loader>
-  <div class="flex" >
-    <app-sidebar [menuItems]="menuItems" />
-    <div class="w-full">
-      <router-outlet> </router-outlet>
-    </div>
-  </div>
-</div> -->
-@if((loaderService.isLoading$|async)===true){
+<!-- Loader -->
+@if ((loaderService.isLoading$ | async) === true) {
   <div class="fixed inset-0 flex items-center justify-center bg-white/75 z-50">
-  <app-loader></app-loader>
-</div>
+    <app-loader></app-loader>
+  </div>
 }
 
 <div class="flex h-screen">
   <!-- Sidebar -->
   <app-sidebar [menuItems]="menuItems" class="w-64"></app-sidebar>
 
-  <!-- Main Content Area -->
-  <div class="flex-1 bg-gray-50 overflow-y-auto">
+  <!-- Main Content -->
+  <div class="flex-1 bg-gray-50 overflow-y-auto relative">
+    <!-- Topbar -->
+    <div class="flex justify-end p-4">
+      <!-- Notification Bell -->
+      <div class="relative z-10">
+        <button
+          (click)="toggleNotifications()"
+          class="bg-gray-800 text-blue-50 p-3 rounded-full w-10 h-10 flex items-center justify-center transition hover:bg-gray-700 hover:cursor-pointer"
+        >
+          <span class="material-symbols-outlined"> notifications </span>
+          @if (notifications.length>0 || notificationsFromDb.length>0) {
+            <span
+              class="absolute top-2 right-2 block w-2 h-2 bg-red-500 rounded-full animate-pulse"
+            ></span>
+
+          }
+        </button>
+
+        <!-- Dropdown Panel -->
+        @if (showNotifications) {
+          <div
+            class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden transition-all animate-fadeIn"
+          >
+            <!-- Header -->
+            <div class="p-3 border-b bg-gray-100 text-sm font-semibold text-gray-700 flex items-center justify-between">
+              Notifications
+
+            </div>
+
+            <!-- Notification List -->
+            @if (notificationsFromDb.length > 0) {
+              <div class="max-h-72 overflow-y-auto divide-y divide-gray-100">
+                @for (n of notificationsFromDb; track $index) {
+                  <div
+                    class="p-3 text-xs transition-all duration-200 cursor-pointer hover:shadow-sm"
+                    [ngClass]="{
+                      'bg-green-50 border-l-4 border-green-400': n.status === 'ACCEPTED',
+                      'bg-red-50 border-l-4 border-red-400': n.status === 'REJECTED',
+                      'bg-yellow-50 border-l-4 border-yellow-400': !n.status
+                    }"
+                  >
+                    <div class="flex justify-between items-start">
+                      <div class="flex-1">
+                        <div class="font-medium text-gray-800 mb-1">{{ n.message }}</div>
+                        <div class="text-gray-500 text-[11px]">
+                          From: <span class="font-medium">{{ n.senderName }}</span>
+                        </div>
+                      </div>
+                      <button
+                        (click)="closeNotification(n.id, $index)"
+                        class="text-gray-400 hover:text-gray-700 text-sm ml-2"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    @if (n.status) {
+                      <div
+                        class="text-[10px] mt-1 text-right italic"
+                        [ngClass]="{
+                          'text-green-600': n.status === 'accepted',
+                          'text-red-600': n.status === 'rejected'
+                        }"
+                      >
+                        Status: {{ n.status | titlecase }}
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="p-4 text-gray-500 text-xs text-center">
+                No notifications
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Page Content -->
     <router-outlet></router-outlet>
   </div>
 </div>

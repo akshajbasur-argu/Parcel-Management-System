@@ -31,4 +31,5 @@ export class AuthService {
     this.cookieService.delete('accessToken', '/', 'localhost');
     this.router.navigate(['login']);
   }
+
 }

@@ -12,7 +12,6 @@
 .animate-slide-in-left {
   animation: slide-in-left 0.4s ease-out forwards;
 }
-/* Add to global styles */
 .custom-scroll::-webkit-scrollbar {
   width: 6px;
 }
@@ -20,7 +19,7 @@
   background: transparent;
 }
 .custom-scroll::-webkit-scrollbar-thumb {
-  background-color: #4b5563; /* Tailwind gray-700 */
+  background-color: #802f59;
   border-radius: 10px;
 }
 .custom-scroll::-webkit-scrollbar {
@@ -30,7 +29,7 @@
   background: transparent;
 }
 .custom-scroll::-webkit-scrollbar-thumb {
-  background-color: #4b5563; /* gray-700 */
+  background-color:#802f59;
   border-radius: 10px;
 }
 

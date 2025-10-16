@@ -32,21 +32,23 @@ public class CustomOAuth2UserServiceImpl implements CustomOAuth2UserService {
 
         System.out.println("inside****************************************************");
 
-        return userRepo.findByEmail(email).orElseGet(() -> {
+        User user =userRepo.findByEmail(email).orElseGet(() -> {
             User newUser = new User();
             newUser.setPicture(picture);
             newUser.setEmail(email);
             newUser.setName(name);
             newUser.setRole(Role.EMPLOYEE);
-            return userRepo.save(newUser);
+            return userRepo.save(newUser);});
+        user.setPicture(picture);
+        return userRepo.save(user);
 
-        });
     }
 
     public Optional<User> findByEmail(String email) {
         return userRepo.findByEmail(email);
     }
     public UserDetailResponseDto getUserDetails(){
+        System.out.println();
         return modelMapper.map(userRepo.findById(authUtil.getAuthorityId()), UserDetailResponseDto.class);
     }
 }
