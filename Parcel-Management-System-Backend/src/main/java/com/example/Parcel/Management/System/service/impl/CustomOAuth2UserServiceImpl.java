@@ -51,12 +51,3 @@ public class CustomOAuth2UserServiceImpl implements CustomOAuth2UserService {
         return modelMapper.map(userRepo.findById(authUtil.getAuthorityId()), UserDetailResponseDto.class);
     }
 }
-
-//()->{
-//User u = new User();
-//                    u.setGoogleId(googleId);
-//                    u.setEmail(email);
-//                    u.setName(name);
-//                    u.setRole(Role.EMPLOYEE);
-//                    return u;
-//                }

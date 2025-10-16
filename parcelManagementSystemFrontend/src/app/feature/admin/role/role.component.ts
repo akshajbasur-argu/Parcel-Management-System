@@ -35,13 +35,13 @@ export class RoleComponent implements OnInit {
 
   onSearch(): void {
     const term = this.searchTerm.toLowerCase().trim();
-    
+
     if (!term) {
       this.filteredUsers = [...this.users];
       return;
     }
 
-    this.filteredUsers = this.users.filter(user => 
+    this.filteredUsers = this.users.filter(user =>
       user.name.toLowerCase().includes(term) ||
       user.email.toLowerCase().includes(term) ||
       user.role.toLowerCase().includes(term) ||
@@ -58,9 +58,9 @@ export class RoleComponent implements OnInit {
       if (this.users[i].role !== this.userResponse[i].role) {
         console.log('Original role:', this.userResponse[i].role);
         console.log('Updated role:', this.users[i].role);
-        this.updatesUsers.push({ 
-          id: this.users[i].id, 
-          role: this.users[i].role 
+        this.updatesUsers.push({
+          id: this.users[i].id,
+          role: this.users[i].role
         });
       }
     }

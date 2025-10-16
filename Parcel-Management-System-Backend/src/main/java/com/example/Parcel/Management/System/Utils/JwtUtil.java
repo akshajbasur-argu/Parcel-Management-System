@@ -36,14 +36,9 @@ public class JwtUtil {
 
     public JwtUtil(@Value("${PRIVATE_KEY}") String privateKetStr,
                    @Value("${PUBLIC_KEY}") String publicKetStr) throws Exception {
-        // Load private key
-        // ClassPathResource privateKeyResource = new ClassPathResource("keys/private.pem");
-        // String privateKeyString = new String(privateKeyResource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         this.privateKey = parsePrivateKey(privateKetStr);
 
-        // Load public key
-        // ClassPathResource publicKeyResource = new ClassPathResource("keys/public.pem");
-        // String publicKeyString = new String(publicKeyResource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+
         this.publicKey = parsePublicKey(publicKetStr);
     }
 
