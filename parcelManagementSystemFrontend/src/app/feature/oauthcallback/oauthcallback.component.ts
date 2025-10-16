@@ -17,7 +17,6 @@ export class OauthcallbackComponent implements OnInit {
       next: (response: any) => {
         localStorage.setItem('user', JSON.stringify(response));
         this.router.navigate([`/${response.role.toLowerCase()}`]);
-        console.log('Login successful:', response);
       },
       error: (error) => {
         console.error('Login failed:', error);

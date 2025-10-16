@@ -12,19 +12,14 @@ export class ParcelHistoryComponent {
   length: number = 0;
   ngOnInit(): any {
     this.service.fetchParcelHistory(0).subscribe((res) => {
-      console.log(res);
       this.parcels = res.content;
       this.length = res.page.totalElements;
-      console.log('wbrivb', this.parcels);
     });
   }
   onPageChange(event: any) {
     this.service.fetchParcelHistory(event.pageIndex).subscribe((res) => {
-      console.log('Page event');
-      console.log(res);
       this.parcels = res.content;
       this.length = res.page.totalElements;
-      console.log('wbrivb', this.parcels);
     });
   }
 

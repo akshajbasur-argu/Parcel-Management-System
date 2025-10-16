@@ -37,19 +37,13 @@ export class ParcelListComponent {
   // }
   getParcels() {
     this.service.fetchActiveParcel(this.num).subscribe((res) => {
-      console.log(res);
       this.parcels = res.content;
       this.filteredparcels = this.parcels;
       this.length = res.page.totalElements;
-      console.log(res.page.totalElements);
     });
   }
 
   parcels: Array<Parcel> = [
-    //   { id: 1, shortcode: 'Random', recipientName: 'Akshaj', status: 'Received' },
-    // { id: 2, shortcode: 'Random', recipientName: 'Vishwa', status: 'Received' },
-    // { id: 3, shortcode: 'Random', recipientName: 'Tanishka', status: 'Received' },
-    // { id: 4, shortcode: 'Random', recipientName: 'Arun', status: 'Received' }
   ];
   validate(parcel: Parcel) {
     this.openPopup(parcel);
@@ -120,7 +114,6 @@ export class ParcelListComponent {
   length: number = 0;
   pageSize = 5;
   onPageChange(event: any) {
-    console.log(event.pageIndex);
     this.num = event.pageIndex;
     this.getParcels();
   }

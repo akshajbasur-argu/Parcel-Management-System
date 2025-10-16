@@ -14,16 +14,17 @@
     <!-- Topbar -->
     <div class="flex justify-end p-4">
       <!-- Notification Bell -->
-      <div class="relative">
+      <div class="relative z-10">
         <button
           (click)="toggleNotifications()"
-          class="bg-gray-800 text-blue-50 p-3 rounded-full w-10 h-10 flex items-center justify-center transition hover:bg-gray-700"
+          class="bg-gray-800 text-blue-50 p-3 rounded-full w-10 h-10 flex items-center justify-center transition hover:bg-gray-700 hover:cursor-pointer"
         >
           <span class="material-symbols-outlined"> notifications </span>
           @if (notifications.length>0 || notificationsFromDb.length>0) {
             <span
               class="absolute top-2 right-2 block w-2 h-2 bg-red-500 rounded-full animate-pulse"
             ></span>
+
           }
         </button>
 
