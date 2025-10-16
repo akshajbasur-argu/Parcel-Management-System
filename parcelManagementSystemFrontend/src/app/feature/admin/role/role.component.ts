@@ -13,13 +13,18 @@ export class RoleComponent implements OnInit {
   ngOnInit(): void {
     this.loadUsers();
   }
+
+  users: Users[] = [];
   userResponse: Array<Users> = [];
+  filteredUsers: Users[] = [];
+  searchTerm: string = '';
+
   loadUsers(): void {
     this.service.fetchUsers().subscribe({
       next: (res) => {
         this.users = res;
         this.userResponse = this.users.map((user) => ({ ...user }));
-
+        this.filteredUsers = [...this.users];
         console.log('Users=', res);
       },
       error: (err) => {
@@ -27,28 +32,50 @@ export class RoleComponent implements OnInit {
       },
     });
   }
+
+  onSearch(): void {
+    const term = this.searchTerm.toLowerCase().trim();
+    
+    if (!term) {
+      this.filteredUsers = [...this.users];
+      return;
+    }
+
+    this.filteredUsers = this.users.filter(user => 
+      user.name.toLowerCase().includes(term) ||
+      user.email.toLowerCase().includes(term) ||
+      user.role.toLowerCase().includes(term) ||
+      user.id.toString().includes(term)
+    );
+  }
+
   updatesUsers: Array<{ id: number; role: string }> = [];
+
   saveAllRoles(): void {
-    // const updatedUsers = this.users.map(user => ({
-    //   id: user.id,
-    //   role: user.role
-    // }));
+    this.updatesUsers = [];
+
     for (let i: number = 0; i < this.users.length; i++) {
       if (this.users[i].role !== this.userResponse[i].role) {
-        console.log('original parcel', this.users[i].role);
-        console.log('Response parcel', this.users[i].role);
-        // this.updatedParcels = this.parcelsResponse.map((parcel) => ({
-        //   id: parcel.id,
-        //   status: parcel.status,
-        // }))
-        this.updatesUsers.push({ id: this.users[i].id, role: this.users[i].role });
+        console.log('Original role:', this.userResponse[i].role);
+        console.log('Updated role:', this.users[i].role);
+        this.updatesUsers.push({ 
+          id: this.users[i].id, 
+          role: this.users[i].role 
+        });
       }
     }
-    console.log(this.updatesUsers);
+
+    if (this.updatesUsers.length === 0) {
+      alert('No changes to save');
+      return;
+    }
+
+    console.log('Users to update:', this.updatesUsers);
 
     this.service.updateUserRole(this.updatesUsers).subscribe({
       next: () => {
         alert('Roles Updated Successfully');
+        this.searchTerm = '';
         this.loadUsers();
       },
       error: (err) => {
@@ -57,10 +84,6 @@ export class RoleComponent implements OnInit {
       },
     });
   }
-
-  users: Users[] = [
-    // {id:1,name:'Akshaj',email:'akshajbasur@gmail.com'},
-  ];
 }
 
 type Users = { id: number; name: string; email: string; role: string };
