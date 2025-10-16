@@ -32,14 +32,10 @@ export class ParcelHistoryComponent {
        next:(res) =>{
          this.parcels=res;
          this.setParcels()
-         console.log("Parcels=",res);
-         console.log("FilteredParcels=",this.filteredParcels);
-       console.log("recipientId",this.parcels[0].recipientId);
 
 
        },
        error:(err)=>{
-         console.log("Error while fetching parcels",err);
        }
      });
      }

@@ -7,11 +7,9 @@ import { LoaderService } from '../service/loader.service';
 @Injectable()
 export class LoaderInterceptor implements HttpInterceptor {
   constructor(private loaderService: LoaderService, private router:Router) {
-    console.log('hellooooooo 0000');
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    console.log('hellooooooo ');
     this.loaderService.showLoader();
     return next
       .handle(request)

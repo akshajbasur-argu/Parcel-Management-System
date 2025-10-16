@@ -19,7 +19,7 @@
         <button (click)="toggleNotification()" class="relative text-2xl text-gray-700">
           <span class="material-symbols-outlined cursor-pointer">notifications</span>
 
-          <!-- Red dot when there are notifications -->
+          <!-- Red dot  -->
           <span
             *ngIf=" notifications.length > 0 || notificationsFromDb.length>0"
             class="absolute top-0 right-0 h-3 w-3 bg-red-600 rounded-full border-2 border-white animate-pulse"

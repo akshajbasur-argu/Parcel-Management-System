@@ -19,11 +19,9 @@ export class DashboardComponent {
     public loaderService: LoaderService
   ) {
     this.employeeService.getUserId().subscribe((res) => {(this.notificationService.subscribeToEmployeeNotifications(res))
-      console.log(res);
 
     });
     this.notificationService.notifications$.subscribe((n) => (this.notifications = n));
-    console.log(this.notifications);
 
     this.employeeService.getNotifications().subscribe((res) => {
       this.notificationsFromDb = res;
@@ -36,18 +34,14 @@ export class DashboardComponent {
   showNotification: boolean = false;
 
   openNotification() {
-    console.log(this.notifications);
 
     this.showNotification = !this.showNotification;
   }
   toggleNotification() {
     if (!this.showNotification) {
       this.employeeService.getNotifications().subscribe((res) => {
-        console.log('inside notifications');
 
         this.notificationsFromDb = res;
-        console.log(res);
-        console.log('db data ', this.notificationsFromDb);
       });
     }
     // setTimeout(() => {
@@ -59,10 +53,11 @@ export class DashboardComponent {
   }
   submit(status: string, sender: number, index: number, id: number) {
     this.employeeService.submitStatus(status, sender, id).subscribe((res) => {
-      console.log(res);
     });
     this.notificationsFromDb.splice(index, 1);
     this.notifications.pop();
+    if(this.notificationsFromDb.length===0)
+    {this.showNotification=false;}
   }
 }
 type notifications = {

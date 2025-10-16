@@ -28,7 +28,6 @@ export class ReceptionistDashboardComponent implements OnInit {
   decodeToken() {
     this.token = this.cookieService.get('accessToken');
     const decoded = jwtDecode<jwtPayload>(this.token);
-    console.log(decoded.sub);
 
     return decoded.sub;
   }
@@ -37,7 +36,6 @@ export class ReceptionistDashboardComponent implements OnInit {
 
     this.notificationService.notifications$.subscribe((n) => {
       this.notifications = n;
-      console.log('from receptionist dashboard', this.notifications);
       if (this.notifications.length > 0) this.hasNewNotifications = true;
     });
 
@@ -52,20 +50,17 @@ export class ReceptionistDashboardComponent implements OnInit {
     { label: 'Parcel History', route: 'parcels/history', icon: 'history' },
   ];
   toggleNotifications() {
-    this.showNotifications = !this.showNotifications; // When user opens the dropdown, mark as read (remove red dot)
+    this.showNotifications = !this.showNotifications;
     if (this.showNotifications) {
       this.receptionistService.getNotifications().subscribe((res) => {
         this.notificationsFromDb = res;
-        console.log('data from db ', this.notificationsFromDb);
       });
       this.hasNewNotifications = false;
     }
   }
   closeNotification(id: number, i: number) {
-    console.log('id ', i);
 
     this.receptionistService.changeStatus(id).subscribe(() => {
-      console.log('submitted');
       if (this.notificationsFromDb.length != 1) {
         this.notificationsFromDb.splice(i, 1);
         this.notifications.pop();
@@ -74,6 +69,8 @@ export class ReceptionistDashboardComponent implements OnInit {
         this.notifications.pop();
 
       }
+
+      if(this.notificationsFromDb.length===0){ this.showNotifications=false}
     });
   }
 }

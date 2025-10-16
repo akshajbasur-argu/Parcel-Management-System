@@ -154,10 +154,9 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
 
-        String email = user.getEmail();
         String name = user.getName();
 
-        emailService.getNotificationDetails(email);
+        emailService.getNotificationDetails(user.getEmail());
 
 
         Notifications notification = new Notifications(
