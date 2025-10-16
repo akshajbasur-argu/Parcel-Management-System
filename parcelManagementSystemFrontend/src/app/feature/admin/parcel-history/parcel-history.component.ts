@@ -38,15 +38,6 @@ export class ParcelHistoryComponent {
     });
   }
 
-  // filterParcels(): void {
-  //   if (this.selectedFilter === 'ALL') {
-
-  //   } else {
-  //     this.filteredParcels = this.parcels.filter(
-  //       p => p.status === this.selectedFilter
-  //     );
-  //   }
-  // }
 
   printParcels(): void {
     console.log('ParcelsResponse:', this.parcelsResponse);
@@ -57,16 +48,10 @@ export class ParcelHistoryComponent {
   saveAllStatus(): void {
     for (let i: number = 0; i < this.parcels.length; i++) {
       if(this.parcels[i].status!==this.parcelsResponse[i].status){
-        console.log("original parcel",this.parcels[i].status)
-        console.log("Response parcel",this.parcelsResponse[i].status)
-      // this.updatedParcels = this.parcelsResponse.map((parcel) => ({
-      //   id: parcel.id,
-      //   status: parcel.status,
-      // }))
+      
       this.updatedParcels.push({id:this.parcelsResponse[i].id,status:this.parcelsResponse[i].status})
       ;}
     }
-    console.log('Updated Users:', this.updatedParcels);
 
     this.service.updateParcelStatus(this.updatedParcels).subscribe({
       next: () => {

@@ -26,16 +26,9 @@ export class AuthService {
     return this.http.get('http://localhost:8081/api/auth/user/details', { withCredentials: true });
   }
   public logout() {
-    // console.log(this.cookieService.get('refreshToken'))
-    // // console.log(this.cookieService.set('refreshToken',''));
 
-    // this.cookieService.set('refreshToken','nullllllll')
-    // console.log(this.cookieService.get('refreshToken'))
-    // this.cookieService.deleteAll()
     this.cookieService.delete('refreshToken', '/', 'localhost');
     this.cookieService.delete('accessToken', '/', 'localhost');
-    // this.cookieService.delete('refreshToken','/','localhost:8081')
     this.router.navigate(['login']);
-    console.log('end');
   }
 }

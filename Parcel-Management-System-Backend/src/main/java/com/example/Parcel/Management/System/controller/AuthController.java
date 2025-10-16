@@ -50,8 +50,6 @@ public class AuthController {
         if (email == null) {
             return ResponseEntity.status((HttpStatus.UNAUTHORIZED)).build();
         }
-
-//        String email = principal.getAttribute("email");
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 

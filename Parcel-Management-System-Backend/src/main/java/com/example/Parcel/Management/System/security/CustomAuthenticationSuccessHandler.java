@@ -71,19 +71,3 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     }
 }
-//
-//        String targetUrl;
-//        switch (user.getRole()) {
-//            case ADMIN:
-//                targetUrl = "http://localhost:4200/admin/dashboard";
-//                break;
-//            case RECEPTIONIST:
-//                targetUrl = "http://localhost:4200/receptionist/dashboard";
-//                break;
-//            case EMPLOYEE:
-//                targetUrl = "http://localhost:4200/employee/dashboard";
-//            default:
-//                targetUrl = "http://localhost:4200/employee/dashboard";
-//                break;
-//        }
-//        response.sendRedirect(targetUrl);

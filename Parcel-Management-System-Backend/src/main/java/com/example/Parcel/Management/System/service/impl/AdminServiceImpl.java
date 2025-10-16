@@ -121,11 +121,3 @@ class Updates {
 
 
 }
-//        User user= userRepo.findById(id).orElseThrow(() -> new RuntimeException("USER NOT Found"));
-//        String oldRole = user.getRole().name();
-//        user.setRole(role);
-//        userRepo.save(user);
-//        return GenericAopDto.builder().recipientName(user.getName())
-//                .receptionistId(userRepo.findByEmail(jwtUtil.getEmailFromToken(token)).orElseThrow().getId())
-//                .employeeId(user.getId())
-//                .status("Successfully changed user role from "+oldRole+" to "+role.name()).build();

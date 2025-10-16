@@ -72,6 +72,3 @@ public class WebSecurityConfig {
         return source;
     }
 }
-//.userInfoEndpoint(userInfo -> userInfo
-//.userService(customOAuth2UserService))
-// .successHandler(customAuthenticationSuccessHandler)

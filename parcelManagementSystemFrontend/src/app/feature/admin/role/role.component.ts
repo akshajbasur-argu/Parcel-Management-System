@@ -20,7 +20,6 @@ export class RoleComponent implements OnInit {
         this.users = res;
         this.userResponse = this.users.map((user) => ({ ...user }));
 
-        console.log('Users=', res);
       },
       error: (err) => {
         console.log('Error while fetching users', err);
@@ -29,18 +28,10 @@ export class RoleComponent implements OnInit {
   }
   updatesUsers: Array<{ id: number; role: string }> = [];
   saveAllRoles(): void {
-    // const updatedUsers = this.users.map(user => ({
-    //   id: user.id,
-    //   role: user.role
-    // }));
     for (let i: number = 0; i < this.users.length; i++) {
       if (this.users[i].role !== this.userResponse[i].role) {
         console.log('original parcel', this.users[i].role);
         console.log('Response parcel', this.users[i].role);
-        // this.updatedParcels = this.parcelsResponse.map((parcel) => ({
-        //   id: parcel.id,
-        //   status: parcel.status,
-        // }))
         this.updatesUsers.push({ id: this.users[i].id, role: this.users[i].role });
       }
     }
@@ -58,9 +49,7 @@ export class RoleComponent implements OnInit {
     });
   }
 
-  users: Users[] = [
-    // {id:1,name:'Akshaj',email:'akshajbasur@gmail.com'},
-  ];
+  users: Users[] = [ ];
 }
 
 type Users = { id: number; name: string; email: string; role: string };

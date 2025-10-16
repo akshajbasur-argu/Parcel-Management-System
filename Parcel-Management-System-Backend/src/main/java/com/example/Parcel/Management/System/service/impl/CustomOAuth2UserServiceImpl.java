@@ -40,12 +40,6 @@ public class CustomOAuth2UserServiceImpl implements CustomOAuth2UserService {
             newUser.setRole(Role.EMPLOYEE);
             return userRepo.save(newUser);
 
-//            UserDetailResponseDto dto = new UserDetailResponseDto();
-//            dto.setId(dto.getId());
-//            dto.setEmail(dto.getEmail());
-//            dto.setName(dto.getName());
-//            dto.setRole(dto.getRole().name());
-//            return dto;
         });
     }
 
@@ -56,12 +50,3 @@ public class CustomOAuth2UserServiceImpl implements CustomOAuth2UserService {
         return modelMapper.map(userRepo.findById(authUtil.getAuthorityId()), UserDetailResponseDto.class);
     }
 }
-
-//()->{
-//User u = new User();
-//                    u.setGoogleId(googleId);
-//                    u.setEmail(email);
-//                    u.setName(name);
-//                    u.setRole(Role.EMPLOYEE);
-//                    return u;
-//                }

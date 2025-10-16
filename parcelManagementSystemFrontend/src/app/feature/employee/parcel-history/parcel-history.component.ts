@@ -28,10 +28,7 @@ export class ParcelHistoryComponent {
      this.service.fetchParcel().subscribe({
        next:(res) =>{
          this.parcels=res;
-         this.setParcels()
-         console.log("Parcels=",res);
-         console.log("FilteredParcels=",this.filteredParcels);
-         
+         this.setParcels()         
        },
        error:(err)=>{
          console.log("Error while fetching parcels",err);
