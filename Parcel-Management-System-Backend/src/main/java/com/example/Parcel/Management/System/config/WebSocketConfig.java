@@ -16,7 +16,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic");
         config.setApplicationDestinationPrefixes("/app");
-        log.info("Message broker configured");
     }
 
     @Override
@@ -28,6 +27,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setHttpMessageCacheSize(1000)
                 .setDisconnectDelay(30 * 1000);
 
-        log.info("STOMP endpoints registered at /ws");
     }
 }

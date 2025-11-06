@@ -1,0 +1,32 @@
+.shimmer{
+    font-weight: 600;
+    font-size: 1.4rem;
+    letter-spacing: 1.3px;
+    padding-left: 10px;
+    text-align: center;
+    color: #ffffff1a;
+    background: -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(.5, rgba(255, 255, 255, .63)));
+    background: -moz-gradient(linear,left top,right top,from(#222),to(#222),color-stop(.5,rgba(255,255,255,.63)));
+    background: gradient(linear,left top,right top,from(#222),to(#222),color-stop(.5,rgba(255,255,255,.63)));
+    background-size: 125px 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    animation-name: _ngcontent-ng-c2616210335_shimmer;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-color: #222;
+}
+
+@keyframes  _ngcontent-ng-c2616210335_shimmer {
+  0% {
+    background-position: top left;
+}
+
+100% {
+    background-position: top right;
+}
+
+}
