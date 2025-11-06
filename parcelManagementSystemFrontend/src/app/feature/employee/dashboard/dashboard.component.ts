@@ -65,4 +65,5 @@ type notifications = {
   senderId: number;
   status: string;
   message: string;
+  senderName: string;
 };

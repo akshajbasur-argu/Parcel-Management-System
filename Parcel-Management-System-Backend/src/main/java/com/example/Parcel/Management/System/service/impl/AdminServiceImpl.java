@@ -18,6 +18,7 @@ import com.example.Parcel.Management.System.repository.UserRepo;
 import com.example.Parcel.Management.System.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ public class AdminServiceImpl implements AdminService {
         UserDetailResponseDto admin = modelMapper.map(userRepo.findById(authUtil.getAuthorityId())
                 .orElseThrow(() -> new UsernameNotFoundException("No User found")), UserDetailResponseDto.class);
 
-        List<UserDetailResponseDto> list = new java.util.ArrayList<>(userRepo.findAll().stream()
+        List<UserDetailResponseDto> list = new java.util.ArrayList<>(userRepo.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
                 .map(user -> modelMapper.map(user, UserDetailResponseDto.class))
                 .toList());
         list.remove(admin);

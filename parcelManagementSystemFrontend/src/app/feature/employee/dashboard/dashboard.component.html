@@ -42,7 +42,7 @@
               @for (n of notificationsFromDb; track $index) {
               <div class="p-3 border-b border-gray-100 text-xs text-gray-700">
                 <div class="font-medium">{{ n.message }}</div>
-                <div class="text-gray-500 text-[11px]">From: {{ n.senderId }}</div>
+                <div class="text-gray-500 text-[11px]">From: {{ n.senderId }}&nbsp; {{n.senderName}}</div>
 
                 <div class="flex space-x-2 mt-2">
                   <button
@@ -55,7 +55,7 @@
                     (click)="submit('rejected', n.senderId, $index,n.id)"
                     class="bg-red-500 text-white px-2 py-1 rounded text-[11px] hover:bg-red-600"
                   >
-                    Reject{{n.id}}
+                    Reject
                   </button>
                 </div>
               </div>
