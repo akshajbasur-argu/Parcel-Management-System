@@ -2,30 +2,33 @@ package com.example.Parcel.Management.System.service.impl;
 
 import com.example.Parcel.Management.System.dto.receptionist.EmailDto;
 import com.example.Parcel.Management.System.entity.EmailDetails;
+import com.example.Parcel.Management.System.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
 
-public class EmailService {
+public class EmailServiceImpl implements EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
 
-    private String sendMail(EmailDetails emailDetails) {
-        try {
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setFrom("akshaj.basur@argusoft.com");
-            mailMessage.setTo(emailDetails.getReciepient());
-            mailMessage.setText(emailDetails.getMessageBody());
-            mailMessage.setSubject(emailDetails.getSubject());
+    public String sendMail(EmailDetails emailDetails) {
 
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom("akshaj.basur@argusoft.com");
+        mailMessage.setTo(emailDetails.getReciepient());
+        mailMessage.setText(emailDetails.getMessageBody());
+        mailMessage.setSubject(emailDetails.getSubject());
+
+        try {
             mailSender.send(mailMessage);
             return "Mail Sent Successfully";
-        } catch (Exception ex) {
-            return "Error While Sending Mail";
+        } catch (MailException ex) {
+            return "Error While Sending Mail    ";
         }
     }
 

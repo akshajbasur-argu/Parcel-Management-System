@@ -3,7 +3,6 @@ package com.example.Parcel.Management.System.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.context.annotation.Lazy;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String googleId;
+    private String picture;
     private String email;
     private String name;
 

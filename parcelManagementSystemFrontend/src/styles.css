@@ -2,3 +2,42 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+#toast-container {
+  & > div {
+    opacity: 1;
+    top:0;
+    right:0;
+    position: absolute;
+    padding: 20px;
+  }
+}
+
+/* Custom error toast styling */
+.custom-error-toast {
+
+  background-color: #052664 !important; /* Red background */
+  border-radius: 8px !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+  .toast-title {
+    color: #fff !important; /* White title text */
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  .toast-message {
+    color: #fff !important; /* White message text */
+  }
+
+  .toast-close-button {
+    color: #fff !important; /* White close button */
+    text-shadow: none;
+  }
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out both;
+}

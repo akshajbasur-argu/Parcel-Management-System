@@ -4,6 +4,9 @@ package com.example.Parcel.Management.System.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,7 +16,7 @@ public class Parcel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
+    private String name;
     private String trackingId;
     private String description;
     private String shortcode;
@@ -39,4 +42,6 @@ public class Parcel {
 
     @OneToOne
     private Otp otp;
+
+    private Timestamp createdAt;
 }

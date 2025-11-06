@@ -2,12 +2,11 @@ package com.example.Parcel.Management.System.security;
 
 import com.example.Parcel.Management.System.Utils.JwtUtil;
 import com.example.Parcel.Management.System.entity.User;
-import com.example.Parcel.Management.System.service.impl.CustomOAuth2UserService;
+import com.example.Parcel.Management.System.service.impl.CustomOAuth2UserServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -23,7 +22,7 @@ import java.time.Duration;
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserServiceImpl customOAuth2UserService;
 
     private final JwtUtil jwtUtil;
     @Value("${app.jwt.access-token-ttl-seconds}")
@@ -37,11 +36,14 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        System.out.println(oAuth2User);
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
+        String photo =(String) oAuth2User.getAttribute("picture");
+        System.out.println("Picture "+photo);
 
-        User user = customOAuth2UserService.loadUser(email,name);
-        System.out.println("in side success handler after user"+user);
+        User user = customOAuth2UserService.loadUser(email, name,photo);
+        System.out.println("in side success handler after user" + user);
 
         try {
             String accessToken = jwtUtil.generateAccessToken(user);
@@ -50,12 +52,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
                     .httpOnly(false)
                     .path("/")
-                    .maxAge(Duration.ofSeconds(accessTokenTtlSeconds))
+                    .maxAge(Duration.ofSeconds(300))
                     .build();
             ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
                     .httpOnly(false)
                     .path("/")
-                    .maxAge(Duration.ofSeconds(refreshTokenTtlSeconds))
+                    .maxAge(Duration.ofSeconds(1200))
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());

@@ -20,7 +20,8 @@ export class ParcelRequestComponent {
     description: '',
     shortcode: '',
     recipientId: 0,
-    
+    name:''
+
   }
   users: Array<Users> = [
     // {id:1,name:'akshaj'},
@@ -32,10 +33,9 @@ export class ParcelRequestComponent {
       this.formData.recipientId = Number(form.value.username)
        console.log(this.formData)
       this.service.submitForm(this.formData).subscribe((res) => {
-       
+
         if (res) {
-          console.log('Form Submitted', this.formData);
-          alert(JSON.stringify(this.formData));
+          alert('New Parcel Created Successfully');
         }
         else{
           alert("Some error occured")
@@ -43,7 +43,7 @@ export class ParcelRequestComponent {
       })
 
     }
-
+form.resetForm();
   }
 
 

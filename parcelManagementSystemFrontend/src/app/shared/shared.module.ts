@@ -7,10 +7,19 @@ import { Sidebar } from './component/sidebar/sidebar';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Loader } from './component/loader/loader';
-
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
 @NgModule({
-  declarations: [Sidebar, LoginComponentComponent,Loader],
-  imports: [CommonModule, SharedRoutingModule, FormsModule, RouterModule],
+  declarations: [Sidebar, LoginComponentComponent, Loader],
+  imports: [CommonModule,
+    SharedRoutingModule,
+    FormsModule,
+    RouterModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatButtonModule
+  ],
   exports: [
     CommonModule,
     SharedRoutingModule,
@@ -18,7 +27,11 @@ import { Loader } from './component/loader/loader';
     FormsModule,
     LoginComponentComponent,
     Sidebar,
-Loader
+    Loader,
+     MatIconModule,
+    MatTooltipModule,
+    MatButtonModule 
+
   ],
 })
-export class SharedModule {}
+export class SharedModule { }

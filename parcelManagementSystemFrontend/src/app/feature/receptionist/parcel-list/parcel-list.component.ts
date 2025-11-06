@@ -2,7 +2,10 @@ import { Component, ViewChild } from '@angular/core';
 import { ReceptionistApiService } from '../../../core/service/receptionist-api.service';
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { finalize } from 'rxjs';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+// import { MatPaginator, PageEvent } from '@angular/material/paginator';
+// import { HttpErrorResponse } from '@angular/common/http';
+// import { MatFormField, MatLabel } from '@angular/material/form-field';
+// import { MatIcon } from '@angular/material/icon';
 @Component({
   selector: 'app-parcel-list',
   standalone: false,
@@ -11,10 +14,13 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 })
 export class ParcelListComponent {
   constructor(private service: ReceptionistApiService, private router: Router) {}
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  // @ViewChild(MatPaginator) paginator!: MatPaginator;
+  // @ViewChild(MatFormField) formField!: MatFormField;
+  // @ViewChild(MatLabel) label!: MatLabel;
+  // @ViewChild(MatIcon) icon!: MatIcon;
 
   ngOnInit(): any {
-    this.getParcels(0);
+    this.getParcels();
   }
   num: number = 0;
   //     // this.parcels = res
@@ -25,11 +31,13 @@ export class ParcelListComponent {
   //   console.error('API response did not contain an array of parcels:', res);
   //   this.parcels = []; // Assign an empty array to prevent the error
   // }
-  getParcels(num:number) {
+  getParcels() {
     this.service.fetchActiveParcel(this.num).subscribe((res) => {
-
+      console.log(res);
       this.parcels = res.content;
-      this.length = res.totalElements;
+      this.filteredparcels = this.parcels;
+      this.length = res.page.totalElements;
+      console.log(res.page.totalElements);
     });
   }
   parcels: Array<Parcel> = [
@@ -53,16 +61,27 @@ export class ParcelListComponent {
           this.loading = null;
         })
       )
-      .subscribe((res) => {
-        setTimeout(() => {
-          alert('Mail sent successfully');
-        }, 5000);
+      .subscribe({
+        next: (res) => {
+          alert('Otp resent successfully');
+        },
+        error: (err) => {
+          alert('Please try again, Message could not be sent');
+        },
       });
   }
 
   showPopup = false;
-  selecteditem: Parcel = { id: 0, shortcode: '', recipientName: '', status: '', description: '' };
-  popupData: Otp = { parcelId: 0, otp: 0 };
+  selecteditem: Parcel = {
+    id: 0,
+    shortcode: '',
+    recipientName: '',
+    status: '',
+    description: '',
+    createdAt: '',
+    parcelName: '',
+  };
+  popupData: Otp = { parcelId: 0, otp: null };
 
   openPopup(parcel: Parcel) {
     this.selecteditem = parcel;
@@ -76,9 +95,14 @@ export class ParcelListComponent {
 
   submitPopup(id: number) {
     this.popupData.parcelId = id;
-    this.service.validateOtp(this.popupData).subscribe((res) => {
-      alert('submitted successfully');
-      this.getParcels(this.num);
+    this.service.validateOtp(this.popupData).subscribe({
+      next: (res) => {
+        alert('submitted successfully');
+        this.getParcels();
+      },
+      error: (err) => {
+        alert('Invalid Otp');
+      },
     });
     this.closePopup();
   }
@@ -89,15 +113,19 @@ export class ParcelListComponent {
   }
 
   length: number = 0;
+  pageSize = 5;
+  onPageChange(event: any) {
+    console.log(event.pageIndex);
+    this.num = event.pageIndex;
+    this.getParcels();
+  }
 
-  onPageChange(event: PageEvent) {
-    this.service.fetchParcelHistory(event.pageIndex).subscribe((res) => {
-      console.log('Page event');
-      console.log(res);
-      this.parcels = res.content;
-      this.length = res.totalElements;
-      console.log('wbrivb', this.parcels);
-    });
+  filteredparcels: Array<Parcel> = [];
+  searchTerm: string = '';
+  onSearch() {
+    this.filteredparcels = this.parcels.filter((parcel) =>
+      parcel.recipientName.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
 }
 type Parcel = {
@@ -106,8 +134,10 @@ type Parcel = {
   recipientName: string;
   status: string;
   description: string;
+  parcelName: string;
+  createdAt: string;
 };
 type Otp = {
   parcelId: number;
-  otp: number;
+  otp: number | null;
 };

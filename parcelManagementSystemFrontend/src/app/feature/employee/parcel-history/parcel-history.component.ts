@@ -10,26 +10,41 @@ import { EmployeeApiService } from '../../../core/service/employee-api.service';
 export class ParcelHistoryComponent {
 
    constructor(private service: EmployeeApiService) { }
-    
-      ngOnInit(): any {
-        this.service.fetchParcel().subscribe((res) => {
-          this.parcels = res
-          console.log(this.parcels)
-        })
-      }
-      parcels: Array<Parcel> = [
-        //   { id: 1, shortcode: 'Random', recipientName: 'Akshaj', status: 'Received' },
-        // { id: 2, shortcode: 'Random', recipientName: 'Vishwa', status: 'Received' },
-        // { id: 3, shortcode: 'Random', recipientName: 'Tanishka', status: 'Received' },
-        // { id: 4, shortcode: 'Random', recipientName: 'Arun', status: 'Received' }
-      ]
-  
-  }
-  type Parcel = {
-    id: number,
-    shortcode: string,
-    recipientName: string,
-    status: string,
-    description: string
-  }
-
+   
+     parcels: Array<Parcel> = []
+     filteredParcels: Array<Parcel> = []
+     selectedFilter: string = 'ALL';
+     
+   
+     ngOnInit():void{
+       this.loadParcels();
+     }
+   
+   setParcels() {
+     this.filteredParcels = this.parcels.map(parcel => ({ ...parcel }));
+   }
+   
+   loadParcels():void {
+     this.service.fetchParcel().subscribe({
+       next:(res) =>{
+         this.parcels=res;
+         this.setParcels()
+         console.log("Parcels=",res);
+         console.log("FilteredParcels=",this.filteredParcels);
+         
+       },
+       error:(err)=>{
+         console.log("Error while fetching parcels",err);
+       }
+     });
+     }
+     
+   }
+     type Parcel = {
+       id: number,
+       shortcode: string,
+       parcelName: string,
+       status: string,
+       description: string,
+       createdAt: string
+     }
