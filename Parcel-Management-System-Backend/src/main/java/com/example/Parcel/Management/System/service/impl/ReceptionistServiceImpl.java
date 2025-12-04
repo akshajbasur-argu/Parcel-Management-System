@@ -51,8 +51,10 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     private final NotificationsRepo notificationsRepo;
 
     public ParcelResponseDto createParcel(RequestParcelDto parcelDto) {
+        System.out.println("in createParcel");
+
         Parcel parcel = Parcel.builder().recipient(userRepo.findById(parcelDto.getRecipientId()).orElseThrow(() -> new UsernameNotFoundException("User not Found")))
-                .receptionist(userRepo.findById(authUtil.getAuthorityId()).orElseThrow(() -> new UsernameNotFoundException("Receptionist not found")))
+                .receptionist(userRepo.findById((long)1).orElseThrow(() -> new UsernameNotFoundException("Receptionist not found")))
                 .shortcode(parcelDto.getShortcode()).status(Status.RECEIVED).description(parcelDto.getDescription()).trackingId("random tracking Id")
                 .name(parcelDto.getName())
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
@@ -64,8 +66,21 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         ParcelResponseDto parcelResponseDto = modelMapper.map(parcel, ParcelResponseDto.class);
 
         parcelResponseDto.setEmployeeId(parcel.getRecipient().getId());
+        System.out.println("out createParcel");
+
         return parcelResponseDto;
 
+    }
+    public RequestParcelDto createRequestParcelDto(String name){
+        System.out.println("in createRequestParcelDto");
+        User user =userRepo.findByEmail(name).orElseThrow(RuntimeException::new);
+        RequestParcelDto requestParcelDto = new RequestParcelDto();
+        requestParcelDto.setName(user.getName());
+        requestParcelDto.setDescription("new parcel");
+        requestParcelDto.setRecipientId(user.getId());
+        requestParcelDto.setShortcode("random");
+        System.out.println("out createRequestParcelDto");
+        return requestParcelDto;
     }
 
     private long getReceptionistId(String token) {

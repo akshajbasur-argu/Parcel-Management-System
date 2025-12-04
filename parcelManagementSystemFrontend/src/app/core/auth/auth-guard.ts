@@ -57,7 +57,8 @@ export class AuthGuard implements CanActivate {
       }
       this.router.navigate(['login']);
       return false;
-    } else if (this.isRefreshTokenValid()) {
+    }
+    else if (this.isRefreshTokenValid()) {
       this.authservice.refreshTokens().subscribe();
       return true;
     }

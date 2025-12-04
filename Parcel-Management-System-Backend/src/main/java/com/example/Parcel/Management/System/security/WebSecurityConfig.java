@@ -45,7 +45,7 @@ public class WebSecurityConfig {
                         .frameOptions(frameOptions -> frameOptions.disable())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ws/**","/ws", "/error", "/login/oauth2/**", "/api/auth/**").permitAll()
+                        .requestMatchers("/ws/**","/ws", "/error", "/login/oauth2/**", "/api/auth/**","/api/invoice/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/receptionist/**").hasAnyRole("RECEPTIONIST")
                         .requestMatchers("/api/v1/employee/**").hasRole("EMPLOYEE")
@@ -65,7 +65,7 @@ public class WebSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedOrigins(List.of("http://localhost:4200","https://sjkqbbn5-4200.inc1.devtunnels.ms"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
