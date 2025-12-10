@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { SelectNamesDialog } from '../select-names-dialog/select-names-dialog';
 import { MatDialog } from '@angular/material/dialog';
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   standalone: true,
   templateUrl: './camera-upload.html',
   styleUrl: './camera-upload.css',
-  imports: [MatIcon, CommonModule],
+  imports: [MatIcon],
 
 })
 export class CameraUpload {

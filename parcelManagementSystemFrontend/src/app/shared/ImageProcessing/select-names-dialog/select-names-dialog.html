@@ -11,19 +11,21 @@
     <div class="name-list">
       @for(u of data; track $index){
 
-      <div class="name-item"  [class.selected]="u.selected"
-        [style.animationDelay]="($index * 40) + 'ms'" (click)="toggle(u)">
-        <div class="left">
-          <div class="check-circle" [class.checked]="u.selected">
-            <span *ngIf="u.selected">✔</span>
-          </div>
+        <div class="name-item"  [class.selected]="u.selected"
+          [style.animationDelay]="($index * 40) + 'ms'" (click)="toggle(u)">
+          <div class="left">
+            <div class="check-circle" [class.checked]="u.selected">
+              @if (u.selected) {
+                <span>✔</span>
+              }
+            </div>
 
-          <div class="info">
-            <div class="name">{{ u.name }}</div>
+            <div class="info">
+              <div class="name">{{ u.name }}</div>
+            </div>
           </div>
         </div>
-      </div>
-    }
+      }
     </div>
   </div>
 

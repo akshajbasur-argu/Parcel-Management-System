@@ -1,7 +1,7 @@
 @if((loaderService.isLoading$|async)===true){
-<div class="fixed inset-0 flex items-center justify-center bg-white/75 z-50">
-  <app-loader></app-loader>
-</div>
+  <div class="fixed inset-0 flex items-center justify-center bg-white/75 z-50">
+    <app-loader></app-loader>
+  </div>
 }
 
 <div class="flex h-screen">
@@ -20,45 +20,46 @@
           <span class="material-symbols-outlined cursor-pointer">notifications</span>
 
           <!-- Red dot  -->
-          <span *ngIf=" notifications.length > 0 || notificationsFromDb.length>0"
+          @if ( notifications.length > 0 || notificationsFromDb.length>0) {
+            <span
             class="absolute top-0 right-0 h-3 w-3 bg-red-600 rounded-full border-2 border-white animate-pulse"></span>
+          }
         </button>
 
         <!-- Notification dropdown -->
-        <div *ngIf="showNotification"
-          class="absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-xl border border-gray-200 z-50">
-          <div class="flex justify-between items-center p-3 border-b">
-            <span class="font-semibold text-gray-700 text-sm">Notifications</span>
-            <button (click)="closeNotification()" class="text-gray-500 hover:text-black">✕</button>
-          </div>
-
-          <div class="max-h-64 overflow-y-auto">
-            @if (notificationsFromDb.length > 0) {
-            <div>
-              @for (n of notificationsFromDb; track $index) {
-              <div class="p-3 border-b border-gray-100 text-xs text-gray-700">
-                <div class="font-medium">{{ n.message }}</div>
-                <div class="text-gray-500 text-[11px]">From: {{ n.senderId }}&nbsp; {{n.senderName}}</div>
-
-                <div class="flex space-x-2 mt-2">
-                  <button (click)="submit('accepted', n.senderId, $index,n.id)"
-                    class="bg-green-500 text-white px-2 py-1 rounded text-[11px] hover:bg-green-600">
-                    Accept
-                  </button>
-                  <button (click)="submit('rejected', n.senderId, $index,n.id)"
-                    class="bg-red-500 text-white px-2 py-1 rounded text-[11px] hover:bg-red-600">
-                    Reject
-                  </button>
+        @if (showNotification) {
+          <div
+            class="absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-xl border border-gray-200 z-50">
+            <div class="flex justify-between items-center p-3 border-b">
+              <span class="font-semibold text-gray-700 text-sm">Notifications</span>
+              <button (click)="closeNotification()" class="text-gray-500 hover:text-black">✕</button>
+            </div>
+            <div class="max-h-64 overflow-y-auto">
+              @if (notificationsFromDb.length > 0) {
+                <div>
+                  @for (n of notificationsFromDb; track $index) {
+                    <div class="p-3 border-b border-gray-100 text-xs text-gray-700">
+                      <div class="font-medium">{{ n.message }}</div>
+                      <div class="text-gray-500 text-[11px]">From: {{ n.senderId }}&nbsp; {{n.senderName}}</div>
+                      <div class="flex space-x-2 mt-2">
+                        <button (click)="submit('accepted', n.senderId, $index,n.id)"
+                          class="bg-green-500 text-white px-2 py-1 rounded text-[11px] hover:bg-green-600">
+                          Accept
+                        </button>
+                        <button (click)="submit('rejected', n.senderId, $index,n.id)"
+                          class="bg-red-500 text-white px-2 py-1 rounded text-[11px] hover:bg-red-600">
+                          Reject
+                        </button>
+                      </div>
+                    </div>
+                  }
                 </div>
-              </div>
+              } @else {
+                <div class="p-3 text-center text-gray-500 text-xs">No notifications</div>
               }
             </div>
-            } @else {
-            <div class="p-3 text-center text-gray-500 text-xs">No notifications</div>
-
-            }
           </div>
-        </div>
+        }
       </div>
     </div>
   </div>
