@@ -1,78 +1,88 @@
 <div
   class="h-screen bg-[#903564] text-white flex flex-col shadow-2xl transition-all duration-300 ease-in-out"
   [ngClass]="{ 'w-64': !collapsed, 'w-20': collapsed }"
->
+  >
 
   <!-- Header / Branding -->
   <div class="flex items-center justify-between px-4 py-6 border-b border-white">
-    <div *ngIf="!collapsed" class="text-xl font-bold tracking-wide">📦 ParcelApp</div>
+    @if (!collapsed) {
+      <div class="text-xl font-bold tracking-wide">📦 ParcelApp</div>
+    }
     <!-- <button
-      mat-icon-button
-      (click)="toggleSidebar()"
-      [matTooltip]="collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
-      matTooltipPosition="right"
-      class="text-white hover:text-white transition"
+    mat-icon-button
+    (click)="toggleSidebar()"
+    [matTooltip]="collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
+    matTooltipPosition="right"
+    class="text-white hover:text-white transition"
     >
-      <mat-icon class="text-white">{{ collapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
-    </button> -->
-  </div>
+    <mat-icon class="text-white">{{ collapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+  </button> -->
+</div>
 
-  <!-- User Profile -->
-  <div *ngIf="!collapsed" class="flex items-center gap-3 px-4 py-4 border-b border-white">
+<!-- User Profile -->
+@if (!collapsed) {
+  <div class="flex items-center gap-3 px-4 py-4 border-b border-white">
     <img src={{user.picture}} class="w-10 h-10 rounded-full" alt="User avatar" />
     <div>
       <p class="text-sm font-medium">{{user.name}}</p>
       <p class="text-xs text-[#ffffffb3]">{{user.role}}</p>
     </div>
   </div>
+}
 
-  <!-- Navigation -->
-  <nav class="flex-1 overflow-y-auto px-2 py-4 custom-scroll">
-    @for (item of menuItems; track $index) {
-      <a
-        [routerLink]="item.route"
-        [routerLinkActiveOptions]="{ exact: true }"
-        routerLinkActive="bg-[#802f59] border-l-4 border-primary text-white"
-        class="group flex items-center gap-4 px-4 py-3 rounded-md transition-all duration-200 border-l-4 border-transparent hover:bg-[#802f59] hover:text-white relative"
+<!-- Navigation -->
+<nav class="flex-1 overflow-y-auto px-2 py-4 custom-scroll">
+  @for (item of menuItems; track $index) {
+    <a
+      [routerLink]="item.route"
+      [routerLinkActiveOptions]="{ exact: true }"
+      routerLinkActive="bg-[#802f59] border-l-4 border-primary text-white"
+      class="group flex items-center gap-4 px-4 py-3 rounded-md transition-all duration-200 border-l-4 border-transparent hover:bg-[#802f59] hover:text-white relative"
       >
-        <!-- Material Icon -->
-        <mat-icon
-          [matTooltip]="collapsed ? item.label : ''"
-          matTooltipPosition="right"
+      <!-- Material Icon -->
+      <mat-icon
+        [matTooltip]="collapsed ? item.label : ''"
+        matTooltipPosition="right"
           class="text-gray-400 group-hover:rotate-[-12deg]
           group-hover:bg-[#802f59] transition-transform duration-300"
-          [ngClass]="{ 'mx-auto': collapsed }"
+        [ngClass]="{ 'mx-auto': collapsed }"
         >
-          {{ item.icon }}
-        </mat-icon>
+        {{ item.icon }}
+      </mat-icon>
 
-        <!-- Label (hidden if collapsed) -->
-        <span *ngIf="!collapsed" class="text-sm font-medium">{{ item.label }}</span>
-      </a>
-    }
+      <!-- Label (hidden if collapsed) -->
+      @if (!collapsed) {
+        <span class="text-sm font-medium">{{ item.label }}</span>
+      }
+    </a>
+  }
 
-    <!-- Logout -->
-    <div class="mt-8 border-t border-white pt-4">
-      <a
-        (click)="logout()"
-        class="group flex items-center gap-4 px-4 py-3 rounded-md text-black hover:bg-gray-700 hover:text-white transition-all duration-200 border-l-4 border-transparent hover:border-red-500"
+  <!-- Logout -->
+  <div class="mt-8 border-t border-white pt-4">
+    <a
+      (click)="logout()"
+      class="group flex items-center gap-4 px-4 py-3 rounded-md text-black hover:bg-gray-700 hover:text-white transition-all duration-200 border-l-4 border-transparent hover:border-red-500"
       >
-        <mat-icon
-          matTooltip="Logout"
-          matTooltipPosition="right"
-          class="text-lg group-hover:rotate-[-12deg] transition-transform duration-300"
-          [ngClass]="{ 'mx-auto': collapsed }"
+      <mat-icon
+        matTooltip="Logout"
+        matTooltipPosition="right"
+        class="text-lg group-hover:rotate-[-12deg] transition-transform duration-300"
+        [ngClass]="{ 'mx-auto': collapsed }"
         >
-          logout
-        </mat-icon>
-        <span *ngIf="!collapsed" class="text-sm font-medium">Logout</span>
-      </a>
-    </div>
-  </nav>
-
-  <!-- Footer -->
-  <div class="p-4 border-t  text-[11px] border-white text-center">
-    <p *ngIf="!collapsed">© 2025 ParcelApp</p>
-    <p class="text-[10px] mt-1 opacity-60">v1.0.0</p>
+        logout
+      </mat-icon>
+      @if (!collapsed) {
+        <span class="text-sm font-medium">Logout</span>
+      }
+    </a>
   </div>
+</nav>
+
+<!-- Footer -->
+<div class="p-4 border-t  text-[11px] border-white text-center">
+  @if (!collapsed) {
+    <p>© 2025 ParcelApp</p>
+  }
+  <p class="text-[10px] mt-1 opacity-60">v1.0.0</p>
+</div>
 </div>
