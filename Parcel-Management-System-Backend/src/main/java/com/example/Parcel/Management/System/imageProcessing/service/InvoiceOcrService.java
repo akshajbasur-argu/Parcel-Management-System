@@ -1,46 +1,128 @@
 package com.example.Parcel.Management.System.imageProcessing.service;
 
+import jakarta.annotation.PostConstruct;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.imaging.Imaging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.io.*;
+import java.nio.file.*;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class InvoiceOcrService {
 
-//    private final Tesseract tesseract;
-//
-//    public InvoiceOcrService() {
-//        tesseract = new Tesseract();
-//        tesseract.setDatapath("src/main/resources/tessdata");
-//        tesseract.setLanguage("eng");
-//    }
-//
-//    public String extractText(File file) {
-//        System.out.println("inside s1");
-//        try {
-//            System.out.println("inside s2");
-//            return tesseract.doOCR(file);
-//        } catch (TesseractException e) {
-//            throw new RuntimeException("OCR failed: " + e.getMessage(), e);
-//        }
-//    }
-private static final String TESSERACT_PATH = "/home/akshajb@id.argusoft.com/miniconda3/bin/tesseract";
+    private Path baseDir;
+    private Path tesseractExecutable;
+    private Path tessdataDir;
+    private Path libDir;
 
-@Autowired
-private  InvoiceNameExtractor invoiceNameExtractor;
+    @Autowired
+    private InvoiceNameExtractor invoiceNameExtractor;
+
+    // ---------------------------------------------------------------------
+    // Init: extract binary, libs, tessdata from JAR to user home
+    // ---------------------------------------------------------------------
+    @PostConstruct
+    public void init() throws IOException {
+        String userHome = System.getProperty("user.home");
+        this.baseDir = Paths.get(userHome, ".embedded-tesseract");
+        Files.createDirectories(baseDir);
+
+        this.tesseractExecutable = extractTesseractBinary("/tesseract/bin/tesseract");
+        this.libDir = extractLibs("/tesseract/lib");
+        this.tessdataDir = extractTessdata("/tesseract/tessdata");
+
+    }
+
+    private Path extractTesseractBinary(String resourcePath) throws IOException {
+        Path dest = baseDir.resolve("tesseract");
+
+        try (InputStream in = getClass().getResourceAsStream(resourcePath)) {
+            if (in == null) {
+                throw new FileNotFoundException("Tesseract binary resource not found: " + resourcePath);
+            }
+            Files.copy(in, dest, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        dest.toFile().setExecutable(true, true);
+        try {
+            Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxr-xr-x");
+            Files.setPosixFilePermissions(dest, perms);
+        } catch (UnsupportedOperationException ignore) {
+            // Non-POSIX (e.g. Windows) – ignore
+        }
+        return dest;
+    }
+
+    /**
+     * Extract all needed .so files from /tesseract/lib in resources.
+     * For simplicity we list them manually in a map.
+     */
+    private Path extractLibs(String resourceBasePath) throws IOException {
+        Path libDir = baseDir.resolve("lib");
+        Files.createDirectories(libDir);
+
+        Map<String, String> libs = new HashMap<>();
+        libs.put(resourceBasePath + "/libtesseract.so.5", "libtesseract.so.5");
+        libs.put(resourceBasePath + "/liblept.so.5", "liblept.so.5");
+        libs.put(resourceBasePath + "/libjpeg.so.9", "libjpeg.so.9");
+        libs.put(resourceBasePath + "/libtiff.so.5", "libtiff.so.5");
+
+        // add more if needed later
+
+        for (Map.Entry<String, String> entry : libs.entrySet()) {
+            String resPath = entry.getKey();
+            Path target = libDir.resolve(entry.getValue());
+            try (InputStream in = getClass().getResourceAsStream(resPath)) {
+                if (in == null) {
+                    throw new FileNotFoundException("Library resource not found: " + resPath);
+                }
+                Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+            }
+        }
+
+        return libDir;
+    }
+
+    private Path extractTessdata(String resourceBasePath) throws IOException {
+        Path tessDir = baseDir.resolve("tessdata");
+        Files.createDirectories(tessDir);
+
+        // At minimum, ENG:
+        copyResource(resourceBasePath + "/eng.traineddata",
+                tessDir.resolve("eng.traineddata"));
+
+        // If you have more languages, add here:
+        // copyResource(resourceBasePath + "/hin.traineddata",
+        //              tessDir.resolve("hin.traineddata"));
+
+        return tessDir;
+    }
+
+    private void copyResource(String resourcePath, Path target) throws IOException {
+        try (InputStream in = getClass().getResourceAsStream(resourcePath)) {
+            if (in == null) {
+                throw new FileNotFoundException("Resource not found: " + resourcePath);
+            }
+            Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // Image preprocessing
+    // ---------------------------------------------------------------------
     private File preprocessImage(File inputImage) throws Exception {
-
         BufferedImage original = Imaging.getBufferedImage(inputImage);
 
-        // 1. Convert to grayscale
+        // 1. Grayscale
         BufferedImage gray = new BufferedImage(
                 original.getWidth(),
                 original.getHeight(),
@@ -50,12 +132,12 @@ private  InvoiceNameExtractor invoiceNameExtractor;
         g.drawImage(original, 0, 0, null);
         g.dispose();
 
-        // 2. Resize (Tesseract works best around 300 DPI)
+        // 2. Resize
         BufferedImage resized = Thumbnails.of(gray)
-                .scale(2.0)           // upscale ×2 for clarity
+                .scale(2.0)   // x2 for clarity
                 .asBufferedImage();
 
-        // 3. Apply binary threshold (simple but effective)
+        // 3. Threshold
         BufferedImage threshold = new BufferedImage(
                 resized.getWidth(),
                 resized.getHeight(),
@@ -66,56 +148,65 @@ private  InvoiceNameExtractor invoiceNameExtractor;
             for (int x = 0; x < resized.getWidth(); x++) {
                 int rgb = resized.getRGB(x, y);
                 int r = rgb & 0xFF;
-                int value = (r < 140) ? 0 : 255; // strong contrast threshold
+                int value = (r < 140) ? 0 : 255;
                 int newRgb = (value << 16) | (value << 8) | value;
                 threshold.setRGB(x, y, newRgb);
             }
         }
 
-        // 4. Save preprocessed file
         File cleaned = File.createTempFile("cleaned_ocr", ".png");
         ImageIO.write(threshold, "png", cleaned);
-
+        cleaned.deleteOnExit();
         return cleaned;
     }
 
-
+    // ---------------------------------------------------------------------
+    // OCR using embedded Tesseract + libs
+    // ---------------------------------------------------------------------
     public String extractText(File image) throws Exception {
-
-        // 1. Preprocess Image
-
+        // 1. Preprocess
         File cleanedImage = image;
-        File debugFile = new File("/tmp/cleaned_debug.jpg");
-        Files.copy(cleanedImage.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        System.out.println("DEBUG CLEANED IMAGE SAVED AT: " + debugFile.getAbsolutePath());
-
-        // 2. Prepare output file
+        // 2. Temp output base (Tesseract appends .txt)
         File tempOutput = File.createTempFile("ocr_output", ".txt");
+        tempOutput.deleteOnExit();
+        String outputBase = tempOutput.getAbsolutePath().replace(".txt", "");
 
-        // 3. Run Tesseract CLI
+        // 3. Build command
         ProcessBuilder pb = new ProcessBuilder(
-                TESSERACT_PATH,
+                tesseractExecutable.toString(),
                 cleanedImage.getAbsolutePath(),
-                tempOutput.getAbsolutePath().replace(".txt", "")
+                outputBase,
+                "--tessdata-dir", tessdataDir.toString(),
+                "-l", "eng"
         );
+
+        // Environment
+        Map<String, String> env = pb.environment();
+        env.put("TESSDATA_PREFIX", baseDir.toString());
+
+        // Critical: make loader see our embedded libs
+        String existingLd = env.getOrDefault("LD_LIBRARY_PATH", "");
+        String newLd = libDir.toString() +
+                (existingLd.isEmpty() ? "" : File.pathSeparator + existingLd);
+        env.put("LD_LIBRARY_PATH", newLd);
 
         pb.redirectErrorStream(true);
         Process process = pb.start();
 
-        String terminalOutput = new String(process.getInputStream().readAllBytes());
-        int exitCode = process.waitFor();
-
-        if (exitCode != 0) {
-            throw new RuntimeException("Tesseract error: " + terminalOutput);
+        String terminalOutput;
+        try (InputStream is = process.getInputStream()) {
+            terminalOutput = new String(is.readAllBytes());
         }
 
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            throw new RuntimeException(
+                    "Tesseract error (exit code " + exitCode + "): " + terminalOutput
+            );
+        }
 
         String ocrText = Files.readString(tempOutput.toPath());
-        System.out.println(ocrText+"TEXT");
-        // 4. Extract the customer name using your fuzzy logic
         return invoiceNameExtractor.extractCustomerName(ocrText);
     }
-
 }
-
