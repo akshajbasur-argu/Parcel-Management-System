@@ -1,0 +1,188 @@
+:host {
+  display: block;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* -------- TITLE / SUBTITLE -------- */
+
+.title {
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.subtitle {
+  margin-bottom: 10px;
+  color: #6b7280;
+  font-size: 0.82rem;
+}
+
+/* -------- CONTENT WRAPPER -------- */
+
+.content {
+  animation: fadeSlideIn 200ms ease-out;
+  max-height: 260px;
+  /* keeps dialog from growing too tall */
+  overflow-y: auto;
+  padding-right: 4px;
+  /* avoid scrollbar overlapping text */
+}
+
+/* -------- NAME LIST -------- */
+
+.name-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.name-item {
+  display: flex;
+  align-items: center;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+  cursor: pointer;
+  animation: itemPop 200ms ease-out backwards;
+}
+
+.name-item:hover {
+  background: #eef2ff;
+  border-color: #e0ecff;
+  box-shadow: 0 6px 14px rgba(148, 163, 184, 0.35);
+}
+
+.name-item.selected {
+  border-color: #2563eb;
+  background: #e0ecff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+}
+
+/* Layout inside item */
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.check-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: 2px solid #9ca3af;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem;
+  color: white;
+  background: #f9fafb;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease;
+}
+
+.check-circle.checked {
+  background: #2563eb;
+  border-color: #1d4ed8;
+}
+
+.info .name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.info .score {
+  font-size: 0.74rem;
+  color: #6b7280;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.score-pill {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+/* -------- FOOTER BUTTONS -------- */
+
+.footer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn {
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  border: none;
+  cursor: pointer;
+  transition:
+    background 130ms ease,
+    color 130ms ease,
+    box-shadow 130ms ease,
+    opacity 130ms ease;
+}
+
+.btn.ghost {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.btn.ghost:hover {
+  background: #e5e7eb;
+  box-shadow: 0 4px 10px rgba(148, 163, 184, 0.4);
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, #0ea5e9, #0369a1);
+  color: #f9fafb;
+  box-shadow: 0 8px 18px rgba(56, 189, 248, 0.4);
+}
+
+.btn.primary:hover {
+  box-shadow: 0 10px 22px rgba(56, 189, 248, 0.55);
+}
+
+/* -------- ANIMATIONS -------- */
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes itemPop {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

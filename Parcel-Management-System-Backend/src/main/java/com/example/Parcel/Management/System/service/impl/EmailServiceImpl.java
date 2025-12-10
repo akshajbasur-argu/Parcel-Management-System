@@ -34,10 +34,33 @@ public class EmailServiceImpl implements EmailService {
 
     public String getEmailDetails(EmailDto responseDto) {
         EmailDetails details = new EmailDetails();
-        details.setSubject("Parcel confirmed");
+        details.setSubject("Your Parcel Has Arrived – Ready for Pickup");
         details.setReciepient(responseDto.getRecipientEmail());
-        details.setMessageBody("Short Code:  " + responseDto.getShortcode() + "\n"
-                + "Otp:  " + responseDto.getOtp());
+        if(responseDto.getShortcode().equals("No barcode found in image")){
+            details.setMessageBody(
+                    "Dear User,\n\n" +
+                            "We are pleased to inform you that your parcel has been successfully received at the reception of your office.\n\n" +
+                            "You may collect your parcel at your convenience during office working hours.\n\n" +
+                            "If you have any questions or require further assistance, please feel free to reach out to us.\n\n" +
+                            "Thank you, and we look forward to serving you.\n\n" +
+                            "Best regards,\n" +
+                            "Reception Team\n" +
+                            "Argusoft"
+            );
+        }
+        else {
+            details.setMessageBody(
+                    "Dear User,\n\n" +
+                            "We are pleased to inform you that your parcel has been successfully received at the reception of your office.\n\n" +
+                            "You may collect your parcel at your convenience during office working hours. The Shortcode on your parcel is :" +responseDto.getShortcode()+"\n\n" +
+                            "If you have any questions or require further assistance, please feel free to reach out to us.\n\n" +
+                            "Thank you, and we look forward to serving you.\n\n" +
+                            "Best regards,\n" +
+                            "Reception Team\n" +
+                            "Argusoft"
+            );
+        }
+
 
         return sendMail(details);
     }

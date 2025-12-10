@@ -22,7 +22,7 @@ public class InvoiceNameExtractor {
         if (trigger.find()) {
 
             int startIdx = trigger.end();
-            int endIdx = Math.min(startIdx + 20, text.length());
+            int endIdx = Math.min(startIdx + 30, text.length());
 
             String slice = text.substring(startIdx, endIdx);
 

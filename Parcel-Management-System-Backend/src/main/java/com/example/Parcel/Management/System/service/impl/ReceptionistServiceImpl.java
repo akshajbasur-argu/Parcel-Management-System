@@ -71,16 +71,29 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         return parcelResponseDto;
 
     }
-    public RequestParcelDto createRequestParcelDto(String name){
+    public RequestParcelDto createRequestParcelDto(String name, String barcodeString){
         System.out.println("in createRequestParcelDto");
         User user =userRepo.findByEmail(name).orElseThrow(RuntimeException::new);
         RequestParcelDto requestParcelDto = new RequestParcelDto();
         requestParcelDto.setName(user.getName());
         requestParcelDto.setDescription("new parcel");
         requestParcelDto.setRecipientId(user.getId());
-        requestParcelDto.setShortcode("random");
+        requestParcelDto.setShortcode(barcodeString);
         System.out.println("out createRequestParcelDto");
         return requestParcelDto;
+    }
+    public boolean findByMailAndShortCode(String barcodeString){
+        System.out.println(authUtil.getAuthorityName());
+        Parcel parcel = parcelRepo.findFirstByRecipientEmailAndShortcodeAndStatus(authUtil.getAuthorityName(),barcodeString,Status.RECEIVED).orElse(null);
+        if(parcel!=null){
+            parcel.setStatus(Status.PICKED_UP);
+            long otpId = parcel.getOtp().getId();
+            parcel.setOtp(null);
+            otpRepo.deleteById(otpId);
+            parcelRepo.save(parcel);
+            return true;
+        }
+        return false;
     }
 
     private long getReceptionistId(String token) {

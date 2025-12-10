@@ -13,7 +13,7 @@ export class AuthService {
     private http: HttpClient,
     private cookieService: CookieService,
     private router: Router
-  ) {}
+  ) { }
 
   public loginWithGoogle() {
     window.location.href = 'http://localhost:8081/oauth2/authorization/google';

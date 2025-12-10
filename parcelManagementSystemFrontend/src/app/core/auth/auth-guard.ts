@@ -52,6 +52,8 @@ export class AuthGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<GuardResult> {
     // console.log('inside can activacte');
     if (this.isAccessTokenValid()) {
+      if(!route.data['role'])
+        return true;
       if (route.data['role'] === this.getRole()) {
         return true;
       }

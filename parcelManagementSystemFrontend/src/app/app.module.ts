@@ -18,9 +18,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
   declarations: [
     AppComponent,
-    OauthcallbackComponent
-
-
+    OauthcallbackComponent,
+    
 
   ],
 
@@ -29,6 +28,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     FormsModule, HttpClientModule,
     RouterModule,CommonModule,MatPaginatorModule,
     ToastrModule.forRoot(),BrowserAnimationsModule,
+    
 
   ],
   providers: [

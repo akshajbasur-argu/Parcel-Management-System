@@ -48,6 +48,7 @@ export class ReceptionistDashboardComponent implements OnInit {
     { label: 'View Users', route: 'users', icon: 'view_agenda' },
     { label: 'Create New Parcel', route: 'parcels/create', icon: 'add_ad' },
     { label: 'Parcel History', route: 'parcels/history', icon: 'history' },
+    { label: 'Scan Invoice', route: '/invoice', icon:'receipt'}
   ];
   toggleNotifications() {
     this.showNotifications = !this.showNotifications;

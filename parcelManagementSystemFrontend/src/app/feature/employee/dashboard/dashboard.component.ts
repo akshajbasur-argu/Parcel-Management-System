@@ -18,7 +18,8 @@ export class DashboardComponent {
     private employeeService: EmployeeApiService,
     public loaderService: LoaderService
   ) {
-    this.employeeService.getUserId().subscribe((res) => {(this.notificationService.subscribeToEmployeeNotifications(res))
+    this.employeeService.getUserId().subscribe((res) => {
+      (this.notificationService.subscribeToEmployeeNotifications(res))
 
     });
     this.notificationService.notifications$.subscribe((n) => (this.notifications = n));
@@ -27,7 +28,9 @@ export class DashboardComponent {
       this.notificationsFromDb = res;
     });
   }
-  menuItems = [{ label: 'Parcel History', route: 'parcels', icon: 'history' }];
+  menuItems = [{ label: 'Parcel History', route: 'parcels', icon: 'history' },
+  { label: 'Scan Invoice', route: '/invoice', icon: 'receipt' }
+  ];
 
   notificationsFromDb: Array<notifications> = [];
   notifications: Array<notifications> = [];
@@ -56,8 +59,7 @@ export class DashboardComponent {
     });
     this.notificationsFromDb.splice(index, 1);
     this.notifications.pop();
-    if(this.notificationsFromDb.length===0)
-    {this.showNotification=false;}
+    if (this.notificationsFromDb.length === 0) { this.showNotification = false; }
   }
 }
 type notifications = {

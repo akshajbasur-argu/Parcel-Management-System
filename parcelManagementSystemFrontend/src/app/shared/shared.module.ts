@@ -10,8 +10,10 @@ import { Loader } from './component/loader/loader';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
+// import { CameraUpload } from './ImageProcessing/camera-upload/camera-upload';
+import { SelectNamesDialog } from './ImageProcessing/select-names-dialog/select-names-dialog';
 @NgModule({
-  declarations: [Sidebar, LoginComponentComponent, Loader],
+  declarations: [Sidebar, LoginComponentComponent, Loader,SelectNamesDialog],
   imports: [CommonModule,
     SharedRoutingModule,
     FormsModule,

@@ -23,19 +23,25 @@ public class FetchNameFromDBService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie",
-                "JSESSIONID=080748A870D1935B11337676C0C26207; XSRF-TOKEN=7e17d4e1-1dcc-4d16-931d-94985923238e");
+                "JSESSIONID=4ACB892BC994906042E1ED73E6BE70F6; XSRF-TOKEN=8cc7c1fa-e5ec-446d-8d81-51a7e2ade713");
 
         HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<List<UserInfo>> response =
-                restTemplate.exchange(
-                        url,
-                        HttpMethod.GET,
-                        entity,
-                        new ParameterizedTypeReference<List<UserInfo>>() {}
-                );
-
+        ResponseEntity<List<UserInfo>> response;
+        try {
+            response=
+                    restTemplate.exchange(
+                            url,
+                            HttpMethod.GET,
+                            entity,
+                            new ParameterizedTypeReference<List<UserInfo>>() {
+                            }
+                    );
+        }
+        catch (Exception e){
+            throw  new RuntimeException("Token Expired");
+        }
         return response.getBody();
+
 
     }
 

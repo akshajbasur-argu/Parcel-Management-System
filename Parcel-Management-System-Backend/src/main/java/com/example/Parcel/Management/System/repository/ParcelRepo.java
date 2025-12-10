@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ParcelRepo extends JpaRepository<Parcel, Long> {
@@ -18,4 +19,11 @@ public interface ParcelRepo extends JpaRepository<Parcel, Long> {
     List<Parcel> findByRecipient(@Param("id") int id);
 
     Page<Parcel> findByStatus(Pageable pageable, Status status);
+
+    Optional<Parcel> findFirstByRecipientEmailAndShortcodeAndStatus(
+            String email,
+            String shortcode,
+            Status status
+    );
 }
+

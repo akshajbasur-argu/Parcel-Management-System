@@ -1,0 +1,34 @@
+<div style="padding: 50px;">
+  <h2 class="title">
+    Select users
+  </h2>
+
+  <p class="subtitle">
+    We found multiple possible matches from the invoice. Choose the correct user(s).
+  </p>
+
+  <div class="content">
+    <div class="name-list">
+      @for(u of data; track $index){
+
+      <div class="name-item"  [class.selected]="u.selected"
+        [style.animationDelay]="($index * 40) + 'ms'" (click)="toggle(u)">
+        <div class="left">
+          <div class="check-circle" [class.checked]="u.selected">
+            <span *ngIf="u.selected">✔</span>
+          </div>
+
+          <div class="info">
+            <div class="name">{{ u.name }}</div>
+          </div>
+        </div>
+      </div>
+    }
+    </div>
+  </div>
+
+  <div class="footer">
+    <button class="btn ghost" (click)="close()">Cancel</button>
+    <button class="btn primary" (click)="confirm()">Confirm</button>
+  </div>
+</div>

@@ -7,6 +7,7 @@ import { ReceptionistLayoutComponent } from './layout/receptionist-layout/recept
 import { EmployeeLayoutComponent } from './layout/employee-layout/employee-layout.component';
 import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
 import { OauthcallbackComponent } from './feature/oauthcallback/oauthcallback.component';
+import { CameraUpload } from './shared/ImageProcessing/camera-upload/camera-upload';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -32,6 +33,12 @@ const routes: Routes = [
         (m) => m.ReceptionistLayoutModule
       ),canActivate:[AuthGuard],data:{role: 'RECEPTIONIST'}
   },
+  {
+  path: 'invoice',
+  loadComponent: () =>
+    import('./shared/ImageProcessing/camera-upload/camera-upload')
+      .then(m => m.CameraUpload),canActivate:[AuthGuard]}
+
 ];
 
 @NgModule({
