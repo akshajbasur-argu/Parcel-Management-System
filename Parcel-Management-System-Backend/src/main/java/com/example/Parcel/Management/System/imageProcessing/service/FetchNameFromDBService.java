@@ -23,7 +23,7 @@ public class FetchNameFromDBService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie",
-                "JSESSIONID=4ACB892BC994906042E1ED73E6BE70F6; XSRF-TOKEN=8cc7c1fa-e5ec-446d-8d81-51a7e2ade713");
+                "JSESSIONID=F797ECE6150361D254285AA87EE23547; XSRF-TOKEN=a9095edd-daa0-4d10-991f-f96618ea614e");
 
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         ResponseEntity<List<UserInfo>> response;

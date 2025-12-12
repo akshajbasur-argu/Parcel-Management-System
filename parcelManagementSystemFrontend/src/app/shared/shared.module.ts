@@ -12,15 +12,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 // import { CameraUpload } from './ImageProcessing/camera-upload/camera-upload';
 import { SelectNamesDialog } from './ImageProcessing/select-names-dialog/select-names-dialog';
+import { DownloadAppButtonComponent } from './component/download-app-button/download-app-button.component';
 @NgModule({
-  declarations: [Sidebar, LoginComponentComponent, Loader,SelectNamesDialog],
+  declarations: [Sidebar, LoginComponentComponent, Loader,SelectNamesDialog, ],
   imports: [CommonModule,
     SharedRoutingModule,
     FormsModule,
     RouterModule,
     MatIconModule,
     MatTooltipModule,
-    MatButtonModule
+    MatButtonModule,
+    DownloadAppButtonComponent
   ],
   exports: [
     CommonModule,

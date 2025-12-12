@@ -5,7 +5,6 @@ import { NotificationService } from '../../../core/service/notification.service'
 import { CookieService } from 'ngx-cookie-service';
 import { jwtDecode } from 'jwt-decode';
 import { ReceptionistApiService } from '../../../core/service/receptionist-api.service';
-
 @Component({
   selector: 'receptionist-dashboard',
   standalone: false,

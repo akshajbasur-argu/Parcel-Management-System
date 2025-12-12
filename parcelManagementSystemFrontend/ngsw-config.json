@@ -1,0 +1,91 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.csr.html",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/**/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "auth-api",
+      "urls": [
+        "http://localhost:8081/api/auth/refresh",
+        "http://localhost:8081/api/auth/user/details"
+      ],
+      "cacheConfig": {
+        "maxSize": 20,
+        "maxAge": "1h",
+        "strategy": "freshness",
+        "timeout": "5s"
+      }
+    },
+    {
+      "name": "admin-api",
+      "urls": [
+        "http://localhost:8081/api/v1/admin/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 50,
+        "maxAge": "1d",
+        "strategy": "freshness",
+        "timeout": "5s"
+      }
+    },
+    {
+      "name": "employee-api",
+      "urls": [
+        "http://localhost:8081/api/v1/employee/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "1d",
+        "strategy": "freshness",
+        "timeout": "5s"
+      }
+    },
+    {
+  "name": "receptionist-api",
+  "urls": [
+    "http://localhost:8081/api/v1/receptionist/users",
+    "http://127.0.0.1:8081/api/v1/receptionist/users",
+    "/api/v1/receptionist/users",
+
+    "http://localhost:8081/api/v1/receptionist/parcels/**",
+    "http://127.0.0.1:8081/api/v1/receptionist/parcels/**",
+    "/api/v1/receptionist/parcels/**",
+
+    "http://localhost:8081/api/v1/receptionist/parcels/history/**",
+    "http://127.0.0.1:8081/api/v1/receptionist/parcels/history/**",
+    "/api/v1/receptionist/parcels/history/**"
+  ],
+  "cacheConfig": {
+    "maxSize": 200,
+    "maxAge": "7d",
+    "strategy": "performance",
+    "timeout": "5s"
+  }
+}
+  ]
+}
