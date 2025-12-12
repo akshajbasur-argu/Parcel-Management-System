@@ -16,6 +16,8 @@ import { ParcelListComponent } from '../../feature/receptionist/parcel-list/parc
 import { FormsModule } from '@angular/forms';
 import { ParcelHistoryComponent } from '../../feature/receptionist/parcel-history/parcel-history.component';
 import { UserListComponent } from '../../feature/receptionist/user-list/user-list.component';
+import { OnlineIndicatorComponent } from '../../shared/online-indicator/online-indicator.component';
+
 
 @NgModule({
   declarations: [
@@ -40,6 +42,7 @@ import { UserListComponent } from '../../feature/receptionist/user-list/user-lis
     CommonModule,
     DatePipe,
     MatPaginator,
+    OnlineIndicatorComponent
   ],
 })
 export class ReceptionistLayoutModule {}
