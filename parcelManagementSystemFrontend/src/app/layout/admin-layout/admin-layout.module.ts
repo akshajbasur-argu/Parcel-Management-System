@@ -10,6 +10,7 @@ import { RoleComponent } from '../../feature/admin/role/role.component';
 import { ParcelHistoryComponent } from '../../feature/admin/parcel-history/parcel-history.component';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInput, MatInputModule } from '@angular/material/input';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -28,7 +29,9 @@ import { MatInput, MatInputModule } from '@angular/material/input';
     DatePipe,
     MatFormFieldModule,
     MatInputModule,
-   MatLabel,MatInput
+   MatLabel,MatInput,
+   MatIcon,
+   MatIconModule
   ]
 })
 export class AdminLayoutModule { }

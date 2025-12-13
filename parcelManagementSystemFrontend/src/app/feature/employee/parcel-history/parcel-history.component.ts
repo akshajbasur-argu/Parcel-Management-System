@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { EmployeeApiService } from '../../../core/service/employee-api.service';
 import { NotificationService } from '../../../core/service/notification.service';
+import { SidebarService } from '../../../shared/services/sidebar';
 
 @Component({
   selector: 'app-parcel-history',
@@ -10,18 +11,36 @@ import { NotificationService } from '../../../core/service/notification.service'
 })
 export class ParcelHistoryComponent {
 
-   constructor(private service: EmployeeApiService,private notificationService:NotificationService) { }
+   constructor(private service: EmployeeApiService,private notificationService:NotificationService, public sidebarService:SidebarService) { }
 
      parcels: Array<Parcel> = []
      filteredParcels: Array<Parcel> = []
      selectedFilter: string = 'ALL';
+     isMobile: boolean = false;
+     sidebarCollapsed: boolean = false;
 
 
      ngOnInit():void{
        this.loadParcels();
+       this.checkMobile();
+       window.addEventListener('resize', () => this.checkMobile());
 
 
      }
+
+     checkMobile() {
+  this.isMobile = window.innerWidth < 768;
+}
+
+  toggleSidebar() {
+  // Emit event to parent or use a service to toggle sidebar
+    this.sidebarService.toggleSidebar();
+}
+
+shouldShowParcel(parcel: any, filter: string): boolean {
+  if (filter === 'ALL') return true;
+  return parcel.status === filter;
+}
 
    setParcels() {
      this.filteredParcels = this.parcels.map(parcel => ({ ...parcel }));

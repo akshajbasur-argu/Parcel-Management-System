@@ -1,5 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ReceptionistApiService } from '../../../core/service/receptionist-api.service';
+import { SidebarService } from '../../../shared/services/sidebar'; // Add this import
 
 @Component({
   selector: 'app-parcel-history',
@@ -7,29 +8,37 @@ import { ReceptionistApiService } from '../../../core/service/receptionist-api.s
   templateUrl: './parcel-history.component.html',
   styleUrl: './parcel-history.component.css',
 })
-export class ParcelHistoryComponent {
-  constructor(private service: ReceptionistApiService) {}
+export class ParcelHistoryComponent implements OnInit {
+  // Add SidebarService to constructor
+  constructor(
+    private service: ReceptionistApiService,
+    public sidebarService: SidebarService
+  ) {}
+
   length: number = 0;
-  ngOnInit(): any {
-    this.service.fetchParcelHistory(0).subscribe((res) => {
-      this.parcels = res.content;
-      this.length = res.page.totalElements;
-    });
+  parcels: Array<Parcel> = [];
+
+  ngOnInit(): void {
+    this.loadParcels(0);
   }
-  onPageChange(event: any) {
-    this.service.fetchParcelHistory(event.pageIndex).subscribe((res) => {
-      this.parcels = res.content;
-      this.length = res.page.totalElements;
+
+  loadParcels(pageIndex: number): void {
+    this.service.fetchParcelHistory(pageIndex).subscribe({
+      next: (res) => {
+        this.parcels = res.content;
+        this.length = res.page.totalElements;
+      },
+      error: (err) => {
+        console.error('Error fetching parcels:', err);
+      }
     });
   }
 
-  parcels: Array<Parcel> = [
-    //   { id: 1, shortcode: 'Random', recipientName: 'Akshaj', status: 'Received' },
-    // { id: 2, shortcode: 'Random', recipientName: 'Vishwa', status: 'Received' },
-    // { id: 3, shortcode: 'Random', recipientName: 'Tanishka', status: 'Received' },
-    // { id: 4, shortcode: 'Random', recipientName: 'Arun', status: 'Received' }
-  ];
+  onPageChange(event: any): void {
+    this.loadParcels(event.pageIndex);
+  }
 }
+
 type Parcel = {
   id: number;
   shortcode: string;
