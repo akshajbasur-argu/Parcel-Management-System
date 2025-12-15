@@ -1,53 +1,64 @@
-<button
-  *ngIf="isMobile && collapsed"
-  (click)="toggleSidebar()"
-  class="fixed top-4 left-4 z-50 bg-[#903564] text-white p-3 rounded-lg shadow-lg hover:bg-[#802f59] transition-all duration-300 active:scale-95 text-xl"
-  aria-label="Open menu"
->
-  ☰
-</button>
-
 <div
-  class="h-screen bg-[#903564] text-white flex flex-col shadow-2xl transition-all duration-300 ease-in-out md:relative fixed inset-y-0 left-0 z-50"
+  class="h-screen bg-[#903564] text-white flex flex-col shadow-2xl transition-all duration-300 ease-in-out md:relative"
   [ngClass]="{ 
-    'w-64': (!collapsed && !isMobile) || (isMobile && !collapsed), 
-    'w-20': collapsed && !isMobile,
-    '-translate-x-full': isMobile && collapsed,
-    'translate-x-0': !collapsed || !isMobile
+    'w-64': !sidebarService.isCollapsed,
+    'w-16': sidebarService.isCollapsed,
+    'fixed inset-y-0 left-0 z-50': sidebarService.isMobile && !sidebarService.isCollapsed,
+    'relative': sidebarService.isCollapsed || !sidebarService.isMobile
   }"
 >
 
   <!-- Header / Branding -->
   <div class="flex items-center justify-between px-4 py-4 md:py-6 border-b border-white min-h-[64px]">
-    <div *ngIf="!collapsed" class="text-lg md:text-xl font-bold tracking-wide">📦 ParcelApp</div>
+    <div *ngIf="!sidebarService.isCollapsed" class="text-lg md:text-xl font-bold tracking-wide">📦 ParcelApp</div>
     
-    <!-- Mobile Menu Toggle - Only visible on mobile when sidebar is open -->
+    <!-- Hamburger in collapsed mode -->
     <button
-      *ngIf="isMobile && !collapsed"
-      mat-icon-button
-      (click)="toggleSidebar()"
-      class="text-white hover:bg-[#802f59] rounded-md transition text-xl"
+      *ngIf="sidebarService.isCollapsed"
+      (click)="sidebarService.toggleSidebar()"
+      class="text-white hover:bg-[#802f59] rounded-md transition p-2 mx-auto"
+      aria-label="Expand menu"
+    >
+      <mat-icon class="text-white">menu</mat-icon>
+    </button>
+    
+    <!-- Close Button in expanded mode -->
+    <button
+      *ngIf="!sidebarService.isCollapsed && sidebarService.isMobile"
+      (click)="sidebarService.toggleSidebar()"
+      class="text-white hover:bg-[#802f59] rounded-md transition p-2"
       aria-label="Close menu"
     >
-      ✕
+      <mat-icon class="text-white">close</mat-icon>
     </button>
   </div>
 
-  <!-- User Profile -->
-  <div 
-    *ngIf="!collapsed" 
-    class="flex items-center gap-3 px-4 py-3 md:py-4 border-b border-white"
-  >
+  <!-- User Profile (only when expanded) -->
+ <div 
+  *ngIf="!sidebarService.isCollapsed" 
+  class="flex items-center gap-3 px-4 py-3 md:py-4 border-b border-white"
+>
+  <!-- Avatar Wrapper -->
+  <div class="relative">
     <img 
       [src]="user.picture" 
-      class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover flex-shrink-0" 
-      alt="User avatar" 
+      class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
+      alt="User avatar"
     />
-    <div class="min-w-0 flex-1">
-      <p class="text-sm md:text-base font-medium truncate">{{user.name}}</p>
-      <p class="text-xs md:text-sm text-[#ffffffb3] truncate">{{user.role}}</p>
-    </div>
+
+    <!-- Online Indicator -->
+    <app-online-indicator
+      class="absolute bottom-0 right-0 translate-x-1 translate-y-1"
+    ></app-online-indicator>
   </div>
+
+  <!-- User Info -->
+  <div class="min-w-0 flex-1">
+    <p class="text-sm md:text-base font-medium truncate">{{ user.name }}</p>
+    <p class="text-xs md:text-sm text-[#ffffffb3] truncate">{{ user.role }}</p>
+  </div>
+</div>
+
 
   <!-- Navigation -->
   <nav class="flex-1 overflow-y-auto px-2 py-4 custom-scroll">
@@ -56,22 +67,21 @@
         [routerLink]="item.route"
         [routerLinkActiveOptions]="{ exact: true }"
         routerLinkActive="bg-[#802f59] border-l-4 border-primary text-white"
-        (click)="onMenuItemClick()"
+        [matTooltip]="sidebarService.isCollapsed ? item.label : ''"
+        matTooltipPosition="right"
         class="group flex items-center gap-3 md:gap-4 px-3 md:px-4 py-3 mb-1 rounded-md transition-all duration-200 border-l-4 border-transparent hover:bg-[#802f59] hover:text-white relative touch-manipulation active:scale-95"
+        [ngClass]="{ 'justify-center': sidebarService.isCollapsed }"
       >
         <!-- Material Icon -->
         <mat-icon
-          [matTooltip]="collapsed && !isMobile ? item.label : ''"
-          matTooltipPosition="right"
           class="text-gray-400 group-hover:rotate-[-12deg] group-hover:bg-[#802f59] transition-transform duration-300 flex-shrink-0"
-          [ngClass]="{ 'mx-auto': collapsed && !isMobile }"
         >
           {{ item.icon }}
         </mat-icon>
 
-        <!-- Label -->
+        <!-- Label (hidden when collapsed) -->
         <span 
-          *ngIf="!collapsed" 
+          *ngIf="!sidebarService.isCollapsed" 
           class="text-sm md:text-base font-medium whitespace-nowrap overflow-hidden text-ellipsis"
         >
           {{ item.label }}
@@ -81,67 +91,56 @@
 
     <!-- Install App Button -->
     @if (!isInstalled()) {
-      <!-- Collapsed View: Icon Only -->
-      @if (collapsed && !isMobile) {
-        <button
-          (click)="onInstallClick($event)"
-          [matTooltip]="'Install App'"
-          matTooltipPosition="right"
-          class="group flex items-center justify-center px-3 md:px-4 py-3 mb-1 rounded-md transition-all duration-200 border-l-4 border-transparent hover:bg-[#802f59] hover:text-white relative touch-manipulation active:scale-95 w-full"
-          aria-label="Install App"
+      <button
+        (click)="onInstallClick($event)"
+        [matTooltip]="sidebarService.isCollapsed ? 'Install App' : ''"
+        matTooltipPosition="right"
+        class="group flex items-center gap-3 md:gap-4 px-3 md:px-4 py-3 mb-1 rounded-md transition-all duration-200 border-l-4 border-transparent hover:bg-[#802f59] hover:text-white relative touch-manipulation active:scale-95 w-full"
+        [ngClass]="{ 'justify-center': sidebarService.isCollapsed, 'text-left': !sidebarService.isCollapsed }"
+        aria-label="Install App"
+      >
+        <mat-icon class="text-gray-400 group-hover:rotate-[-12deg] group-hover:bg-[#802f59] transition-transform duration-300 flex-shrink-0">
+          download
+        </mat-icon>
+        <span 
+          *ngIf="!sidebarService.isCollapsed"
+          class="text-sm md:text-base font-medium whitespace-nowrap overflow-hidden text-ellipsis"
         >
-          <mat-icon class="text-gray-400 group-hover:rotate-[-12deg] transition-transform duration-300">
-            download
-          </mat-icon>
-        </button>
-      }
-
-      <!-- Expanded View: Full Width -->
-      @if (!collapsed) {
-        <button
-          (click)="onInstallClick($event)"
-          class="group flex items-center gap-3 md:gap-4 px-3 md:px-4 py-3 mb-1 rounded-md transition-all duration-200 border-l-4 border-transparent hover:bg-[#802f59] hover:text-white relative touch-manipulation active:scale-95 w-full text-left"
-        >
-          <mat-icon class="text-gray-400 group-hover:rotate-[-12deg] group-hover:bg-[#802f59] transition-transform duration-300 flex-shrink-0">
-            download
-          </mat-icon>
-          <span class="text-sm md:text-base font-medium whitespace-nowrap overflow-hidden text-ellipsis">
-            Install App
-          </span>
-        </button>
-      }
+          Install App
+        </span>
+      </button>
     }
 
     <!-- Logout -->
     <div class="mt-6 md:mt-8 border-t border-white pt-4">
       <a
         (click)="logout()"
+        [matTooltip]="sidebarService.isCollapsed ? 'Logout' : ''"
+        matTooltipPosition="right"
         class="group flex items-center gap-3 md:gap-4 px-3 md:px-4 py-3 rounded-md text-white hover:bg-red-600 hover:text-white transition-all duration-200 border-l-4 border-transparent hover:border-red-500 cursor-pointer touch-manipulation active:scale-95"
+        [ngClass]="{ 'justify-center': sidebarService.isCollapsed }"
       >
         <mat-icon
-          [matTooltip]="collapsed && !isMobile ? 'Logout' : ''"
-          matTooltipPosition="right"
           class="text-lg group-hover:rotate-[-12deg] transition-transform duration-300 flex-shrink-0"
-          [ngClass]="{ 'mx-auto': collapsed && !isMobile }"
         >
           logout
         </mat-icon>
-        <span *ngIf="!collapsed" class="text-sm md:text-base font-medium">Logout</span>
+        <span *ngIf="!sidebarService.isCollapsed" class="text-sm md:text-base font-medium">Logout</span>
       </a>
     </div>
   </nav>
 
   <!-- Footer -->
   <div class="p-3 md:p-4 border-t text-[11px] border-white text-center flex-shrink-0">
-    <p *ngIf="!collapsed" class="text-xs md:text-sm">© 2025 ParcelApp</p>
-    <p class="text-[9px] md:text-[10px] mt-1 opacity-60">v1.0.0</p>
+    <p *ngIf="!sidebarService.isCollapsed" class="text-xs md:text-sm">© 2025 ParcelApp</p>
+    <p class="text-[9px] md:text-[10px] mt-1 opacity-60" [ngClass]="{ 'text-[8px]': sidebarService.isCollapsed }">v1.0</p>
   </div>
 </div>
 
-<!-- Mobile Overlay -->
+<!-- Mobile Overlay (only when expanded) -->
 <div
-  *ngIf="isMobile && !collapsed"
-  class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-  (click)="toggleSidebar()"
-  [@fadeInOut]
+  *ngIf="sidebarService.isMobile && !sidebarService.isCollapsed"
+  class="fixed inset-0 bg-white/50 z-40"
+  (click)="sidebarService.toggleSidebar()"
 ></div>
+

@@ -1,5 +1,4 @@
-import { UserListComponent } from './../../../feature/receptionist/user-list/user-list.component';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/service/auth-service';
 import { InstallService } from '../../../core/service/install.service';
 import { SidebarService } from '../../services/sidebar';
@@ -10,27 +9,36 @@ import { SidebarService } from '../../services/sidebar';
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
-export class Sidebar implements OnInit{
-  constructor(private authService: AuthService,
-    public sidebarService: SidebarService
-  ) {
-    authService.userDetails().subscribe((res) => { this.user = res })
-  }
+export class Sidebar implements OnInit {
   @Input() menuItems: Array<Menu> | undefined;
 
-  private installService = inject(InstallService);
+  user: User = { name: '', role: '', picture: '', email: '' };
 
-  isInstalled(){
-    return this.installService.isInstalled(); 
+  constructor(
+    private authService: AuthService,
+    public sidebarService: SidebarService,
+    private installService: InstallService
+  ) {
+    this.authService.userDetails().subscribe((res) => {
+      this.user = res;
+    });
   }
-  collapsed = false;
+
+  ngOnInit() {
+    // Service automatically handles mobile detection and state
+  }
+
+  isInstalled() {
+    return this.installService.isInstalled();
+  }
+
   async onInstallClick(event: Event) {
     event?.preventDefault?.();
 
     try {
       const result = await this.installService.promptInstall();
-
       console.log('[Install] result =', result);
+      
       if (result === 'no-prompt') {
         alert('If you are on iOS: open Safari → tap Share → "Add to Home Screen" to install the app.');
       }
@@ -38,60 +46,29 @@ export class Sidebar implements OnInit{
       console.error('Install prompt error', err);
     }
   }
-  async onInstallIconClick(e: Event) {
-    e.preventDefault();
-    const result = await this.installService.promptInstall();
-    console.log('install prompt result', result);
-  }
-
-  isMobile: boolean = false;
-  user: User = { name: '', role: '', picture: '', email: '' };
-
-  ngOnInit() {
-    // Subscribe to sidebar state changes from service
-    this.sidebarService.collapsed$.subscribe(collapsed => {
-      this.collapsed = collapsed;
-      console.log("collapsed",this.collapsed);
-    });
-    
-    this.sidebarService.isMobile$.subscribe(isMobile => {
-      this.isMobile = isMobile;
-      console.log("isMobile",this.isMobile);
-      
-    });
-
-
-
-  }
-
-  
-
-  toggleSidebar() {
-    this.sidebarService.toggleSidebar();
-  }
 
   onMenuItemClick() {
     // Close sidebar after menu selection on mobile
-    if (this.isMobile) {
+    if (this.sidebarService.isMobile) {
       this.sidebarService.toggleSidebar();
     }
   }
+  
 
   logout() {
     this.authService.logout();
   }
-
 }
 
 type User = {
   name: string;
   role: string;
   email: string;
-  picture: string
+  picture: string;
 };
 
-type Menu = { 
-  label: string; 
-  route: string; 
-  icon: any 
+type Menu = {
+  label: string;
+  route: string;
+  icon: any;
 };

@@ -20,8 +20,11 @@ export class SidebarService {
     const isMobile = window.innerWidth < 768;
     this.isMobileSubject.next(isMobile);
     
-    // Auto-expand sidebar on desktop
-    if (!isMobile) {
+    // On mobile, start collapsed (icon strip)
+    // On desktop, start expanded
+    if (isMobile) {
+      this.collapsedSubject.next(true);
+    } else {
       this.collapsedSubject.next(false);
     }
   }

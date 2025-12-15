@@ -81,16 +81,7 @@
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
       
       <!-- Title with Hamburger -->
-      <div class="flex items-center gap-3">
-        <!-- Mobile Hamburger Menu Button -->
-        <!-- <button
-          *ngIf="isMobile && sidebarCollapsed"
-          (click)="toggleSidebar()"
-          class="flex-shrink-0 bg-[#903564] text-white p-2.5 rounded-lg shadow-md hover:bg-[#802f59] transition-all duration-300 active:scale-95 md:hidden"
-          aria-label="Open menu"
-        >
-          <mat-icon class="text-white">menu</mat-icon>
-        </button> -->
+      <div class="flex items-center gap-3 ">
         
         <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center gap-2">
           <span>📦</span>
@@ -100,7 +91,7 @@
 
       <!-- Filter Section -->
       <div class="flex items-center gap-2 self-start sm:self-auto">
-        <label class="text-gray-700 text-sm font-medium whitespace-nowrap">Filter by:</label>
+        <!-- <label class="text-gray-700 text-sm font-medium whitespace-nowrap">Filter by:</label> -->
         <select
           [(ngModel)]="selectedFilter"
           class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#903564] bg-white min-w-[140px] cursor-pointer"
