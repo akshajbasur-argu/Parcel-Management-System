@@ -10,50 +10,45 @@ import { OfflineQueueService } from '../../core/service/offline-queue.service';
   selector: 'app-online-indicator',
   standalone: true,
   imports: [CommonModule, MatSnackBarModule],
-  template: `
-    <div class="indicator" [class.online]="isOnline" [class.offline]="!isOnline" (click)="showDetails()">
-      <span class="dot" aria-hidden="true"></span>
-      <span class="text">{{ isOnline ? 'Online' : 'Offline' }}</span>
-      <span *ngIf="queuedCount$ | async as q" class="badge" [class.hidden]="q === 0"> {{ q }} </span>
-    </div>
-  `,
-  styles: [`
-    :host { display: block; }
-    .indicator{
-      display:inline-flex;
-      align-items:center;
-      gap:0.5rem;
-      padding:6px 10px;
-      border-radius:999px;
-      font-weight:600;
-      font-size:0.9rem;
-      cursor:default;
-      user-select:none;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-    .indicator.online { background: #e8f9f0; color: #046c3a; }
-    .indicator.offline { background: #fff5f5; color: #8b1e1e; }
-    .dot{
-      width:10px; height:10px; border-radius:50%;
-      box-shadow: 0 0 6px rgba(0,0,0,0.06);
-      display:inline-block;
-    }
-    .indicator.online .dot { background: #00c853; }
-    .indicator.offline .dot { background: #ff1744; }
-    .text { line-height:1; }
-    .badge {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:20px;
-      height:20px;
-      padding:0 6px;
-      border-radius:10px;
-      background: rgba(0,0,0,0.08);
-      font-size:0.75rem;
-      margin-left:4px;
-    }
-    .badge.hidden { display:none; }
+  templateUrl: './online-indicator.component.html',
+  styles: [`:host {
+  display: block;
+}
+
+/* Container = outer ring */
+.indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
+}
+
+/* Inner dot */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* States */
+.indicator.online .dot {
+  background-color: #22c55e; /* green */
+}
+
+.indicator.offline .dot {
+  background-color: #9ca3af; /* gray */
+}
+
+/* Hide text & badge for avatar use */
+.text,
+.badge {
+  display: none;
+}
+
   `]
 })
 export class OnlineIndicatorComponent implements OnInit {

@@ -1,1 +1,5 @@
-<p>online-indicator works!</p>
+<div class="indicator" [class.online]="isOnline" [class.offline]="!isOnline" >
+      <span class="dot" aria-hidden="true"></span>
+      <!-- <span class="text">{{ isOnline ? 'Online' : 'Offline' }}</span> -->
+      <!-- <span *ngIf="queuedCount$ | async as q" class="badge" [class.hidden]="q === 0"> {{ queuedCount }} </span> -->
+    </div>

@@ -13,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 // import { CameraUpload } from './ImageProcessing/camera-upload/camera-upload';
 import { SelectNamesDialog } from './ImageProcessing/select-names-dialog/select-names-dialog';
 import { DownloadAppButtonComponent } from './component/download-app-button/download-app-button.component';
+import { OnlineIndicatorComponent } from './online-indicator/online-indicator.component';
 @NgModule({
   declarations: [Sidebar, LoginComponentComponent, Loader,SelectNamesDialog, ],
   imports: [CommonModule,
@@ -22,7 +23,8 @@ import { DownloadAppButtonComponent } from './component/download-app-button/down
     MatIconModule,
     MatTooltipModule,
     MatButtonModule,
-    DownloadAppButtonComponent
+    DownloadAppButtonComponent,
+    OnlineIndicatorComponent
   ],
   exports: [
     CommonModule,
