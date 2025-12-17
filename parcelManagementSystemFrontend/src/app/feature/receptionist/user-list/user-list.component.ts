@@ -31,8 +31,9 @@ searchDebounce: any;
 
   loadUsers() {
     this.service.getPaginatedUsers(this.pageIndex, this.pageSize, this.searchTerm).subscribe({
+
       next: (res) => {
-        this.users = res;
+        this.users = res.content;
         this.filteredusers = [...this.users];
 
         this.length = res.page.totalElements;
