@@ -2,12 +2,16 @@ package com.example.Parcel.Management.System.service.impl;
 
 import com.example.Parcel.Management.System.Utils.AuthUtil;
 import com.example.Parcel.Management.System.Utils.JwtUtil;
+import com.example.Parcel.Management.System.dto.admin.ParcelStatusUpdateDto;
+import com.example.Parcel.Management.System.dto.admin.UpdateStatusRequest;
 import com.example.Parcel.Management.System.dto.common.NotificationResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.RequestParcelDto;
 import com.example.Parcel.Management.System.entity.Notifications;
+import com.example.Parcel.Management.System.entity.Parcel;
 import com.example.Parcel.Management.System.entity.Status;
 import com.example.Parcel.Management.System.repository.NotificationsRepo;
+import com.example.Parcel.Management.System.repository.OtpRepo;
 import com.example.Parcel.Management.System.repository.ParcelRepo;
 import com.example.Parcel.Management.System.repository.UserRepo;
 import com.example.Parcel.Management.System.service.EmployeeService;
@@ -34,6 +38,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final SimpMessagingTemplate messagingTemplate;
     private final NotificationsRepo notificationsRepo;
     private final ReceptionistServiceImpl receptionistService;
+    private final OtpRepo otpRepo;
     public List<ParcelResponseDto> getAllParcels(String token) {
 
         return parcelRepo.findByRecipient((int) userRepo.findByEmail(jwtUtil.getEmailFromToken(token))
@@ -95,5 +100,34 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private void createParcel(RequestParcelDto requestParcelDto){
         receptionistService.createParcel(requestParcelDto);
+    }
+
+    public void updateParcelStatus(List<UpdateStatusRequest> updates) {
+        updates.forEach(this::changeStatus);
+    }
+
+    public ParcelStatusUpdateDto changeStatus(UpdateStatusRequest update) {
+        Parcel parcel = parcelRepo.findById(update.getId())
+                .orElseThrow(() -> new RuntimeException("Parcel Not Found with id: " + update.getId()));
+        if (parcel.getStatus().name().equals(Status.RECEIVED.name())) {
+            Status oldStatus = parcel.getStatus();
+            parcel.setStatus(update.getStatus());
+            long otpId = parcel.getOtp().getId();
+            parcel.setOtp(null);
+            otpRepo.deleteById(otpId);
+            System.out.println(parcelRepo.save(parcel));
+
+            return new ParcelStatusUpdateDto(
+                    parcel.getId(),
+                    parcel.getName(),
+                    parcel.getShortcode(),
+                    parcel.getDescription(),
+                    parcel.getStatus(),
+                    oldStatus,
+                    parcel.getCreatedAt(),
+                    authUtil.getAuthorityId()
+            );
+        }
+        return null;
     }
 }

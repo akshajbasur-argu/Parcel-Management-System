@@ -1,76 +1,135 @@
-<div class="max-w-md mx-auto mt-[-50px] p-6 bg-white rounded-xl shadow-md animate-fade-in">
-  <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">User Form</h2>
-  <form #myForm="ngForm" (ngSubmit)="onSubmit(myForm)" class="space-y-4">
-    <!--Parcel Name-->
-    <div>
-      <label for="name" class="block text-sm font-medium text-gray-600">Name</label>
-      <input
-        type="text"
-        id="name"
-        name="name"
-        [(ngModel)]="formData.name"
-        required
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-      />
+<div class="max-w-2xl mx-auto mt-12 px-4 animate-fade-in">
+  <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-[#903564] to-[#a0446e] px-6 py-8 text-center">
+      <h2 class="text-3xl font-bold text-white mb-2">📋 User Form</h2>
+      <p class="text-pink-100 text-sm">Fill in the details below to create a new entry</p>
     </div>
-    <!-- Description -->
-    <div>
-      <label for="description" class="block text-sm font-medium text-gray-600">Description</label>
-      <input
-        type="text"
-        id="description"
-        name="description"
-        [(ngModel)]="formData.description"
-        required
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-      />
-    </div>
-    <!-- Shortcode -->
-    <div>
-      <label for="shortcode" class="block text-sm font-medium text-gray-600">Shortcode</label>
-      <input
-        type="text"
-        id="shortcode"
-        name="shortcode"
-        [(ngModel)]="formData.shortcode"
-        required
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-      />
-    </div>
-    <!-- Username Dropdown -->
-    <div>
-      <label for="username" class="block text-sm font-medium text-gray-600">Select Username</label>
-      <select
-        type="number"
-        id="username"
-        name="username"
-        [(ngModel)]="formData.recipientId"
-        required
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-      >
-        <option value="" disabled>Select a user</option>
-        @for (user of users; track $index) {
-        <option [value]="user.id">
-          <span
-            >{{
-              user.id
-            }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
-              user.name
-            }}</span
+
+    <!-- Form Content -->
+    <div class="p-6 md:p-8">
+      <form #myForm="ngForm" (ngSubmit)="onSubmit(myForm)" class="space-y-6">
+        
+        <!-- Name Field -->
+        <div class="form-group">
+          <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+            Name <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            [(ngModel)]="formData.name"
+            required
+            placeholder="Enter name"
+            class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm 
+                   focus:ring-2 focus:ring-[#903564] focus:border-[#903564] 
+                   transition duration-150 ease-in-out text-gray-900 placeholder-gray-400
+                   hover:border-pink-300"
+          />
+        </div>
+
+        <!-- Description Field -->
+        <div class="form-group">
+          <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">
+            Description <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            [(ngModel)]="formData.description"
+            required
+            rows="3"
+            placeholder="Enter description"
+            class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm 
+                   focus:ring-2 focus:ring-[#903564] focus:border-[#903564] 
+                   transition duration-150 ease-in-out text-gray-900 placeholder-gray-400
+                   hover:border-pink-300 resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Shortcode Field -->
+        <div class="form-group">
+          <label for="shortcode" class="block text-sm font-semibold text-gray-700 mb-2">
+            Shortcode <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="shortcode"
+            name="shortcode"
+            [(ngModel)]="formData.shortcode"
+            required
+            placeholder="Enter shortcode"
+            class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm 
+                   focus:ring-2 focus:ring-[#903564] focus:border-[#903564] 
+                   transition duration-150 ease-in-out text-gray-900 placeholder-gray-400
+                   hover:border-pink-300 font-mono"
+          />
+        </div>
+
+        <!-- Username Dropdown -->
+        <div class="form-group">
+          <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">
+            Select Username <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <select
+              id="username"
+              name="username"
+              [(ngModel)]="formData.recipientId"
+              required
+              class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm 
+                     focus:ring-2 focus:ring-[#903564] focus:border-[#903564] 
+                     transition duration-150 ease-in-out text-gray-900
+                     hover:border-pink-300 appearance-none cursor-pointer
+                     bg-white"
+            >
+              <option value="" disabled>Select a user</option>
+              @for (user of users; track user.id) {
+                <option [value]="user.id">{{ user.id }} - {{ user.name }}</option>
+              }
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-gray-200 pt-6"></div>
+
+        <!-- Submit Button -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-end">
+          <button
+            type="button"
+            class="w-full sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 font-medium 
+                   rounded-lg shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out
+                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#903564]"
           >
-        </option>
-        }
-      </select>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="myForm.invalid"
+            class="w-full sm:w-auto px-6 py-3 bg-[#903564] text-white font-semibold 
+                   rounded-lg shadow-md hover:bg-[#7d2e56] transition duration-150 ease-in-out
+                   disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#903564]
+                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#903564]
+                   transform hover:scale-[1.02] active:scale-[0.98]"
+          >
+            Submit Form
+          </button>
+        </div>
+      </form>
     </div>
-    <!-- Submit Button -->
-    <div>
-      <button
-        type="submit"
-        [disabled]="myForm.invalid"
-        class="w-full bg-indigo-600 text-white font-medium py-2 px-4 rounded-lg shadow hover:bg-indigo-700 disabled:opacity-50"
-      >
-        Submit
-      </button>
-    </div>
-  </form>
+  </div>
+
+  <!-- Helper Text -->
+  <p class="text-center text-sm text-gray-500 mt-6">
+    <span class="text-red-500">*</span> Required fields
+  </p>
 </div>
+

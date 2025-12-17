@@ -1,78 +1,4 @@
-<!-- <div class="max-w-6xl mx-auto mt-12 px-4 animate-fade-in">
-  <div class="flex justify-between items-center mb-6">
-    <h2 class="text-3xl font-bold text-gray-800">📦 Parcel List</h2>
 
-    <div class="flex items-center space-x-2">
-      <label class="text-gray-700 text-sm font-medium">Filter by:</label>
-      <select
-        [(ngModel)]="selectedFilter"
-        
-        class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-      >
-        <option value="ALL">All</option>
-        <option value="RECEIVED">RECEIVED</option>
-        <option value="PICKED_UP">PICKED_UP</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="px-6 py-3 text-center text-sm font-semibold text-gray-600">#</th>
-          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Name</th>
-          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Description</th>
-          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Time</th>
-          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Shortcode</th>
-          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Status</th>
-        </tr>
-      </thead>
-
-      <tbody class="bg-white divide-y divide-gray-100">
-        @for (parcel of filteredParcels; track $index) {
-       @if (selectedFilter === 'ALL') {
-         <tr class="hover:bg-gray-50 transition-all duration-150">
-          <td class="px-6 py-4 text-sm text-center text-gray-700 font-medium">{{ $index + 1 }}</td>
-          <td class="px-6 py-4 text-sm text-gray-800">{{ parcel.parcelName }}</td>
-          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.description }}</td>
-          <td class="px-6 py-4 text-sm text-gray-700">
-            {{ parcel.createdAt | date:'MM/dd/yyyy hh:mm a' }}
-          </td>
-          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.shortcode }}</td>
-            <td class="px-4 py-2 text-sm text-gray-700">{{ parcel.status }}</td>
-        </tr>
-       }
-       @else if (selectedFilter === 'RECEIVED' && parcel.status === "RECEIVED") {
-         <tr class="hover:bg-gray-50 transition-all duration-150">
-          <td class="px-6 py-4 text-sm text-center text-gray-700 font-medium">{{ $index + 1 }}</td>
-          <td class="px-6 py-4 text-sm text-gray-800">{{ parcel.parcelName }}</td>
-          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.description }}</td>
-          <td class="px-6 py-4 text-sm text-gray-700">
-            {{ parcel.createdAt | date:'MM/dd/yyyy hh:mm a' }}
-          </td>
-          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.shortcode }}</td>
-            <td class="px-4 py-2 text-sm text-gray-700">{{ parcel.status }}</td>
-            
-        </tr>
-       }
-       @else if (selectedFilter === 'PICKED_UP' && parcel.status === "PICKED_UP") {
-         <tr class="hover:bg-gray-50 transition-all duration-150">
-          <td class="px-6 py-4 text-sm text-center text-gray-700 font-medium">{{ $index + 1 }}</td>
-          <td class="px-6 py-4 text-sm text-gray-800">{{ parcel.parcelName }}</td>
-          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.description }}</td>
-          <td class="px-6 py-4 text-sm text-gray-700">
-            {{ parcel.createdAt | date:'MM/dd/yyyy hh:mm a' }}
-          </td>
-          <td class="px-6 py-4 text-sm text-gray-700">{{ parcel.shortcode }}</td>
-          <td class="px-4 py-2 text-sm text-gray-700">{{ parcel.status }}</td>
-        }}
-      </tbody>
-    </table>
-
-
-  </div>
-</div> -->
 
 <div class="w-full px-4 sm:px-6 lg:px-8 py-6 md:py-8 lg:py-12 animate-fade-in">
   <div class="max-w-7xl mx-auto">
@@ -161,13 +87,21 @@
                   </span>
                   <h3 class="font-semibold text-gray-800 text-base">{{ parcel.parcelName }}</h3>
                 </div>
-                <span [ngClass]="{
+                <!-- <span [ngClass]="{
                   'bg-green-100 text-green-700': parcel.status === 'RECEIVED',
                   'bg-blue-100 text-blue-700': parcel.status === 'PICKED_UP'
                 }" 
                 class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap">
                   {{ parcel.status }}
-                </span>
+                </span> -->
+                <select
+                  [(ngModel)]="parcelsResponse[$index].status"
+                  [disabled]="parcel.status == 'PICKED_UP'"
+                  class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                >
+                  <option value="PICKED_UP">PICKED_UP</option>
+                  <option value="RECEIVED">RECEIVED</option>
+                </select>
               </div>
 
               <!-- Card Body -->
@@ -199,6 +133,17 @@
         <p class="text-gray-500 text-sm">There are no parcels matching your filter criteria.</p>
       </div>
 
+      
+
+    </div>
+    <div class="flex justify-center md:justify-end mt-6">
+      <button
+        class="w-full sm:w-auto bg-blue-600 text-white font-medium px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 active:scale-95 touch-manipulation flex items-center justify-center gap-2"
+        (click)="saveAllStatus()"
+      >
+        <span>💾</span>
+        <span>Save Changes</span>
+      </button>
     </div>
   </div>
 </div>

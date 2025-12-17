@@ -25,4 +25,8 @@ export class EmployeeApiService {
   public getUserId():Observable<any>{
     return this.httpClient.get(this.url+'/get/id',{withCredentials:true});
   }
+
+  updateParcelStatus(updatedParcels:{id: number, status: string}[] ): Observable<any> {
+  return this.httpClient.post(this.url+'/updateParcel',updatedParcels,{ withCredentials: true });
+  }
 }

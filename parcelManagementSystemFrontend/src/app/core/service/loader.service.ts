@@ -9,7 +9,7 @@ export class LoaderService {
   isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   showLoader() {
     
-    this.isLoadingSubject.next(true);
+    setTimeout(() => this.isLoadingSubject.next(true), 0);  // ✅ Safe
   }
   hideLoader() {
     this.isLoadingSubject.next(false);

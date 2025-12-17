@@ -40,6 +40,7 @@ export class UserListComponent {
 
   /** :white_check_mark: Handles checkbox selection for individual users */
   toggleUserSelection(userId: number, event: Event): void {
+    console.log("TOGGLE")
     const input = event.target as HTMLInputElement;
     if (input.checked) {
       if (!this.selectedUserIds.includes(userId)) {
@@ -96,6 +97,15 @@ export class UserListComponent {
       });
     });
   }
+
+  toggleUserCard(userId: number): void {
+  if (this.selectedUserIds.includes(userId)) {
+    this.selectedUserIds = this.selectedUserIds.filter(id => id !== userId);
+  } else {
+    this.selectedUserIds.push(userId);
+  }
+}
+
 }
 
 type Users = { id: number; name: string; email: string };

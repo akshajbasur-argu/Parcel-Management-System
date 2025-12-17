@@ -1,6 +1,8 @@
 package com.example.Parcel.Management.System.controller;
 
+import com.example.Parcel.Management.System.dto.admin.UpdateStatusRequest;
 import com.example.Parcel.Management.System.dto.common.NotificationResponseDto;
+import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
 import com.example.Parcel.Management.System.dto.employee.NotificationRequestDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.entity.Notifications;
@@ -43,5 +45,13 @@ public class EmployeeController {
     @GetMapping("get/id")
     public ResponseEntity<Long> getId(){
         return new ResponseEntity<>(employeeService.getId(),HttpStatus.OK);
+    }
+
+    @PostMapping("updateParcel")
+    public ResponseEntity<List<UserDetailResponseDto>> updateParcelStatus(
+            @RequestBody List<UpdateStatusRequest> updates ){
+        employeeService.updateParcelStatus(updates);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
