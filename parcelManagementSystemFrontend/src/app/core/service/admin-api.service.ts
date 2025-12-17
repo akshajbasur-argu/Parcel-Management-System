@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class AdminApiService {
     constructor(private httpClient:HttpClient){}
 
-  url:string="http://localhost:8081/api/v1/admin"
+  url:string="https://sjkqbbn5-8081.inc1.devtunnels.ms/api/v1/admin"
   fetchUsers():Observable<any>{
     return this.httpClient.get(this.url+'/users', { withCredentials: true })
   }

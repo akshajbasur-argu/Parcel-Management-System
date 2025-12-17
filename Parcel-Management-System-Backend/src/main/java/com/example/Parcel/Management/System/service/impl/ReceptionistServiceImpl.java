@@ -229,4 +229,18 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         notificationsRepo.save(notification);
 
     }
+
+    @Override
+    public Page<UsersListResponseDto> getPaginatedUsers(int page, int size, String search) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<User> usersPage =
+                (search == null || search.trim().isEmpty())
+                        ? userRepo.findAll(pageable)
+                        : userRepo.findByNameContainingIgnoreCase(search.trim(), pageable);
+
+        // MODEL MAPPER MAPPING TO PAGE DTO
+        return usersPage.map(user -> modelMapper.map(user, UsersListResponseDto.class));
+    }
 }

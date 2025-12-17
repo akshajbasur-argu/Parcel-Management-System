@@ -78,4 +78,12 @@ public class ReceptionistController {
         receptionistService.changeStatus(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @GetMapping("/list")
+    public Page<UsersListResponseDto> getUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search
+    ) {
+        return receptionistService.getPaginatedUsers(page, size, search);
+    }
 }

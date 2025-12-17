@@ -16,14 +16,14 @@ export class AuthService {
   ) { }
 
   public loginWithGoogle() {
-    window.location.href = 'http://localhost:8081/oauth2/authorization/google';
+    window.location.href = 'https://sjkqbbn5-8081.inc1.devtunnels.ms/oauth2/authorization/google';
   }
 
   public refreshTokens(): Observable<any> {
-    return this.http.get('http://localhost:8081/api/auth/refresh', { withCredentials: true });
+    return this.http.get('https://sjkqbbn5-8081.inc1.devtunnels.ms/api/auth/refresh', { withCredentials: true });
   }
   public userDetails(): Observable<any> {
-    return this.http.get('http://localhost:8081/api/auth/user/details', { withCredentials: true });
+    return this.http.get('https://sjkqbbn5-8081.inc1.devtunnels.ms/api/auth/user/details', { withCredentials: true });
   }
   public logout() {
 

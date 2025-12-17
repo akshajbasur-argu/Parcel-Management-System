@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { SelectNamesDialog } from '../select-names-dialog/select-names-dialog';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,6 +8,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
 import { ReceptionistApiService } from '../../../core/service/receptionist-api.service';
+import { BrowserMultiFormatReader } from '@zxing/browser';
 @Component({
   selector: 'app-camera-upload',
   standalone: true,
@@ -28,7 +29,7 @@ export class CameraUpload {
 
   constructor(private http: HttpClient, private dialog: MatDialog, private location: Location, private cookieService: CookieService,
     private router: Router,
-  private receptionistApi: ReceptionistApiService,
+    private receptionistApi: ReceptionistApiService,
 
   ) { }
 
@@ -36,7 +37,7 @@ export class CameraUpload {
 
   getRole(): string {
     const token = this.cookieService.get('accessToken');
-    if(!token){
+    if (!token) {
       this.router.navigate(['login']);
     }
     const decoded = jwtDecode<jwtPayload>(token);
@@ -57,73 +58,122 @@ export class CameraUpload {
   }
 
   upload() {
-  if (!this.selectedFile) {
-    alert("Please capture an image first");
-    return;
-  }
+    if (!this.selectedFile) {
+      alert("Please capture an image first");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("file", this.selectedFile, this.selectedFile.name);
+    const formData = new FormData();
+    formData.append("file", this.selectedFile, this.selectedFile.name);
 
-  if (this.getRole() == "RECEPTIONIST") {
-    this.receptionistApi.postInvoiceExtract(formData).subscribe({
-      next: (res: any) => {
-        // If offline queued, res will be { offline: true }
-        if (res && (res as any).offline) {
-          alert('You are offline — upload queued and will be processed when back online');
-          return;
+    if (this.getRole() == "RECEPTIONIST") {
+      this.receptionistApi.postInvoiceExtract(formData).subscribe({
+        next: (res: any) => {
+          // If offline queued, res will be { offline: true }
+          if (res && (res as any).offline) {
+            alert('You are offline — upload queued and will be processed when back online');
+            return;
+          }
+          // online path => full response with names + barcodeString
+          const backendBarcode = res.barcodeString;
+          console.log(this.barcodeString)
+          const finalBarcode = backendBarcode || this.barcodeString;
+
+          if (!finalBarcode) {
+            alert("Could not detect barcode. Please retake the image.");
+            return;
+          }
+          this.names = res.names ?? [];
+          if (this.names.length > 1) {
+            const dialogRef = this.dialog.open(SelectNamesDialog, {
+              width: '400px',
+              data: this.names
+            });
+
+            dialogRef.afterClosed().subscribe((selectedNames: OnlyNames[] | undefined) => {
+              if (selectedNames) {
+
+                const namesOnly = selectedNames.map(u => u.name);
+                this.receptionistApi.postInvoiceSendMail(namesOnly, finalBarcode).subscribe({
+                  next: (r) => console.log('sendMail success', r),
+                  error: (err) => console.log('sendMail error', err)
+                });
+              }
+            });
+          }
+          alert("Upload success");
+        },
+        error: (err) => {
+          console.error('postInvoiceExtract error', err);
+          alert("Upload failed:" + err);
         }
-        // online path => full response with names + barcodeString
-        this.names = res.names ?? [];
-        this.barcodeString = res.barcodeString ?? '';
-        if (this.names.length > 1) {
-          const dialogRef = this.dialog.open(SelectNamesDialog, {
-            width: '400px',
-            data: this.names
-          });
+      });
+    }
 
-          dialogRef.afterClosed().subscribe((selectedNames: OnlyNames[] | undefined) => {
-            if (selectedNames) {
-              const namesOnly = selectedNames.map(u => u.name);
-              const barcodeString = this.barcodeString;
-              this.receptionistApi.postInvoiceSendMail(namesOnly, barcodeString).subscribe({
-                next: (r) => console.log('sendMail success', r),
-                error: (err) => console.log('sendMail error', err)
-              });
-            }
-          });
-        }
-        alert("Upload success");
-      },
-      error: (err) => {
-        console.error('postInvoiceExtract error', err);
-        alert("Upload failed:" + err);
-      }
-    });
-  }
+    if (this.getRole() == "EMPLOYEE") {
+      this.receptionistApi.postInvoiceExtractEmployee(formData).subscribe({
+        next: (res: any) => {
+          if (res && res.offline) {
+            alert('You are offline — extract queued');
+            return;
+          }
 
-  if (this.getRole() == "EMPLOYEE") {
-    this.receptionistApi.postInvoiceExtractEmployee(formData).subscribe({
-      next: (res: any) => {
-        if (res && res.offline) {
-          alert('You are offline — extract queued');
-          return;
+          if (res === true) alert("Parcel picked up successfully");
+          else alert("Could not read the barcode on the parcel, try a new image");
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Upload failed: ' + err);
         }
-        if (res === true) alert("Parcel picked up successfully");
-        else alert("Could not read the barcode on the parcel, try a new image");
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Upload failed: ' + err);
-      }
-    });
+      });
+    }
   }
-}
   backButton() {
 
     this.location.back();
   }
 
+  @ViewChild('preview') preview!: ElementRef<HTMLVideoElement>;
+
+  scanner = new BrowserMultiFormatReader();
+  scanning = false;
+
+  ngOnInit() { }
+
+  ngAfterViewInit() {
+    this.startLiveBarcodeScanner();
+  }
+
+  async startLiveBarcodeScanner() {
+    try {
+      this.scanning = true;
+
+      const video = this.preview.nativeElement;
+
+      const controls = await this.scanner.decodeFromVideoDevice(
+        undefined, // auto-select best camera
+        video,
+        (result, err) => {
+          if (result) {
+            this.barcodeString = result.getText();
+            console.log("Live barcode detected:", this.barcodeString);
+          }
+        }
+      );
+
+      // Save stop function
+      this.stopScanner = controls.stop;
+    } catch (err) {
+      console.warn("Live barcode scanner could not start:", err);
+    }
+  }
+
+  stopScanner() { }
+
+  ngOnDestroy() {
+    try { this.stopScanner(); } catch { }
+
+  }
 }
 
 interface NamesResponse {

@@ -12,6 +12,10 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ReceptionistService {
+
+
+    Page<UsersListResponseDto> getPaginatedUsers(int page, int size, String search);
+
     public ParcelResponseDto createParcel(RequestParcelDto parcelDto);
 
     public GenericAopDto validateOtp(ValidateOtpRequestDto otp);

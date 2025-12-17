@@ -23,7 +23,6 @@ export class OfflineQueueService {
   private syncing = false;
 
   constructor() {
-    // Use version 1 or bump if needed (avoid VersionError)
     this.dbPromise = openDB('parcel-offline-db', 1, {
       upgrade(db) {
         if (!db.objectStoreNames.contains('request-queue')) {

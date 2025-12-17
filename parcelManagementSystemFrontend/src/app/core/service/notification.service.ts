@@ -20,7 +20,7 @@ export class NotificationService {
   constructor(private cookieService: CookieService) {
     this.stompClient = new Client({
       webSocketFactory: () => {
-        return new SockJS('http://localhost:8081/ws');
+        return new SockJS('https://sjkqbbn5-8081.inc1.devtunnels.ms/ws');
       },
       reconnectDelay: 5000,
       heartbeatIncoming: 10000,

@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class EmployeeApiService {
   constructor(private httpClient: HttpClient) { }
 
-  url: string = "http://localhost:8081/api/v1/employee"
+  url: string = "https://sjkqbbn5-8081.inc1.devtunnels.ms/api/v1/employee"
 
   fetchParcel(): Observable<any> {
     console.log("inside")

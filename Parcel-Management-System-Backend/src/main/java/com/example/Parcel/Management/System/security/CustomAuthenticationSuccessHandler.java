@@ -63,7 +63,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
             response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
-            response.sendRedirect("http://localhost:4200/oauth2/callback");
+            response.sendRedirect("https://sjkqbbn5-4200.inc1.devtunnels.ms/oauth2/callback");
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("http://localhost:4200/login-error");

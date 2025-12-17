@@ -1,6 +1,5 @@
 <div class="mobile-wrapper">
   <div class="mobile-shell">
-
     <!-- Top Navbar -->
     <div class="top-nav">
       <!-- LEFT: Back button -->
@@ -16,99 +15,116 @@
         <span class="nav-page">Invoice scanner</span>
       </div>
 
-
-
       <!-- RIGHT: Help -->
       <!-- <div class="nav-right">
       <button type="button" class="icon-btn">
         <mat-icon>help_outline</mat-icon>
       </button>
     </div> -->
-  </div>
-
-  <!-- Header Section -->
-  <div class="header">
-    <h2>Scan or upload invoice</h2>
-    <p class="subtitle">Capture a bill and let us extract the details.</p>
-    <!-- <p>{{getRole()}}</p> -->
-    <div class="header-badge">
-      <span class="badge-dot"></span>
-      <span>AI-powered extraction</span>
     </div>
-  </div>
 
-  <!-- Main Card -->
-  <div class="card">
-
-    <!-- Header Row -->
-    <div class="card-header-row">
-      <div class="card-header-main">
-        <span class="card-title">Add a new invoice</span>
-        <span class="card-subtitle">
-          Use your camera for physical bills or upload an existing image.
-        </span>
+    <!-- Header Section -->
+    <div class="header">
+      <h2>Scan or upload invoice</h2>
+      <p class="subtitle">Capture a bill and let us extract the details.</p>
+      <!-- <p>{{getRole()}}</p> -->
+      <div class="header-badge">
+        <span class="badge-dot"></span>
+        <span>AI-powered extraction</span>
       </div>
-      <span class="mini-chip">Step 1 of 2</span>
     </div>
 
-    <!-- Button Stack -->
-    <div class="button-stack">
+    <!-- Main Card -->
+    <div class="card">
+      <!-- Header Row -->
+      <div class="card-header-row">
+        <div class="card-header-main">
+          <span class="card-title">Add a new invoice</span>
+          <span class="card-subtitle">
+            Use your camera for physical bills or upload an existing image.
+          </span>
+        </div>
+        <span class="mini-chip">Step 1 of 2</span>
+      </div>
 
-      <!-- Capture From Camera -->
-      <label class="primary-btn primary-filled">
-        <span class="icon-circle">
-          <mat-icon>photo_camera</mat-icon>
-        </span>
+      <!-- Button Stack -->
+      <div class="button-stack">
+        <!-- Capture From Camera -->
+        <label class="primary-btn primary-filled">
+          <span class="icon-circle">
+            <mat-icon>photo_camera</mat-icon>
+          </span>
 
-        <span class="label-main">
-          <span class="label-title">Capture using camera</span>
-          <span class="label-note">Ideal for paper or printed invoices</span>
-        </span>
+          <span class="label-main">
+            <span class="label-title">Capture using camera</span>
+            <span class="label-note">Ideal for paper or printed invoices</span>
+          </span>
 
-        <input type="file" accept="image/*" capture="environment" hidden (change)="onCameraCapture($event)" />
-      </label>
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            hidden
+            (change)="onCameraCapture($event)"
+          />
+        </label>
 
-      <!-- Upload From Gallery -->
-      <label class="primary-btn primary-outline">
-        <span class="icon-circle icon-soft">
-          <mat-icon>image</mat-icon>
-        </span>
+        <!-- Upload From Gallery -->
+        <label class="primary-btn primary-outline">
+          <span class="icon-circle icon-soft">
+            <mat-icon>image</mat-icon>
+          </span>
 
-        <span class="label-main">
-          <span class="label-title">Upload from gallery</span>
-          <span class="label-note">Use a saved photo or screenshot</span>
-        </span>
+          <span class="label-main">
+            <span class="label-title">Upload from gallery</span>
+            <span class="label-note">Use a saved photo or screenshot</span>
+          </span>
 
-        <input type="file" accept="image/*" hidden (change)="onCameraCapture($event)" />
-      </label>
+          <input type="file" accept="image/*" hidden (change)="onCameraCapture($event)" />
+        </label>
+      </div>
 
-    </div>
+      <!-- Hint Box -->
+      <div class="hint-text">
+        <mat-icon class="hint-icon">info</mat-icon>
+        <span>Make sure the invoice is clear, flat, and well lit.</span>
+      </div>
 
-    <!-- Hint Box -->
-    <div class="hint-text">
-      <mat-icon class="hint-icon">info</mat-icon>
-      <span>Make sure the invoice is clear, flat, and well lit.</span>
-    </div>
-
-    <!-- Preview Section -->
-    @if (previewUrl) {
+      <!-- Preview Section -->
+      @if (previewUrl) {
       <div class="preview-area">
         <img [src]="previewUrl" alt="Preview" class="preview-img" />
       </div>
-    }
+      }
+      <!-- Live Camera Barcode Scanner -->
+      <!-- <video #preview class="w-full rounded-lg mb-3"></video> -->
+<!--  -->
+      <!-- @if(barcodeString){ -->
+      <!-- <div class="text-sm text-green-500"> -->
+        <!-- Scanned Barcode: <b>{{ barcodeString }}</b> -->
+      <!-- </div> -->
+      <!-- } -->
 
-    <!-- Upload Button -->
-    <button class="upload-final-btn" [disabled]="!selectedFile" [class.disabled]="!selectedFile" (click)="upload()">
-      <mat-icon>cloud_upload</mat-icon>
-      <span class="span-upload">Upload &amp; extract</span>
-    </button>
+      <!-- <input
+        type="file"
+        accept="image/*"
+        capture="environment"
+        (change)="onCameraCapture($event)"
+      /> -->
 
+      <!-- Upload Button -->
+      <button
+        class="upload-final-btn"
+        [disabled]="!selectedFile"
+        [class.disabled]="!selectedFile"
+        (click)="upload()"
+      >
+        <mat-icon>cloud_upload</mat-icon>
+        <span class="span-upload">Upload &amp; extract</span>
+      </button>
+    </div>
+
+    <!-- Bottom Info -->
+    <p class="bottom-hint">Files are processed securely and never shared with third parties.</p>
   </div>
-
-  <!-- Bottom Info -->
-  <p class="bottom-hint">
-    Files are processed securely and never shared with third parties.
-  </p>
-
-</div>
 </div>

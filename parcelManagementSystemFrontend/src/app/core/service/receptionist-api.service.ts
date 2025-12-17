@@ -11,7 +11,7 @@ import { OfflineQueueService } from './offline-queue.service';
 export class ReceptionistApiService {
   constructor(private httpClient: HttpClient, private offlineQueue: OfflineQueueService) {}
 
-  url: string = 'http://localhost:8081/api/v1/receptionist';
+  url: string = 'https://sjkqbbn5-8081.inc1.devtunnels.ms/api/v1/receptionist';
   fetchUsers(): Observable<any> {
     return this.httpClient.get(this.url + '/users', { withCredentials: true });
   }
@@ -75,11 +75,21 @@ submitForm(form: any): Observable<any> {
   getNotifications(): Observable<any> {
     return this.httpClient.get(this.url + '/get/notifications', { withCredentials: true });
   }
+  getPaginatedUsers(page: number, size: number, search: string = '') {
+  const params: any = { page, size };
+  if (search.trim()) params.search = search;
+
+  return this.httpClient.get<any>(this.url+'/list', {
+    params,
+    withCredentials: true
+  });
+}
+
   changeStatus(id: number): Observable<any> {
     return this.httpClient.post(this.url + '/change/status', id, { withCredentials: true });
   }
   postInvoiceExtract(form: FormData) :Observable<any> {
-    const endpoint = 'http://localhost:8081/api/invoice/extract';
+    const endpoint = 'https://sjkqbbn5-8081.inc1.devtunnels.ms/api/invoice/extract';
     if (!navigator.onLine) {
       return from(this.offlineQueue.enqueue({ url: endpoint, method: 'POST', body: form }))
              .pipe(map(() => ({ offline: true })));
@@ -88,7 +98,7 @@ submitForm(form: any): Observable<any> {
   }
 
   postInvoiceSendMail(names: string[], barcodeString: string):Observable<any>{
-    const endpoint = `http://localhost:8081/api/invoice/sendMail?barcodeString=${encodeURIComponent(barcodeString)}`;
+    const endpoint = `https://sjkqbbn5-8081.inc1.devtunnels.ms/api/invoice/sendMail?barcodeString=${encodeURIComponent(barcodeString)}`;
     if (!navigator.onLine) {
       // queue JSON POST
       return from(this.offlineQueue.enqueue({ url: endpoint, method: 'POST', body: names }))
@@ -98,7 +108,7 @@ submitForm(form: any): Observable<any> {
   }
 
   postInvoiceExtractEmployee(form: FormData):Observable<any>{
-    const endpoint = 'http://localhost:8081/api/invoice/extract/employee';
+    const endpoint = 'https://sjkqbbn5-8081.inc1.devtunnels.ms/api/invoice/extract/employee';
     if (!navigator.onLine) {
       return from(this.offlineQueue.enqueue({ url: endpoint, method: 'POST', body: form }))
              .pipe(map(() => ({ offline: true })));

@@ -217,14 +217,14 @@
   }
 
   <!-- Pagination -->
-  <div class="mt-6">
-    <mat-paginator
-      [length]="length"
-      [pageSize]="10"
-      (page)="onPageChange($event)"
-      aria-label="Select page"
-    ></mat-paginator>
-  </div>
+    <div class="mt-6">
+      <mat-paginator
+        [length]="length"
+        [pageSize]="10"
+        (page)="onPageChange($event)"
+        aria-label="Select page"
+      ></mat-paginator>
+    </div>
 </div>
 <style>
   @keyframes fade-in {

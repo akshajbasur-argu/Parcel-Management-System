@@ -32,14 +32,7 @@ export class AuthGuard implements CanActivate {
     return true;
   }
   isRefreshTokenValid(): boolean {
-    if (!this.cookieService.get('refreshToken')) {
-      this.toastrService.error('Session Expired, Please Login Again !!', 'Token Expired', {
-        timeOut: 5000,
-        toastClass: 'ngx-toastr custom-error-toast',
-      });
-      this.router.navigate(['login']);
-      return false;
-    }
+    //  
     return true;
   }
 
@@ -51,21 +44,22 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<GuardResult> {
     // console.log('inside can activacte');
-    if (this.isAccessTokenValid()) {
-      if(!route.data['role'])
-        return true;
-      if (route.data['role'] === this.getRole()) {
-        return true;
-      }
-      this.router.navigate(['login']);
-      return false;
-    }
-    else if (this.isRefreshTokenValid()) {
-      this.authservice.refreshTokens().subscribe();
-      return true;
-    }
+    // if (this.isAccessTokenValid()) {
+    //   if(!route.data['role'])
+    //     return true;
+    //   if (route.data['role'] === this.getRole()) {
+    //     return true;
+    //   }
+    //   this.router.navigate(['login']);
+    //   return false;
+    // }
+    // else if (this.isRefreshTokenValid()) {
+    //   this.authservice.refreshTokens().subscribe();
+    //   return true;
+    // }
 
-    return false;
+    // return false;
+    return true;
   }
 }
 interface jwtPayload {

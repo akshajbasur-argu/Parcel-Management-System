@@ -200,5 +200,17 @@
     </div>
   }
 
+    <!-- Pagination -->
+  <div class="mt-6">
+    <mat-paginator
+  [length]="length"
+  [pageSize]="pageSize"
+  [pageIndex]="pageIndex"
+  [pageSizeOptions]="[2, 5, 10]"
+  (page)="onPageChange($event)"
+  aria-label="Select page"
+></mat-paginator>
+
+  </div>
 </div>
 
