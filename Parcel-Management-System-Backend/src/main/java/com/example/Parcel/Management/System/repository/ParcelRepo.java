@@ -25,5 +25,26 @@ public interface ParcelRepo extends JpaRepository<Parcel, Long> {
             String shortcode,
             Status status
     );
+
+
+    @Query("""
+        SELECT p FROM Parcel p
+        LEFT JOIN p.recipient r
+        WHERE p.status = :status
+        AND (
+            LOWER(p.name) LIKE %:search%
+            OR LOWER(p.trackingId) LIKE %:search%
+            OR LOWER(p.shortcode) LIKE %:search%
+            OR LOWER(p.description) LIKE %:search%
+            OR LOWER(r.name) LIKE %:search
+            OR LOWER(r.email) LIKE %:search%
+        )
+    """)
+    Page<Parcel> searchParcels(
+            Pageable pageable,
+            @Param("status") Status status,
+            @Param("search") String search
+
+    );
 }
 

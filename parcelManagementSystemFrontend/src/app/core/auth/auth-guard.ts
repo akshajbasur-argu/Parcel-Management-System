@@ -43,23 +43,22 @@ export class AuthGuard implements CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<GuardResult> {
-    // console.log('inside can activacte');
-    // if (this.isAccessTokenValid()) {
-    //   if(!route.data['role'])
-    //     return true;
-    //   if (route.data['role'] === this.getRole()) {
-    //     return true;
-    //   }
-    //   this.router.navigate(['login']);
-    //   return false;
-    // }
-    // else if (this.isRefreshTokenValid()) {
-    //   this.authservice.refreshTokens().subscribe();
-    //   return true;
-    // }
+    console.log('inside can activacte');
+    if (this.isAccessTokenValid()) {
+      if(!route.data['role'])
+        return true;
+      if (route.data['role'] === this.getRole()) {
+        return true;
+      }
+      this.router.navigate(['login']);
+      return false;
+    }
+    else if (this.isRefreshTokenValid()) {
+      this.authservice.refreshTokens().subscribe();
+      return true;
+    }
 
-    // return false;
-    return true;
+    return false;
   }
 }
 interface jwtPayload {

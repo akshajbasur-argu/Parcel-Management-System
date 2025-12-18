@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ReceptionistApiService } from '../../../core/service/receptionist-api.service';
-import { SidebarService } from '../../../shared/services/sidebar'; // Add this import
+import { SidebarService } from '../../../shared/services/sidebar';
+import { Subject, debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-parcel-history',
@@ -9,35 +10,61 @@ import { SidebarService } from '../../../shared/services/sidebar'; // Add this i
   styleUrl: './parcel-history.component.css',
 })
 export class ParcelHistoryComponent implements OnInit {
-  // Add SidebarService to constructor
+
   constructor(
     private service: ReceptionistApiService,
     public sidebarService: SidebarService
   ) {}
 
-  length: number = 0;
-  parcels: Array<Parcel> = [];
+  // Pagination
+  num = 0;
+  length = 0;
+  pageSize = 10;
+
+  // Data
+  parcels: Parcel[] = [];
+  searchTerm = '';
+
+  // Debounced search
+  private searchSubject = new Subject<string>();
 
   ngOnInit(): void {
-    this.loadParcels(0);
+    this.loadParcels();
+
+    this.searchSubject
+      .pipe(debounceTime(500))
+      .subscribe(() => {
+        this.num = 0;
+        this.loadParcels();
+      });
   }
 
-  loadParcels(pageIndex: number): void {
-    this.service.fetchParcelHistory(pageIndex).subscribe({
+  // 🔹 Load parcel history (pagination + search)
+  loadParcels(): void {
+    this.service.fetchParcelHistory(this.num, this.searchTerm).subscribe({
       next: (res) => {
         this.parcels = res.content;
         this.length = res.page.totalElements;
       },
       error: (err) => {
-        console.error('Error fetching parcels:', err);
+        console.error('Error fetching parcel history:', err);
       }
     });
   }
 
+  // 🔹 Trigger backend search
+  onSearch(): void {
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  // 🔹 Pagination change
   onPageChange(event: any): void {
-    this.loadParcels(event.pageIndex);
+    this.num = event.pageIndex;
+    this.loadParcels();
   }
 }
+
+// ---------------- TYPES ----------------
 
 type Parcel = {
   id: number;

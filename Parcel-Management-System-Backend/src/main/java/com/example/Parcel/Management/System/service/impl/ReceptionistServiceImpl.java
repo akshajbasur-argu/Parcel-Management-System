@@ -165,18 +165,52 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     }
 
 
-    public Page<ParcelResponseDto> getActiveParcels(int pageNumber) {
+    public Page<ParcelResponseDto> getActiveParcels(int pageNumber, String search) {
         Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
 
-        return parcelRepo.findByStatus(pageable, Status.RECEIVED).map(parcel ->
-                modelMapper.map(parcel, ParcelResponseDto.class));
+        Page<Parcel> parcels;
+
+        if (search == null || search.trim().isEmpty()) {
+            parcels = parcelRepo.findByStatus(pageable, Status.RECEIVED);
+        } else {
+            parcels = parcelRepo.searchParcels(
+                    pageable,
+                    Status.RECEIVED,
+                    search.toLowerCase()
+            );
+        }
+
+        return parcels.map(parcel ->
+                modelMapper.map(parcel, ParcelResponseDto.class)
+        );
     }
 
-    public Page<ParcelResponseDto> getParcelHistory(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("id").descending());
-        return parcelRepo.findByStatus(pageable, Status.PICKED_UP).map(parcel ->
-                modelMapper.map(parcel, ParcelResponseDto.class));
+
+    public Page<ParcelResponseDto> getParcelHistory(int pageNumber, String search) {
+
+        Pageable pageable = PageRequest.of(
+                pageNumber,
+                10,
+                Sort.by("id").descending()
+        );
+
+        Page<Parcel> parcels;
+
+        if (search == null || search.trim().isEmpty()) {
+            parcels = parcelRepo.findByStatus(pageable,Status.PICKED_UP);
+        } else {
+            parcels = parcelRepo.searchParcels(
+                    pageable,
+                    Status.PICKED_UP,
+                    search.toLowerCase()
+            );
+        }
+
+        return parcels.map(parcel ->
+                modelMapper.map(parcel, ParcelResponseDto.class)
+        );
     }
+
 
     public GenericAopDto sendNotification(long id,String message) {
         User user = userRepo.findById(id)

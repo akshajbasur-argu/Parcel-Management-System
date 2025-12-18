@@ -48,14 +48,26 @@ public class ReceptionistController {
     }
 
     @GetMapping("parcels/{num}")
-    public ResponseEntity<Page<ParcelResponseDto>> getActiveParcels(@PathVariable int num) {
-        return new ResponseEntity<>(receptionistService.getActiveParcels(num), HttpStatus.OK);
+    public ResponseEntity<Page<ParcelResponseDto>> getActiveParcels(
+            @PathVariable int num,
+            @RequestParam(required = false, defaultValue = "") String search
+    ) {
+        return ResponseEntity.ok(
+                receptionistService.getActiveParcels(num, search)
+        );
     }
 
+
     @GetMapping("parcels/history/{num}")
-    public ResponseEntity<Page<ParcelResponseDto>> getParcelHistory(@PathVariable int num) {
-        return new ResponseEntity<>(receptionistService.getParcelHistory(num), HttpStatus.OK);
+    public ResponseEntity<Page<ParcelResponseDto>> getParcelHistory(
+            @PathVariable int num,
+            @RequestParam(required = false, defaultValue = "") String search
+    ) {
+        return ResponseEntity.ok(
+                receptionistService.getParcelHistory(num, search)
+        );
     }
+
 
     @PostMapping("notify")
     public ResponseEntity<Void> notifyAboutParcel(@RequestBody NotifyRequestDto notifyRequestDto) {

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ReceptionistApiService } from '../../../core/service/receptionist-api.service';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { finalize, Subject, debounceTime } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { NotificationService } from '../../../core/service/notification.service';
-import { SidebarService } from '../../../shared/services/sidebar'; // Add this
+import { SidebarService } from '../../../shared/services/sidebar';
 
 @Component({
   selector: 'app-parcel-list',
@@ -13,44 +13,64 @@ import { SidebarService } from '../../../shared/services/sidebar'; // Add this
   styleUrl: './parcel-list.component.css',
 })
 export class ParcelListComponent implements OnInit {
+
   constructor(
     private service: ReceptionistApiService,
     private router: Router,
     private cookieService: CookieService,
     private notificationService: NotificationService,
-    public sidebarService: SidebarService // Add this
+    public sidebarService: SidebarService
   ) {}
 
-  ngOnInit(): void {
-    this.getParcels();
-  }
-
-  num: number = 0;
-  length: number = 0;
+  // Pagination
+  num = 0;
+  length = 0;
   pageSize = 10;
-  loading: number | null = null;
-  
-  parcels: Array<Parcel> = [];
-  filteredparcels: Array<Parcel> = [];
-  searchTerm: string = '';
 
+  // Data
+  parcels: Parcel[] = [];
+  searchTerm = '';
+
+  // UI state
+  loading: number | null = null;
   showPopup = false;
+
+  // Debounce search
+  private searchSubject = new Subject<string>();
+
+  // Popup data
   selecteditem: Parcel = {
     id: 0,
     shortcode: '',
     recipientName: '',
     status: '',
     description: '',
-    createdAt: '',
     parcelName: '',
+    createdAt: '',
   };
-  popupData: Otp = { parcelId: 0, otp: null };
 
-  getParcels() {
-    this.service.fetchActiveParcel(this.num).subscribe({
+  popupData: Otp = {
+    parcelId: 0,
+    otp: null
+  };
+
+  ngOnInit(): void {
+    this.getParcels();
+
+    // 🔹 Backend search with debounce
+    this.searchSubject
+      .pipe(debounceTime(500))
+      .subscribe(() => {
+        this.num = 0; // reset to first page
+        this.getParcels();
+      });
+  }
+
+  // 🔹 Fetch parcels (pagination + search)
+  getParcels(): void {
+    this.service.fetchActiveParcel(this.num, this.searchTerm).subscribe({
       next: (res) => {
         this.parcels = res.content;
-        this.filteredparcels = this.parcels;
         this.length = res.page.totalElements;
       },
       error: (err) => {
@@ -59,66 +79,61 @@ export class ParcelListComponent implements OnInit {
     });
   }
 
-  onSearch() {
-    const term = this.searchTerm.toLowerCase().trim();
-    if (!term) {
-      this.filteredparcels = this.parcels;
-      return;
-    }
-    this.filteredparcels = this.parcels.filter((parcel) =>
-      parcel.recipientName.toLowerCase().includes(term)
-    );
+  // 🔹 Trigger backend search
+  onSearch(): void {
+    this.searchSubject.next(this.searchTerm);
   }
 
-  validate(parcel: Parcel) {
+  // 🔹 Pagination change
+  onPageChange(event: any): void {
+    this.num = event.pageIndex;
+    this.getParcels();
+  }
+
+  // 🔹 OTP actions
+  validate(parcel: Parcel): void {
     this.openPopup(parcel);
   }
 
-  resend(id: number) {
+  resend(id: number): void {
     this.loading = id;
-    this.service
-      .resend(id)
-      .pipe(finalize(() => { this.loading = null; }))
+
+    this.service.resend(id)
+      .pipe(finalize(() => this.loading = null))
       .subscribe({
-        next: (res) => {
-          alert('OTP resent successfully');
-        },
-        error: (err) => {
-          alert('Please try again, message could not be sent');
-        },
+        next: () => alert('OTP resent successfully'),
+        error: () => alert('Please try again, message could not be sent')
       });
   }
 
-  openPopup(parcel: Parcel) {
+  openPopup(parcel: Parcel): void {
     this.selecteditem = parcel;
     this.showPopup = true;
   }
 
-  closePopup() {
+  closePopup(): void {
     this.showPopup = false;
     this.popupData = { parcelId: 0, otp: null };
   }
 
-  submitPopup(id: number) {
+  submitPopup(id: number): void {
     this.popupData.parcelId = id;
+
     this.service.validateOtp(this.popupData).subscribe({
-      next: (res) => {
+      next: () => {
         alert('Validated successfully');
         this.getParcels();
         this.closePopup();
       },
-      error: (err) => {
+      error: () => {
         alert('Invalid OTP');
         this.closePopup();
-      },
+      }
     });
   }
-
-  onPageChange(event: any) {
-    this.num = event.pageIndex;
-    this.getParcels();
-  }
 }
+
+// ---------------- TYPES ----------------
 
 type Parcel = {
   id: number;

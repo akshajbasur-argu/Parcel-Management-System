@@ -15,13 +15,25 @@ export class ReceptionistApiService {
   fetchUsers(): Observable<any> {
     return this.httpClient.get(this.url + '/users', { withCredentials: true });
   }
-  fetchActiveParcel(num: number): Observable<any> {
-    return this.httpClient.get(this.url + `/parcels/${num}`, { withCredentials: true });
-  }
+fetchActiveParcel(num: number, search: string = ''): Observable<any> {
+  return this.httpClient.get(
+    `${this.url}/parcels/${num}`,
+    {
+      params: { search },
+      withCredentials: true
+    }
+  );
+}
 
-  fetchParcelHistory(num: number): Observable<any> {
-    return this.httpClient.get(this.url + `/parcels/history/${num}`, { withCredentials: true });
-  }
+ fetchParcelHistory(num: number, search: string = ''): Observable<any> {
+  return this.httpClient.get(
+    `${this.url}/parcels/history/${num}`,
+    {
+      params: { search },
+      withCredentials: true
+    }
+  );
+}
 
   /**
    * submitForm: accepts FormData or plain object.

@@ -22,9 +22,9 @@ public interface ReceptionistService {
 
     public GenericAopDto resendOtp(long parcelId);
 
-    public Page<ParcelResponseDto> getActiveParcels(int pageNumber);
+    public Page<ParcelResponseDto> getActiveParcels(int pageNumber,String search);
 
-    public Page<ParcelResponseDto> getParcelHistory(int pageNumber);
+    public Page<ParcelResponseDto> getParcelHistory(int pageNumber, String search);
 
     public GenericAopDto sendNotification(long id, String message);
 

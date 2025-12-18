@@ -36,7 +36,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
-          @for (parcel of filteredparcels; track parcel.id) {
+          @for (parcel of parcels; track parcel.id) {
             <tr class="hover:bg-gray-50 transition-all duration-150">
               <td class="px-4 lg:px-6 py-3 text-sm text-center text-gray-700">{{ parcel.id }}</td>
               <td class="px-4 lg:px-6 py-3 text-sm text-gray-800 font-medium">{{ parcel.recipientName }}</td>
@@ -95,7 +95,7 @@
 
     <!-- Mobile Card View -->
     <div class="md:hidden divide-y divide-gray-200">
-      @for (parcel of filteredparcels; track parcel.id) {
+      @for (parcel of parcels; track parcel.id) {
         <div class="p-4 hover:bg-gray-50 transition-all duration-150">
           
           <!-- Card Header -->
