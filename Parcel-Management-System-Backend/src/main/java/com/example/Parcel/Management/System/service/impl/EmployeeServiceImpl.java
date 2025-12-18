@@ -17,6 +17,10 @@ import com.example.Parcel.Management.System.repository.UserRepo;
 import com.example.Parcel.Management.System.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -129,5 +133,17 @@ public class EmployeeServiceImpl implements EmployeeService {
             );
         }
         return null;
+    }
+
+    @Override
+    public Page<ParcelResponseDto> getPaginatedParcels(int page, int size, Status filter){
+        Pageable pageable = PageRequest.of(page,size, Sort.by("id").descending());
+        Page<Parcel> parcelPage =
+                (filter == null)
+                        ?parcelRepo.findAll(pageable)
+                        :parcelRepo.findByStatus(pageable,filter);
+
+        return parcelPage.map(parcel -> modelMapper.map(parcel,ParcelResponseDto.class));
+
     }
 }

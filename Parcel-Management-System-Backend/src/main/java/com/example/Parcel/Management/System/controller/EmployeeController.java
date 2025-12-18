@@ -6,8 +6,10 @@ import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
 import com.example.Parcel.Management.System.dto.employee.NotificationRequestDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.entity.Notifications;
+import com.example.Parcel.Management.System.entity.Status;
 import com.example.Parcel.Management.System.service.impl.EmployeeServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,5 +55,14 @@ public class EmployeeController {
         employeeService.updateParcelStatus(updates);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("parcelList")
+    public Page<ParcelResponseDto> getPaginatedParcels(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Status filter
+    ){
+        return employeeService.getPaginatedParcels(page,size,filter);
     }
 }

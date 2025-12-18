@@ -3,10 +3,13 @@ package com.example.Parcel.Management.System.controller;
 import com.example.Parcel.Management.System.dto.admin.UpdateRoleRequest;
 import com.example.Parcel.Management.System.dto.admin.UpdateStatusRequest;
 import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
+import com.example.Parcel.Management.System.dto.common.UsersListResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
+import com.example.Parcel.Management.System.entity.Status;
 import com.example.Parcel.Management.System.service.impl.AdminServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,6 +53,24 @@ public class AdminController {
         adminService.updateParcelStatus(updates);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/parcelList")
+    public Page<ParcelResponseDto> getPaginatedParcels(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Status filter
+    ) {
+        return adminService.getPaginatedParcels(page, size, filter);
+    }
+
+    @GetMapping("/list")
+    public Page<UsersListResponseDto> getUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search
+    ) {
+        return adminService.getPaginatedUsers(page, size, search);
     }
 
 }

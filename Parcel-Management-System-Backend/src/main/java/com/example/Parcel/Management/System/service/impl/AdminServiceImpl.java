@@ -7,6 +7,7 @@ import com.example.Parcel.Management.System.dto.admin.UpdateRoleRequest;
 import com.example.Parcel.Management.System.dto.admin.UpdateStatusRequest;
 import com.example.Parcel.Management.System.dto.admin.UserRoleUpdateDto;
 import com.example.Parcel.Management.System.dto.common.UserDetailResponseDto;
+import com.example.Parcel.Management.System.dto.common.UsersListResponseDto;
 import com.example.Parcel.Management.System.dto.receptionist.ParcelResponseDto;
 import com.example.Parcel.Management.System.entity.Parcel;
 import com.example.Parcel.Management.System.entity.Role;
@@ -18,6 +19,9 @@ import com.example.Parcel.Management.System.repository.UserRepo;
 import com.example.Parcel.Management.System.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -60,12 +64,38 @@ public class AdminServiceImpl implements AdminService {
         return getAllUsers();
     }
 
+    @Override
+    public Page<UsersListResponseDto> getPaginatedUsers(int page, int size, String search) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<User> usersPage =
+                (search == null || search.trim().isEmpty())
+                        ? userRepo.findAll(pageable)
+                        : userRepo.findByNameContainingIgnoreCase(search.trim(), pageable);
+
+        // MODEL MAPPER MAPPING TO PAGE DTO
+        return usersPage.map(user -> modelMapper.map(user, UsersListResponseDto.class));
+    }
+
     public List<ParcelResponseDto> updateParcelStatus(List<UpdateStatusRequest> list) {
         list.forEach(updateStatus::changeStatus);
 
         return getAllParcels();
     }
 
+    @Override
+    public Page<ParcelResponseDto> getPaginatedParcels(int page, int size, Status filter){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<Parcel> parcelsPage=
+                (filter == null)
+                        ?parcelRepo.findAll(pageable)
+                        :parcelRepo.findByStatus(pageable, filter);
+
+        return parcelsPage.map(parcel -> modelMapper.map(parcel, ParcelResponseDto.class));
+
+    }
 
 }
 

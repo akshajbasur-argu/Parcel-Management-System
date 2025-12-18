@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { EmployeeApiService } from '../../../core/service/employee-api.service';
 import { NotificationService } from '../../../core/service/notification.service';
 import { SidebarService } from '../../../shared/services/sidebar';
+import { filter } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-parcel-history',
@@ -24,6 +26,9 @@ export class ParcelHistoryComponent {
   isMobile: boolean = false;
   sidebarCollapsed: boolean = false;
   updatedParcels: Array<{ id: number; status: string }> = [];
+  pageIndex = 0;
+  pageSize = 2;
+  length = 0;
 
   ngOnInit(): void {
     this.loadParcels();
@@ -56,11 +61,14 @@ export class ParcelHistoryComponent {
   }
 
   loadParcels(): void {
-    this.service.fetchParcel().subscribe({
+    let filter = null;
+    if (this.selectedFilter !=="ALL") filter = this.selectedFilter;
+    this.service.getPaginatedParcels(this.pageIndex,this.pageSize,filter).subscribe({
       next: (res) => {
-        this.parcels = res;
+        this.parcels = res.content;
         this.setParcels(); // This now properly initializes parcelsResponse
         console.log('Parcels loaded:', this.parcels);
+        this.length=res.page.totalElements;
       },
       error: (err) => {
         console.error('Error while fetching parcels', err);
@@ -69,17 +77,36 @@ export class ParcelHistoryComponent {
     });
   }
 
+  onFilterChange(){
+    this.loadParcels();
+  }
+
+  // saveChange(parcel:Parcel
+  // ){
+  //   this.updatedParcels.push({
+  //         id: parcel.id,
+  //         status: parcel.status
+  //       });
+
+  // } 
+  
+  onPageChange(event: PageEvent){
+    this.pageIndex=event.pageIndex;
+    this.pageSize=event.pageSize;
+    this.loadParcels();
+  }
+
   saveAllStatus(): void {
-    this.updatedParcels = [];
+    // this.updatedParcels = [];
     
-    for (let i: number = 0; i < this.parcels.length; i++) {
-      if (this.parcels[i].status !== this.parcelsResponse[i].status) {
-        this.updatedParcels.push({
-          id: this.parcelsResponse[i].id,
-          status: this.parcelsResponse[i].status
-        });
-      }
-    }
+    // for (let i: number = 0; i < this.parcels.length; i++) {
+    //   if (this.parcels[i].status !== this.parcelsResponse[i].status) {
+    //     this.updatedParcels.push({
+    //       id: this.parcelsResponse[i].id,
+    //       status: this.parcelsResponse[i].status
+    //     });
+    //   }
+    // }
     
     console.log("SAVEALLSTATUS", this.parcelsResponse, this.updatedParcels);
     

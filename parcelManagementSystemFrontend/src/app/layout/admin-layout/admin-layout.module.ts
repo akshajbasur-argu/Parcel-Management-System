@@ -11,6 +11,7 @@ import { ParcelHistoryComponent } from '../../feature/admin/parcel-history/parce
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInput, MatInputModule } from '@angular/material/input';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { MatIcon, MatIconModule } from '@angular/material/icon';
     MatInputModule,
    MatLabel,MatInput,
    MatIcon,
-   MatIconModule
+   MatIconModule,
+   MatPaginator
   ]
 })
 export class AdminLayoutModule { }

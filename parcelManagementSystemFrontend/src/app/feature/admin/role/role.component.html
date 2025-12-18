@@ -49,6 +49,8 @@
                 <td class="px-4 lg:px-6 py-3 text-sm">
                   <select 
                     [(ngModel)]="user.role"
+                    
+                    
                     class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#903564] bg-white cursor-pointer w-full max-w-[180px]"
                   >
                     <option value="EMPLOYEE">Employee</option>
@@ -100,6 +102,7 @@
                 <span class="text-gray-500 font-medium text-xs">Role</span>
                 <select 
                   [(ngModel)]="user.role"
+                  (change)="this.updatesUsers.push(user)"
                   class="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#903564] bg-white cursor-pointer w-full touch-manipulation"
                 >
                   <option value="EMPLOYEE">Employee</option>
@@ -131,57 +134,17 @@
       </button>
     </div>
   </div>
+
+  <div class="mt-6">
+    <mat-paginator
+  [length]="length"
+  [pageSize]="pageSize"
+  [pageIndex]="pageIndex"
+  [pageSizeOptions]="[2, 5, 10]"
+  (page)="onPageChange($event)"
+  aria-label="Select page"
+></mat-paginator>
+
+  </div>
 </div>
 
-<style>
-
-@keyframes fade-in-down {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in-down {
-  animation: fade-in-down 0.5s ease-out;
-}
-
-/* Material form field responsive adjustments */
-@media (max-width: 768px) {
-  ::ng-deep .mat-form-field {
-    width: 100% !important;
-  }
-  
-  ::ng-deep .mat-form-field-wrapper {
-    padding-bottom: 0.5em;
-  }
-}
-
-/* Smooth scrolling */
-.overflow-x-auto {
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-}
-
-/* Touch feedback */
-@media (hover: none) and (pointer: coarse) {
-  button, select {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-  }
-}
-
-/* Ensure select dropdowns are touch-friendly */
-select {
-  min-height: 44px;
-}
-
-@media (max-width: 768px) {
-  select {
-    font-size: 16px; /* Prevents zoom on iOS */
-  }
-}
-</style>

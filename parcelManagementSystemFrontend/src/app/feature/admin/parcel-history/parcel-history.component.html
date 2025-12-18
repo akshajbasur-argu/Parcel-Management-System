@@ -15,6 +15,7 @@
         <label class="text-gray-700 text-sm font-medium">Filter by:</label>
         <select
           [(ngModel)]="selectedFilter"
+          (change)="onFilterChange()"
           class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#903564] bg-white cursor-pointer"
         >
           <option value="ALL">All</option>
@@ -119,6 +120,7 @@
                   <select
                     [(ngModel)]="parcelsResponse[$index].status"
                     [disabled]="parcel.status == 'PICKED_UP'"
+                    (change)="updatedParcels.push(parcelsResponse[$index])"
                     class="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#903564] bg-white cursor-pointer w-full touch-manipulation disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                   >
                     <option value="PICKED_UP">PICKED_UP</option>
@@ -150,5 +152,13 @@
       </button>
     </div>
   </div>
+  <mat-paginator
+  [length]="length"
+  [pageSize]="pageSize"
+  [pageIndex]="pageIndex"
+  [pageSizeOptions]="[2, 5, 10]"
+  (page)="onPageChange($event)"
+  aria-label="Select page"
+></mat-paginator>
 </div>
 

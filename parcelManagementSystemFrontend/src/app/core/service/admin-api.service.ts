@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class AdminApiService {
     constructor(private httpClient:HttpClient){}
 
-  url:string="https://sjkqbbn5-8081.inc1.devtunnels.ms/api/v1/admin"
+  url:string="http://localhost:8081/api/v1/admin"
   fetchUsers():Observable<any>{
     return this.httpClient.get(this.url+'/users', { withCredentials: true })
   }
@@ -24,4 +24,25 @@ export class AdminApiService {
   updateParcelStatus(updatedParcels:{id: number, status: string}[] ): Observable<any> {
   return this.httpClient.post(this.url+'/updateParcel',updatedParcels,{ withCredentials: true });
   }
+
+  getPaginatedUsers(page: number, size: number, search: string = '') {
+  const params: any = { page, size };
+  if (search.trim()) params.search = search;
+
+  return this.httpClient.get<any>(this.url+'/list', {
+    params,
+    withCredentials: true
+  });
+}
+
+getPaginatedParcels(page: number, size: number, filter: string|null = null) {
+  const params: any = { page, size };
+  if (filter) params.filter = filter;
+
+  return this.httpClient.get<any>(this.url+'/parcelList', {
+    params,
+    withCredentials: true
+  });
+}
+
 }

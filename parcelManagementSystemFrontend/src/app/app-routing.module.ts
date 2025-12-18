@@ -19,7 +19,7 @@ const routes: Routes = [
   {
     path: 'employee',
     loadChildren: () =>
-      import('./layout/employee-layout/employee-layout.module').then((m) => m.EmployeeLayoutModule),
+      import('./layout/employee-layout/employee-layout.module').then((m) => m.EmployeeLayoutModule), canActivate:[AuthGuard],data:{role: 'EMPLOYEE'},
   },
   {
     path: 'admin',

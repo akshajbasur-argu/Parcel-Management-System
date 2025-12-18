@@ -20,6 +20,8 @@ public interface ParcelRepo extends JpaRepository<Parcel, Long> {
 
     Page<Parcel> findByStatus(Pageable pageable, Status status);
 
+    Page<Parcel> findAll(Pageable pageable);
+
     Optional<Parcel> findFirstByRecipientEmailAndShortcodeAndStatus(
             String email,
             String shortcode,

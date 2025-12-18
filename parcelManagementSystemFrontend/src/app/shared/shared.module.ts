@@ -24,7 +24,8 @@ import { OnlineIndicatorComponent } from './online-indicator/online-indicator.co
     MatTooltipModule,
     MatButtonModule,
     DownloadAppButtonComponent,
-    OnlineIndicatorComponent
+    OnlineIndicatorComponent,
+    
   ],
   exports: [
     CommonModule,
